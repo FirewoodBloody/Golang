@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 func teststring() {
@@ -35,7 +36,7 @@ func teststring() {
 	if a == "中国" {
 		fmt.Println(a)
 	}
-
+	time.Sleep(time.Second)
 }
 
 func main() {
