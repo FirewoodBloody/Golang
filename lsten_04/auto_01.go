@@ -1,21 +1,31 @@
 package main
 
 import (
-	"crypto/rand"
 	"fmt"
-	"math/big"
+	"math/rand"
 	"time"
 )
 
-func Snum(ass int64) (acc int64) {
-	Sresult, _ := rand.Int(rand.Reader, big.NewInt(ass))
-	return Sresult
+func autoTime() (auto int) {
+	rand.Seed(time.Now().Unix())
+	//使用时间戳,初始化随机种子,如未使用时间戳就需要一个随机数,否则默认使用seed1
+	//
+	auto = rand.Intn(100)
+	auto = auto % 3
+	time.Sleep(time.Second * 1)
+	return
+
 }
+
+//
+//func init63() (a int64) {
+//	a = rand.Int63n(100)
+//	return a
+//}
 
 func main() {
 	for {
-		abc := Snum(3)
-		fmt.Println(abc)
-		time.Sleep(time.Second)
+		a := autoTime()
+		fmt.Println(a)
 	}
 }
