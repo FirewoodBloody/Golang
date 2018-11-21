@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 //求一个数组元素给定条件的下标
 func sunArray(a [10]int) {
