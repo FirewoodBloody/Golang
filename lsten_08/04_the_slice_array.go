@@ -21,10 +21,10 @@ func sunArray(a []int) {
 }
 
 func main() {
-	var a = [4]int{1, 2, 3, 4}
-	var alias []int
-	alias = a[:]
-	b := sliceArray(alias)
+	a := [4]int{1, 2, 3, 4}
+	//var alias []int
+	//alias = a[:]
+	b := sliceArray(a[:])
 	fmt.Printf("sum = %d \n", b)
-	sunArray(alias)
+	sunArray(a[:])
 }

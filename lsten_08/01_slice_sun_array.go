@@ -23,5 +23,4 @@ func testslice1() {
 func main() {
 	testslice()
 	testslice1()
-
 }
