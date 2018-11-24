@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+
 func array_Duo(a [3][2]int) {
 	for index1, value1 := range a {
 		for index, value := range value1 {
