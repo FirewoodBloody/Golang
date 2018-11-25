@@ -5,6 +5,8 @@ import (
 	"sort"
 )
 
+var A int
+
 func arraysort(a []int) []int {
 	sort.Ints(a)
 	return a
