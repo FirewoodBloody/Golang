@@ -3,9 +3,23 @@ package main
 import "fmt"
 
 func main() {
-	var a map[int](map[string](map[int]int))
-	a=make(map[int](map[string](map[int]int)) ,1000)
-	a[]=
-	a[0]["张三"][18] = 89
-	fmt.Println(a[01])
+	var stuMap map[int]map[string]interface{} //空数据类型，interface 可以插入任何类型的数据
+	stuMap = make(map[int]map[string]interface{}, 16)
+	var id int = 1
+	var name string = "张三"
+	var age int = 18
+	var scoue int = 89
+	value, ok := stuMap[id]
+	if !ok {
+		value = make(map[string]interface{}, 8)
+		value["name"] = name
+		value["age"] = age
+		value["scoue"] = scoue
+	} else {
+		value["name"] = name
+		value["age"] = age
+		value["scoue"] = scoue
+	}
+	stuMap[id] = value
+	fmt.Printf("%v", stuMap)
 }
