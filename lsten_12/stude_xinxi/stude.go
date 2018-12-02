@@ -1,0 +1,98 @@
+package main
+
+import (
+	"fmt"
+	"github.com/fatih/color"
+)
+
+type Student struct {
+	Username string
+	Score    float64
+	Grade    string
+	Sex      int
+}
+
+var (
+	sex     string
+	Xxslice map[string]Student = make(map[string]Student, 1000000)
+)
+
+func Caidan() {
+	Xinx /*菜单功能列表*/ := `|=========================================================|
+||| s/S:查询所有学生的信息	| c/C:新增学生信息	|||
+||| i/i:修改学生信息		| q/Q:退出程序		|||
+|=========================================================|`
+
+	color.Set(color.FgMagenta, color.Bold)
+	defer color.Unset()
+	fmt.Println(Xinx)
+
+	color.Set(color.FgRed, color.Bold)
+	fmt.Print("请您选择需要的操作:")
+}
+
+func Scans(a string) {
+	var (
+		username string
+		score    float64
+		grade    string
+		sex      int
+		sum      Student
+	)
+	switch a {
+	case "s", "S":
+		var a string
+		fmt.Print("请输入您要查询的学生姓名,如需查询全部学生信息,请按l/L:")
+		fmt.Scanf(&a)
+		if a == "l" || a == "L" {
+			for _, value := range Xxslice {
+				fmt.Printf("%v\n", value)
+			}
+		} else {
+			_, ok := Xxslice[a]
+			if ok == true {
+				fmt.Printf("%v\n", Xxslice[a])
+			} else {
+				color.Set(color.FgRed, color.Bold)
+				defer color.Unset()
+				fmt.Println("您查询的学生不存在!")
+			}
+		}
+	case "c", "C":
+		for i := 0; i < 4; i++ {
+			fmt.Print("请输入新增学生的名字:")
+			if i == 0 {
+				fmt.Printf("请输入学生姓名:")
+				fmt.Scanf("%s\n", &username)
+				sum.Username = username
+			} else if i == 1 {
+				fmt.Printf("请输入学生班级:")
+				fmt.Scanf("%s\n", &grade)
+				sum.Grade = grade
+			} else if i == 2 {
+				fmt.Printf("请输入学生性别:")
+				fmt.Scanf("%d\n", &sex)
+				sum.Sex = sex
+			} else if i == 3 {
+				fmt.Printf("请输入学生分数:")
+				fmt.Scanf("%f\n", &score)
+				sum.Score = score
+			}
+
+			Xxslice[username] = sum
+		}
+
+	case "i", "I":
+	case "q", "Q":
+
+	}
+
+}
+
+func main() {
+	for {
+		fmt.Scan(&sex)
+		Caidan()
+		Scans(sex)
+	}
+}
