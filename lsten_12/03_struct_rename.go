@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"Golang/lsten_12/example1"
+	"fmt"
+)
 
 type User struct {
 	Username string
@@ -18,4 +21,8 @@ func main() {
 	a.int = 100
 	a.string = "a"
 	fmt.Printf("%#v\n", a)
+	b := example1.User{}
+	b.City = "sss"
+	fmt.Printf("%#v\n", b)
+
 }
