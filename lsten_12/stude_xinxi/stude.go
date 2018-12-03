@@ -16,7 +16,6 @@ type Student struct {
 }
 
 var (
-	sexs    string
 	Xxslice map[string]Student = make(map[string]Student, 1000000)
 )
 
@@ -236,6 +235,7 @@ func Scans(a string) {
 
 func main() {
 	for {
+		var sexs string
 		Caidan()
 		fmt.Scanf("%s\n", &sexs)
 		Scans(sexs)
