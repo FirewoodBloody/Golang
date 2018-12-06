@@ -13,7 +13,7 @@ type Intfunc int
 
 func (i *Intfunc) echo() {
 	fmt.Println(*i)
-	*i = 2
+	*i = 2 //使用指针类型方法来修改方法外的信息
 }
 
 func (p Porelo) echo() {
