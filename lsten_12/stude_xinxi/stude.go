@@ -239,5 +239,7 @@ func main() {
 		Caidan()
 		fmt.Scanf("%s\n", &sexs)
 		Scans(sexs)
+		time.Sleep(time.Second * 2)
+		fmt.Println("\n")
 	}
 }
