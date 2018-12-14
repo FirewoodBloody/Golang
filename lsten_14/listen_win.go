@@ -1,4 +1,4 @@
-package lsten_14
+package main
 
 import (
 	"fmt"
@@ -41,7 +41,7 @@ func main() {
 
 	window.Connect("destroy", gtk.MainQuit) //关闭窗口
 
-	window.ShowAll() //显示控件
+	//window.ShowAll() //显示控件
 
 	gtk.Main()
 }
