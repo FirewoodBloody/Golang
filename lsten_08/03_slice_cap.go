@@ -2,9 +2,9 @@ package main
 
 import "fmt"
 
-func sllice() {
+func main() {
 	a := [...]string{"a", "b", "c", "d", "e"}
-	b := a[2:3]
+	b := a[0:3]
 	fmt.Printf("b slice is %s , b len is %d , b cap is %d", b, len(b), cap(b))
 }
 
