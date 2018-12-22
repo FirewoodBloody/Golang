@@ -10,7 +10,3 @@ type LogInterface interface {
 	Fatal(format string, args ...interface{})
 	Close()
 }
-
-func main() {
-
-}
