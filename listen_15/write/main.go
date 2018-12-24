@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	file, err := os.OpenFile("./main.go", os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0666)
+	file, err := os.OpenFile("./main_server.go", os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0666)
 	if err != nil {
 		fmt.Println("open file err:", err)
 		return

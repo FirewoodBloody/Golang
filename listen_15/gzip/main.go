@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	flie, err := os.Open("./main.go.gz")
+	flie, err := os.Open("./main_server.go.gz")
 	if err != nil {
 		fmt.Println("open file err:", err)
 		return
