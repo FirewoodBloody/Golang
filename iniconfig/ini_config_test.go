@@ -31,7 +31,7 @@ func TestIniconfig(t *testing.T) {
 	var conf Config
 	err = UnMarshal(data, &conf)
 	if err != nil {
-		t.Error("unmarshal failed ,err :%#v", err)
+		t.Errorf("unmarshal failed ,err :%v", err)
 	}
 	t.Logf("unmarshal success,conf:%#v", conf)
 }
