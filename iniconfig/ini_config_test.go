@@ -1,7 +1,7 @@
 package iniconfig
 
 import (
-	"io/ioutil"
+	"fmt"
 	"testing"
 )
 
@@ -23,15 +23,12 @@ type MysqlConfig struct {
 }
 
 func TestIniconfig(t *testing.T) {
-
-	data, err := ioutil.ReadFile("./config.ini")
-	if err != nil {
-		t.Errorf("read file failed")
-	}
 	var conf Config
-	err = UnMarshal(data, &conf)
+	err := UnMarshalFile("./config.ini", &conf)
 	if err != nil {
-		t.Errorf("unmarshal failed ,err :%v", err)
+		t.Errorf("test filed:%v", err)
 	}
-	t.Logf("unmarshal success,conf:%#v", conf)
+	fmt.Printf("%#v", conf)
+
+	err = MarshalFile(conf, "D:/ini.conf")
 }
