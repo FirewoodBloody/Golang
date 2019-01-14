@@ -1,23 +1,19 @@
 package main
 
 import (
+	"Golang/ranges"
 	"fmt"
-	"strconv"
 )
 
-type ranges struct {
-}
-
-func ranges(a int64) ([]int, error) {
-
-	s := strconv.FormatInt(a, 10)
-	var sum []int64 = make([]int64, len(s))
-	fmt.Printf("%T", s)
-	for k, v := range s {
-		num, err := strconv.ParseInt(string(v), 10, 64)
-		if err != nil {
-			return nil, err
-		}
-		sum[k] = num
+func main() {
+	var a int = 8527536549510
+	var sum int
+	b, err := ranges.DivisionInt(a)
+	if err != nil {
+		fmt.Println(err)
 	}
+	for _, v := range b[:] {
+		sum += v
+	}
+	fmt.Println(sum)
 }
