@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires gtk+ 2.8 -->
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="window1">
+    <child>
+      <object class="GtkFixed" id="fixed1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkProgressBar" id="progressbar1">
+            <property name="width_request">232</property>
+            <property name="height_request">24</property>
+            <property name="visible">True</property>
+            <property name="app_paintable">True</property>
+          </object>
+          <packing>
+            <property name="x">101</property>
+            <property name="y">170</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
