@@ -323,6 +323,7 @@ func (obj *Chessboard) JudgeRule(x, y int, role int, eatChess bool) (eatNum int)
 }
 
 //鼠标按下事件处理，MousePressEvent 为其回调函数，把obj传递给回调函数
+//用户落子判断，吃子计算调用
 func MousePressEvent(ctx *glib.CallbackContext) {
 
 	arg := ctx.Data()            //获取用户传递的参数，空接口类型
@@ -353,9 +354,9 @@ func MousePressEvent(ctx *glib.CallbackContext) {
 			if i >= 0 && i <= 7 && j >= 0 && j <= 7 {
 				//fmt.Printf("i = %d, j = %d\n", i+1, j)
 				//obj.chess[i][j] = Black //点击的位置标志为Black
-				obj.JudgeRule(i, j, obj.currentRole, true)
-				obj.window.QueueDraw() //刷新绘图区域
-				if obj.chess[i][j] == Black {
+				obj.JudgeRule(i, j, obj.currentRole, true) //用户落子计算
+				obj.window.QueueDraw()                     //刷新绘图区域
+				if obj.chess[i][j] == Black {              //判断用户书否落子成功
 					obj.ChangeRole() //改变落子角色
 				}
 			}
