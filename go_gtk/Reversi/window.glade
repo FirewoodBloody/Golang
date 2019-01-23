@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="window1">
+    <property name="width_request">800</property>
+    <property name="height_request">500</property>
+    <property name="default_width">800</property>
+    <property name="default_height">500</property>
+    <child>
+      <object class="GtkFixed" id="fixed1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkButton" id="button1">
+            <property name="width_request">25</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="relief">none</property>
+            <property name="use_stock">True</property>
+          </object>
+          <packing>
+            <property name="x">740</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="button2">
+            <property name="width_request">25</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="relief">none</property>
+            <property name="use_stock">True</property>
+          </object>
+          <packing>
+            <property name="x">770</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="width_request">50</property>
+            <property name="height_request">45</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">2</property>
+          </object>
+          <packing>
+            <property name="x">100</property>
+            <property name="y">120</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property name="width_request">45</property>
+            <property name="height_request">45</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">2</property>
+          </object>
+          <packing>
+            <property name="x">660</property>
+            <property name="y">120</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label3">
+            <property name="width_request">45</property>
+            <property name="height_request">45</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">20</property>
+          </object>
+          <packing>
+            <property name="x">375</property>
+            <property name="y">10</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="image1">
+            <property name="width_request">45</property>
+            <property name="height_request">45</property>
+            <property name="visible">True</property>
+            <property name="stock">gtk-missing-image</property>
+          </object>
+          <packing>
+            <property name="x">225</property>
+            <property name="y">10</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="image2">
+            <property name="width_request">45</property>
+            <property name="height_request">45</property>
+            <property name="visible">True</property>
+            <property name="stock">gtk-missing-image</property>
+          </object>
+          <packing>
+            <property name="x">530</property>
+            <property name="y">10</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
