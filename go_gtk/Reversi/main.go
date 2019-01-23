@@ -324,6 +324,7 @@ func (obj *Chessboard) JudgeRule(x, y int, role int, eatChess bool) (eatNum int)
 
 //鼠标按下事件处理，MousePressEvent 为其回调函数，把obj传递给回调函数
 func MousePressEvent(ctx *glib.CallbackContext) {
+
 	arg := ctx.Data()            //获取用户传递的参数，空接口类型
 	obj, ok := arg.(*Chessboard) //类型断言
 
@@ -338,7 +339,7 @@ func MousePressEvent(ctx *glib.CallbackContext) {
 
 	if event.Button == 1 { //左键
 		obj.x, obj.y = int(event.X), int(event.Y) //保存鼠标左键点击时的坐标
-		if obj.currentRole == Black {
+		if obj.currentRole == White {
 			return
 		}
 
@@ -350,9 +351,13 @@ func MousePressEvent(ctx *glib.CallbackContext) {
 
 			//保证i, j在0~7范围里
 			if i >= 0 && i <= 7 && j >= 0 && j <= 7 {
-				//fmt.Printf("i = %d, j = %d\n", i, j)
-				obj.chess[i][j] = Black //点击的位置标志为Black
-				obj.window.QueueDraw()  //刷新绘图区域
+				//fmt.Printf("i = %d, j = %d\n", i+1, j)
+				//obj.chess[i][j] = Black //点击的位置标志为Black
+				obj.JudgeRule(i, j, obj.currentRole, true)
+				obj.window.QueueDraw() //刷新绘图区域
+				if obj.chess[i][j] == Black {
+					obj.ChangeRole() //改变落子角色
+				}
 			}
 		}
 	}
