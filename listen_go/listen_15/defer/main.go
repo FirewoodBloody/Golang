@@ -24,7 +24,7 @@ func funcB() (x int) {
 	return 5
 }
 
-func funcA() (y int) {
+func funcC() (y int) {
 	x := 6
 	defer func() {
 		x++

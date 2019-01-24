@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-type User struct {
+type Users struct {
 	Name string
 	Sex  string
 	Age  int
@@ -10,7 +10,7 @@ type User struct {
 }
 
 func main() {
-	var user User
+	var user Users
 	user.Name = "张三"
 	user.Sex = "女"
 	user.Age = 18

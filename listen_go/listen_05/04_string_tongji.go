@@ -21,12 +21,12 @@ func calc(str string) (charcount int, numcount int, spacecount int, othrecount i
 	return
 }
 
-func example() {
+func examples() {
 	var str = "asdasd    AAAAA  中国是打过  12345678"
 	charcount, numcount, spaleconunt, othercount := calc(str)
 	fmt.Printf("%v , %v , %v , %v ", charcount, numcount, spaleconunt, othercount)
 }
 
 func main() {
-	example()
+	examples()
 }

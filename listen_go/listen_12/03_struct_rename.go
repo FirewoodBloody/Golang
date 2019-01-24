@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Golang/lsten_12/example1"
+	"Golang/listen_go/listen_12/example1"
 	"fmt"
 )
 

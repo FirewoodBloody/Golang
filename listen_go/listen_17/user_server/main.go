@@ -1,6 +1,6 @@
 package main
 
-import "Golang/listen_17/log"
+import "Golang/listen_go/listen_17/log"
 
 func main() {
 	//file := log.NewFilelog("maim.go")
