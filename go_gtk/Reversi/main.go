@@ -476,7 +476,7 @@ func (obj *Chessboard) CreateWindow() *gtk.Window {
 	//设置 label 字体大小
 	obj.labelWhite.ModifyFontSize(30)
 	obj.labelBlack.ModifyFontSize(30)
-	obj.labelTime.ModifyFontSize(35)
+	obj.labelTime.ModifyFontSize(30)
 
 	//设置 label 字体颜色
 	obj.labelTime.ModifyFG(gtk.STATE_NORMAL, gdk.NewColor("orange"))
