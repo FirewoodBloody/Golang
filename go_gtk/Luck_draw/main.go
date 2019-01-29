@@ -1,18 +1,36 @@
 package main
 
+import "C"
 import (
 	"fmt"
+	"github.com/FirewoodBloody/PacketProup/ini_config"
 	"github.com/mattn/go-gtk/gdk"
 	"github.com/mattn/go-gtk/gdkpixbuf"
 	"github.com/mattn/go-gtk/glib"
 	"github.com/mattn/go-gtk/gtk"
+	"io/ioutil"
+	"math/rand"
 	"os"
+	"strings"
+	"time"
 )
 
 const (
 	StartLabel = "S t a r t" //按钮显示内容
 	StopLabel  = "S t o p"   //按钮显示内容
 )
+
+var Conf Config
+
+type Config struct {
+	ServerConf ServerConfig `ini:"server"`
+}
+type ServerConfig struct {
+	SoftwareNam string `ini:"softwarename"`
+	LabelName   string `ini:"labelname"`
+	IconImage   string `ini:"iconimage"`
+	FileName    string `ini:"filename"`
+}
 
 //控件结构体
 type Control struct {
@@ -22,12 +40,87 @@ type Control struct {
 }
 
 type Attribute struct {
-	w, h int
+	w, h      int //窗口与背景的宽度和高度
+	labelTime int //
 }
 
 type AnnualMeeting struct {
 	Control
 	Attribute
+
+	ZJName []string
+
+	Name   map[int]string //存储员工姓名
+	NameId int
+
+	LabelTimeId int
+}
+
+//处理员工姓名文件，并将信息存储到 name 中
+func (year *AnnualMeeting) ReadFilename() {
+	data, err := ioutil.ReadFile(Conf.ServerConf.FileName)
+	if err != nil {
+		fmt.Println(err)
+	}
+	year.NameId = 0
+	year.Name = make(map[int]string, 1000)
+	str := strings.Split(string(data), "\n")
+	for k, v := range str {
+
+		if str[k] == "" || str[k] == "\r\n" || len(v) < 3 {
+			continue
+		}
+		if k != 0 {
+			year.NameId++
+		}
+		year.Name[year.NameId] = v
+	}
+
+}
+
+//按钮事件处理 ,
+func (year *AnnualMeeting) ButtonEvents() {
+
+	year.button.Connect("clicked", func() {
+		buttonLabel := year.button.GetLabel()
+		if buttonLabel == StartLabel {
+			//重新设置按钮 label 字体大小
+			year.button.SetLabel(StopLabel)
+			year.button.SetLabelFontSize(int(year.w / 3 / 3 / 6))
+			//定时器
+			//开始滚动label标签内容，每个10毫秒进行一次切换
+			year.LabelTimeId = 0
+			year.labelTime = glib.TimeoutAdd(1, func() bool {
+				year.LabelTimeId++
+				if year.LabelTimeId > year.NameId {
+					year.LabelTimeId = 0
+				}
+				if year.button.GetLabel() == StopLabel {
+					year.label.SetText(year.Name[year.LabelTimeId])
+				}
+				return true
+
+			})
+
+		} else if buttonLabel == StopLabel {
+			//重新设置按钮 label 字体大小
+			year.button.SetLabel(StartLabel)
+			year.button.SetLabelFontSize(int(year.w / 3 / 3 / 6))
+			if year.NameId == 0 {
+				return
+			}
+			//生成随机数，进行中奖人员抽取
+			rand.Seed(time.Now().Unix()) //初始化时间戳
+
+			a := rand.Intn(year.NameId)
+			year.label.SetText(year.Name[a])
+			year.Name[a] = year.Name[year.NameId]
+
+			year.NameId--
+
+		}
+	})
+
 }
 
 //绘图事件 、绘制背景图片
@@ -74,16 +167,17 @@ func (year *AnnualMeeting) CreateWindow() *gtk.Window {
 	year.window.SetPosition(gtk.WIN_POS_CENTER) //设置窗口居中显示
 	year.window.SetAppPaintable(true)           //允许窗口绘图
 	year.window.SetDecorated(true)              //去除表框
-	year.window.SetTitle("博龙抽奖系统")
-	year.window.SetIconFromFile("./image/qq.jpg")
+	year.window.SetTitle(Conf.ServerConf.SoftwareNam)
+	year.window.SetIconFromFile(Conf.ServerConf.IconImage)
 
 	//设置按钮属性
 	year.button.SetCanFocus(false) //去掉按钮上的聚焦框
 	year.button.SetLabel(StartLabel)
-	year.button.SetLabelFontSize(20)
+	year.button.SetLabelFontSize(int(year.w / 3 / 3 / 6))
 
-	//设置 label 字体大小
-	year.label.ModifyFontSize(60)
+	//设置 label 属性、字体大小
+	year.label.SetText(Conf.ServerConf.LabelName)
+	year.label.ModifyFontSize(int(year.w / 3 / 6))
 
 	//绘图（曝光）事件，其回调函数PaintEvent做绘图操作，把year传递给回调函数
 	//year.window.Connect("expose-event", DrawingEvents, year)
@@ -104,11 +198,22 @@ func (year *AnnualMeeting) EventProcessing() {
 	//改变窗口大小，触发 configure-event ，然后手动刷新绘图区域，否则图片会重叠
 	year.window.Connect("configure-event", func() {
 		year.window.GetSize(&year.w, &year.h)
-		//绘图（曝光）事件，其回调函数PaintEvent做绘图操作，把year传递给回调函数
+
+		//重新设置按钮 label 字体大小
+		year.button.SetLabelFontSize(int(year.w / 3 / 3 / 6))
+		year.label.ModifyFontSize(int(year.w / 3 / 6))
+
+		//绘图（曝光）事件，其回调函数PaintEvent做绘图操作，把year传递给回调函数 ,刷新背景图片
 		year.window.Connect("expose-event", DrawingEvents, year)
 		year.window.QueueDraw() //刷新绘图区域
 
 	})
+
+	//按钮事件
+	year.ButtonEvents()
+
+	//处理员工姓名文件
+	year.ReadFilename()
 }
 
 func main() {
@@ -117,8 +222,13 @@ func main() {
 
 	var year AnnualMeeting
 
-	window := year.CreateWindow()
-	year.EventProcessing()
+	err := ini_config.UnMarshalFile("./config/config.ini", &Conf)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	window := year.CreateWindow() //获取窗口和控件
+	year.EventProcessing()        //事件处理
 
 	window.ShowAll()
 
