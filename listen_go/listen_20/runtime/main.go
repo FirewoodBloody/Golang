@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Golang/ranges"
 	"fmt"
+	"github.com/FirewoodBloody/PacketProup/ranges"
 )
 
 func main() {

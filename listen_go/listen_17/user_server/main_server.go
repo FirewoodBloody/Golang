@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/FirewoodBloody/logs"
+	"github.com/FirewoodBloody/PacketProup/logs"
 	"time"
 )
 
