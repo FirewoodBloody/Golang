@@ -15,6 +15,7 @@ type Person struct {
 }
 
 func WriteJson(filename string) (err error) {
+	_ = filename
 	var person []*Person
 	for i := 0; i < 10; i++ {
 		p := &Person{
@@ -25,15 +26,16 @@ func WriteJson(filename string) (err error) {
 		person = append(person, p)
 	}
 	data, err := json.Marshal(person)
-	if err != nil {
-		fmt.Printf("marshal failed,err:%s\n", err)
-		return
-	}
-	err = ioutil.WriteFile(filename, data, 755)
-	if err != nil {
-		fmt.Printf("write failed,err:%s\n", err)
-		return
-	}
+	fmt.Printf("%s", data)
+	//if err != nil {
+	//	fmt.Printf("marshal failed,err:%s\n", err)
+	//	return
+	//}
+	//err = ioutil.WriteFile(filename, data, 755)
+	//if err != nil {
+	//	fmt.Printf("write failed,err:%s\n", err)
+	//	return
+	//}
 	return
 }
 
@@ -62,10 +64,10 @@ func main() {
 		fmt.Printf("Write json failed,err:%s\n", err)
 		return
 	}
-
-	err = ReadJson(filename)
-	if err != nil {
-		fmt.Printf("Read json failed,err:%s\n", err)
-		return
-	}
+	//
+	//err = ReadJson(filename)
+	//if err != nil {
+	//	fmt.Printf("Read json failed,err:%s\n", err)
+	//	return
+	//}
 }
