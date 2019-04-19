@@ -23,16 +23,16 @@ type Kdlyxq struct {
 }
 
 type Engine struct {
-	engine     *xorm.Engine
-	driverName string
-	dBconnect  string
-	err        error
-	tbMapper   string
-	getDb      []Kdlyzt
+	Engine *xorm.Engine
+	Err    error
+	GetDb  []Kdlyzt
 }
 
 const (
 	TimeFormat = "2006-01-02 15:04:05"
+	driverName = "oci8"
+	dBconnect  = "KD/1219271@192.168.0.9:1521/BLDB"
+	tbMapper   = "BLCRM."
 )
 
 func init() {
@@ -42,13 +42,13 @@ func init() {
 //初始化化
 func (e *Engine) NewEngine() error {
 	var err error
-	e.engine, err = xorm.NewEngine(e.driverName, e.dBconnect)
+	e.Engine, err = xorm.NewEngine(driverName, dBconnect)
 	if err != nil {
 		return err
 	}
-	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, e.tbMapper)
-	e.engine.ShowSQL(true)
-	e.engine.SetTableMapper(tbMapper)
+	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
+	e.Engine.ShowSQL(true)
+	e.Engine.SetTableMapper(tbMapper)
 	return nil
 }
 
@@ -60,7 +60,7 @@ func (e *Engine) UpDateRefreshZT(setDQZT, setDQZTSJ, setTHKDDH, whereKDDH string
 	} else {
 		UpDateZTSql = fmt.Sprintf("UPDATE BLCRM.KDLYZT SET DQZT = '%v', DQZTSJ = TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') , THKDDH = %s WHERE KDDH = %v", setDQZT, setDQZTSJ, setTHKDDH, whereKDDH)
 	}
-	_, err := e.engine.Exec(UpDateZTSql)
+	_, err := e.Engine.Exec(UpDateZTSql)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (e *Engine) InSetDateXQ(valueKDDH, valueKDZT, valueKDZTSJ string) error {
 	var InSetSql string
 	InSetSql = fmt.Sprintf("INSERT INTO BLCRM.KDLYXQ VALUES ( %s , '%s' , TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') )", valueKDDH, valueKDZT, valueKDZTSJ)
 
-	_, err := e.engine.Exec(InSetSql)
+	_, err := e.Engine.Exec(InSetSql)
 	if err != nil {
 		return fmt.Errorf("%s : 此记录已存在，跳过，下一条...", InSetSql)
 	}
