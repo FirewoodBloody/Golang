@@ -1,18 +1,81 @@
 package models
 
 import (
-	"github.com/astaxie/beego/orm"
-	"time"
+	"fmt"
+	"github.com/go-xorm/core"
+	"github.com/go-xorm/xorm"
+	_ "github.com/wendal/go-oci8"
+	"os"
 )
 
-type API struct {
-	Id int
-	A  string
-	B  int64
-	C  string
-	D  time.Time
+type Kdlyzt struct {
+	KDGS   string `xorm:"varchar2(12) 'KDGS'"`
+	KDDH   string `xorm:"varchar2(16) pk index unique 'KDDH'"`
+	DQZT   string `xorm:"varchar2(12) 'DQZT'"`
+	DQZTSJ string `xorm:"datetime  'DQZTSJ'"` //time.Time
+	THKDDH string `xorm:"varchar2(16) 'THKDDH'"`
 }
 
+type Kdlyxq struct {
+	KDDH   string `xorm:"varchar2(16) pk index notnull 'KDDH'"`
+	KDZT   string `xorm:"varchar2(128)  notnull 'KDDH'"`
+	KDZTSJ string `xorm:"datetime pk index notnull unique 'KDDH'"` //time.Time
+}
+
+type Engine struct {
+	engine     *xorm.Engine
+	driverName string
+	dBconnect  string
+	err        error
+	tbMapper   string
+	getDb      []Kdlyzt
+}
+
+const (
+	TimeFormat = "2006-01-02 15:04:05"
+)
+
 func init() {
-	orm.RegisterModel(new(API))
+	os.Setenv("NLS_LANG", "AMERICAN_AMERICA.AL32UTF8") //修正中文乱码
+}
+
+//初始化化
+func (e *Engine) NewEngine() error {
+	var err error
+	e.engine, err = xorm.NewEngine(e.driverName, e.dBconnect)
+	if err != nil {
+		return err
+	}
+	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, e.tbMapper)
+	e.engine.ShowSQL(true)
+	e.engine.SetTableMapper(tbMapper)
+	return nil
+}
+
+//新增无快递状态的快递信息
+func (e *Engine) UpDateRefreshZT(setDQZT, setDQZTSJ, setTHKDDH, whereKDDH string) error {
+	var UpDateZTSql string
+	if len(setTHKDDH) == 0 {
+		UpDateZTSql = fmt.Sprintf("UPDATE BLCRM.KDLYZT SET DQZT = '%v', DQZTSJ = TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') WHERE KDDH = %v", setDQZT, setDQZTSJ, whereKDDH)
+	} else {
+		UpDateZTSql = fmt.Sprintf("UPDATE BLCRM.KDLYZT SET DQZT = '%v', DQZTSJ = TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') , THKDDH = %s WHERE KDDH = %v", setDQZT, setDQZTSJ, setTHKDDH, whereKDDH)
+	}
+	_, err := e.engine.Exec(UpDateZTSql)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+//插入路由信息
+func (e *Engine) InSetDateXQ(valueKDDH, valueKDZT, valueKDZTSJ string) error {
+	var InSetSql string
+	InSetSql = fmt.Sprintf("INSERT INTO BLCRM.KDLYXQ VALUES ( %s , '%s' , TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') )", valueKDDH, valueKDZT, valueKDZTSJ)
+
+	_, err := e.engine.Exec(InSetSql)
+	if err != nil {
+		return fmt.Errorf("%s : 此记录已存在，跳过，下一条...", InSetSql)
+	}
+	return nil
 }
