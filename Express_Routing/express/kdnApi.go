@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"time"
 )
 
 //请求信息结构体
@@ -114,14 +113,4 @@ func KdnPost(ApiURL string, value url.Values) (rs []byte, err error) {
 	}
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
-}
-
-func main() {
-	data, err := KdnExpressInformation()
-	if err != nil {
-		return
-	}
-
-	fmt.Println(data)
-	time.Sleep(time.Second * 1000)
 }

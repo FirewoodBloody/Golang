@@ -64,13 +64,14 @@ type Route struct {
 
 //Post 查询请求路由请求（顺丰）
 //resp 返回快递路由信息
-func SfPost(ApiURL string, requestParameters url.Values) (SfDataStruct *Response, err error) {
-	resp, err := http.PostForm(ApiURL, requestParameters)
+func SfPost(requestParameters url.Values) (SfDataStruct *Response, err error) {
+	resp, err := http.PostForm(ApiUrl, requestParameters)
 	if err != nil {
 		return
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
+
 	if err != nil {
 		return
 	}
@@ -117,5 +118,5 @@ func SfCreateData(CourierNumber string) (SfDataStruct *Response, err error) {
 	requestParameters.Set("xml", string(dataXml))
 	requestParameters.Set("verifyCode", xmlKey)
 
-	return SfPost(ApiUrl, requestParameters)
+	return SfPost(requestParameters)
 }
