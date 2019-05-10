@@ -4,16 +4,13 @@ import (
 	"Golang/Express_Routing/express"
 	"Golang/Express_Routing/models"
 	"fmt"
-	"github.com/FirewoodBloody/PacketProup/logs"
 	"strconv"
 	"strings"
 	"time"
 )
 
 var (
-	logLevel = make(map[string]string, 10)
-	logger   logs.LogInterface
-	getExp   map[string]string
+	getExp map[string]string
 )
 
 func init() {
@@ -44,19 +41,36 @@ func getCode(Code string) string {
 }
 
 func UpdateState(engine models.Engine) {
-
+	var num, Jnum int
 	for {
+
+		var hH, mM, sS int
+		var sleep int
+		hH = time.Now().Hour()
+		mM = time.Now().Minute()
+		sS = time.Now().Second()
+
+		if hH < 8 && hH > 20 {
+			if hH >= 20 {
+				sleep = (24-hH+8)*360 - mM*60 - sS
+			} else if hH < 8 {
+				sleep = 8 - hH - mM*60 - sS
+			}
+			time.Sleep(time.Second * time.Duration(sleep))
+			continue
+		}
+
 		engine.Err = engine.NewEngine()
 		if engine.Err != nil {
-			logger.Error("创建engine连接错误：", engine.Err)
+			continue
 		}
 		engine.Err = engine.Engine.Ping()
 		if engine.Err != nil {
-			logger.Error("建立数据库连接失败：", engine.Err)
+			continue
 		}
-		var num, Jnum int
+
 		maps, err := engine.Engine.Query("select count(*) from blcrm.kdlyzt")
-		fmt.Println(err)
+
 		if err != nil {
 			continue
 		}
@@ -65,11 +79,11 @@ func UpdateState(engine models.Engine) {
 			for _, i := range v {
 				if string(i) != "" {
 					num, _ = strconv.Atoi(string(i))
-					fmt.Println(string(i))
 				}
 			}
 		}
 		if num == Jnum {
+			time.Sleep(time.Second * 20)
 			continue
 		}
 
@@ -102,6 +116,7 @@ func main() {
 		hH = time.Now().Hour()
 		mM = time.Now().Minute()
 		sS = time.Now().Second()
+
 		if hH >= 8 || hH < 20 {
 			if mM == 0 {
 				engine.Err = engine.NewEngine()
