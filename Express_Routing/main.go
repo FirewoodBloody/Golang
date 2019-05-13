@@ -14,6 +14,7 @@ var (
 )
 
 func init() {
+	//快递鸟 快递公司判定
 	getExp = make(map[string]string, 10)
 	getExp["圆通快递"] = "YTO"
 	getExp["中通快递"] = "ZTO"
@@ -21,6 +22,7 @@ func init() {
 	getExp["邮政快递"] = "YZPY"
 }
 
+//顺丰快递状态码判定
 func getCode(Code string) string {
 	switch Code {
 	case "50", "54":
@@ -41,6 +43,7 @@ func getCode(Code string) string {
 }
 
 func UpdateState(engine models.Engine) {
+	//计数变量
 	var num, Jnum int
 	for {
 
@@ -83,12 +86,15 @@ func UpdateState(engine models.Engine) {
 			}
 		}
 		if num == Jnum {
-			time.Sleep(time.Second * 20)
+			_ = engine.Engine.Close()
+			time.Sleep(time.Second * 30)
 			continue
 		}
 
 		Jnum = num
+
 		engine.Err = engine.Engine.Where("DQZT IS NULL").Find(&engine.GetDb)
+		_ = engine.Engine.Close()
 		if engine.Err != nil {
 			continue
 		}
@@ -96,6 +102,7 @@ func UpdateState(engine models.Engine) {
 		for _, v := range engine.GetDb {
 			engine.Err = IFUpdate(v, engine)
 			if engine.Err != nil {
+				fmt.Println(engine.Err)
 				continue
 			}
 
@@ -128,7 +135,7 @@ func main() {
 					continue
 				}
 
-				engine.Err = engine.Engine.Where("WHERE DQZT != '已签收'").Find(&engine.GetDb)
+				engine.Err = engine.Engine.Where("DQZT != '已签收' OR DQZT IS NULL").Find(&engine.GetDb)
 				if engine.Err != nil {
 					continue
 				}
@@ -139,10 +146,13 @@ func main() {
 				for _, v := range engine.GetDb {
 					engine.Err = IFUpdate(v, engine)
 					if engine.Err != nil {
+						fmt.Println(engine.Err)
 						continue
 					}
 				}
 
+				sleep = 60 - sS + 1
+				time.Sleep(time.Second * time.Duration(sleep))
 			} else {
 				sleep = (60-mM)*60 - sS
 				time.Sleep(time.Second * time.Duration(sleep))
@@ -160,6 +170,7 @@ func main() {
 }
 
 func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
+
 	engine.Err = engine.NewEngine()
 	if engine.Err != nil {
 		return engine.Err
@@ -176,17 +187,52 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 			if err != nil {
 				return err
 			}
+			if data.Head == "ERR" || len(data.Body.RouteResponse.Route) == 0 {
+				return fmt.Errorf("查询单号不存在或没有路由记录！")
+			}
+			if data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time == v.DQZTSJ {
+				return fmt.Errorf("当前记录已是最新记录！")
+			}
+			if data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Opcode == "648" {
+				v.DQZT = getCode(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Opcode)
+				v.DQZTSJ = data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time
+				str := strings.Split(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Remark, " ")
+				if len(str) > 0 {
+					v.THKDDH = str[len(str)-1]
+				}
+
+				engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
+				if engine.Err != nil {
+					return engine.Err
+				}
+			} else {
+				v.DQZT = getCode(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Opcode)
+				v.DQZTSJ = data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time
+
+				engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
+				if engine.Err != nil {
+					return engine.Err
+				}
+			}
 
 			go func() {
+				_ = engine.NewEngine()
+
+				_ = engine.Engine.Ping()
+
+				defer engine.Engine.Close()
 				for i := 0; i < len(data.Body.RouteResponse.Route); i++ {
-					engine.Err = engine.NewEngine()
-					if engine.Err != nil {
-						continue
+					if data.Body.RouteResponse.Route[i].Opcode == "648" {
+						v.DQZT = getCode(data.Body.RouteResponse.Route[i].Opcode)
+						v.DQZTSJ = data.Body.RouteResponse.Route[i].Accept_Time
+						str := strings.Split(data.Body.RouteResponse.Route[i].Remark, " ")
+						if len(str) > 0 {
+							v.THKDDH = str[len(str)-1]
+						}
+
+						engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
 					}
-					engine.Err = engine.Engine.Ping()
-					if engine.Err != nil {
-						continue
-					}
+
 					engine.Err = engine.InSetDateXQ(data.Body.RouteResponse.Mailno, data.Body.RouteResponse.Route[i].Remark, data.Body.RouteResponse.Route[i].Accept_Time)
 					if engine.Err != nil {
 						continue
@@ -194,33 +240,6 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 				}
 			}()
 
-			if data.Body.RouteResponse.Mailno == v.KDDH {
-				if data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time == v.DQZTSJ {
-					return fmt.Errorf("当前记录已是最新记录！")
-				}
-				if data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Opcode == "648" {
-					v.DQZT = getCode(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Opcode)
-					v.DQZTSJ = data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time
-					str := strings.Split(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Remark, " ")
-					if len(str) > 0 {
-						v.THKDDH = str[len(str)-1]
-					}
-					engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
-					if engine.Err != nil {
-						return engine.Err
-					}
-				} else {
-					v.DQZT = getCode(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Opcode)
-					v.DQZTSJ = data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time
-					engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
-					if engine.Err != nil {
-						return engine.Err
-					}
-				}
-
-			} else {
-				return fmt.Errorf("查询获取单号不一致，跳过！")
-			}
 		} else {
 			data, err := express.KdnExpressInformation(getExp[v.KDGS], v.KDDH)
 			if err != nil {
@@ -231,23 +250,6 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 				return fmt.Errorf("快递鸟查询出错，Err ")
 			}
 
-			go func() {
-				for i := 0; i < len(data.Traces); i++ {
-					engine.Err = engine.NewEngine()
-					if engine.Err != nil {
-						continue
-					}
-					engine.Err = engine.Engine.Ping()
-					if engine.Err != nil {
-						continue
-					}
-					engine.Err = engine.InSetDateXQ(data.LogisticCode, data.Traces[i].AcceptStation, data.Traces[i].AcceptTime)
-					if engine.Err != nil {
-						continue
-					}
-				}
-			}()
-
 			switch data.State {
 			case "2":
 				v.DQZT = "转运中"
@@ -256,16 +258,46 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 				v.DQZT = "已签收"
 				v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
 			case "4":
-				v.DQZT = "问题件"
-				v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
+				str := strings.Split(data.Traces[len(data.Traces)-1].AcceptStation, " ")
 
+				if str[len(str)-1] == "妥投" {
+					v.DQZT = "已签收"
+					v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
+				} else {
+					v.DQZT = "问题件"
+					v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
+				}
 			}
 
 			engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, "", v.KDDH)
 			if engine.Err != nil {
-
 				return engine.Err
 			}
+
+			go func() {
+				_ = engine.NewEngine()
+
+				_ = engine.Engine.Ping()
+
+				defer engine.Engine.Close()
+				for i := 0; i < len(data.Traces); i++ {
+
+					str := strings.Split(data.Traces[i].AcceptStation, " ")
+					for j := 0; j < len(str); j++ {
+						if str[j] == "已签收" {
+							v.DQZT = "已签收"
+							v.DQZTSJ = data.Traces[i].AcceptTime
+							engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, "", v.KDDH)
+						}
+					}
+
+					engine.Err = engine.InSetDateXQ(data.LogisticCode, data.Traces[i].AcceptStation, data.Traces[i].AcceptTime)
+					if engine.Err != nil {
+						continue
+					}
+
+				}
+			}()
 		}
 	} else {
 		if v.KDGS == "顺丰快递" {
@@ -277,20 +309,43 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 			case 10:
 				v.THKDDH = fmt.Sprintf("00%s", v.THKDDH)
 			}
+
 			data, err := express.SfCreateData(v.THKDDH)
 			if err != nil {
 				return err
 			}
+			if data.Head == "ERR" || len(data.Body.RouteResponse.Route) == 0 {
+				return fmt.Errorf("查询单号不存在或没有路由记录！")
+			}
+			if data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time == v.DQZTSJ {
+				return fmt.Errorf("当前记录已是最新记录:", v)
+			}
+
+			v.DQZT = getCode(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Opcode)
+			v.DQZTSJ = data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time
+
+			engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
+			if engine.Err != nil {
+				return engine.Err
+			}
 
 			go func() {
+				_ = engine.NewEngine()
+
+				_ = engine.Engine.Ping()
+
+				defer engine.Engine.Close()
 				for i := 0; i < len(data.Body.RouteResponse.Route); i++ {
-					engine.Err = engine.NewEngine()
-					if engine.Err != nil {
-						continue
-					}
-					engine.Err = engine.Engine.Ping()
-					if engine.Err != nil {
-						continue
+
+					if data.Body.RouteResponse.Route[i].Opcode == "648" {
+						v.DQZT = getCode(data.Body.RouteResponse.Route[i].Opcode)
+						v.DQZTSJ = data.Body.RouteResponse.Route[i].Accept_Time
+						str := strings.Split(data.Body.RouteResponse.Route[i].Remark, " ")
+						if len(str) > 0 {
+							v.THKDDH = str[len(str)-1]
+						}
+
+						engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
 					}
 					engine.Err = engine.InSetDateXQ(data.Body.RouteResponse.Mailno, data.Body.RouteResponse.Route[i].Remark, data.Body.RouteResponse.Route[i].Accept_Time)
 					if engine.Err != nil {
@@ -298,21 +353,6 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 					}
 				}
 			}()
-
-			if data.Body.RouteResponse.Mailno == v.THKDDH {
-				if data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time == v.DQZTSJ {
-					return fmt.Errorf("当前记录已是最新记录！")
-				}
-
-				v.DQZT = getCode(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Opcode)
-				v.DQZTSJ = data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Accept_Time
-				engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
-				if engine.Err != nil {
-					return engine.Err
-				}
-			} else {
-				return fmt.Errorf("查询获取单号不一致，跳过！")
-			}
 
 		} else {
 			data, err := express.KdnExpressInformation(getExp[v.KDGS], v.THKDDH)
@@ -324,23 +364,6 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 				return fmt.Errorf("快递鸟查询出错，！")
 			}
 
-			go func() {
-				for i := 0; i < len(data.Traces); i++ {
-					engine.Err = engine.NewEngine()
-					if engine.Err != nil {
-						continue
-					}
-					engine.Err = engine.Engine.Ping()
-					if engine.Err != nil {
-						continue
-					}
-					engine.Err = engine.InSetDateXQ(data.LogisticCode, data.Traces[i].AcceptStation, data.Traces[i].AcceptTime)
-					if engine.Err != nil {
-						continue
-					}
-				}
-			}()
-
 			switch data.State {
 			case "2":
 				v.DQZT = "转运中"
@@ -349,17 +372,45 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 				v.DQZT = "已签收"
 				v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
 			case "4":
-				v.DQZT = "问题件"
-				v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
-			default:
-				v.DQZT = "转运中"
-				v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
+				str := strings.Split(data.Traces[len(data.Traces)-1].AcceptStation, " ")
+
+				if str[len(str)-1] == "妥投" {
+					v.DQZT = "已签收"
+					v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
+				} else {
+					v.DQZT = "问题件"
+					v.DQZTSJ = data.Traces[len(data.Traces)-1].AcceptTime
+				}
 			}
 
 			engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
 			if engine.Err != nil {
 				return engine.Err
 			}
+
+			go func() {
+				_ = engine.NewEngine()
+
+				_ = engine.Engine.Ping()
+
+				defer engine.Engine.Close()
+				for i := 0; i < len(data.Traces); i++ {
+
+					str := strings.Split(data.Traces[i].AcceptStation, " ")
+					for j := 0; j < len(str); j++ {
+						if str[j] == "已签收" {
+							v.DQZT = "已签收"
+							v.DQZTSJ = data.Traces[i].AcceptTime
+							engine.Err = engine.UpDateRefreshZT(v.DQZT, v.DQZTSJ, v.THKDDH, v.KDDH)
+						}
+					}
+
+					engine.Err = engine.InSetDateXQ(data.LogisticCode, data.Traces[i].AcceptStation, data.Traces[i].AcceptTime)
+					if engine.Err != nil {
+						continue
+					}
+				}
+			}()
 		}
 	}
 	return nil
