@@ -13,15 +13,6 @@ var (
 	getExp map[string]string
 )
 
-func init() {
-	//快递鸟 快递公司判定
-	getExp = make(map[string]string, 10)
-	getExp["圆通快递"] = "YTO"
-	getExp["中通快递"] = "ZTO"
-	getExp["EMS"] = "EMS"
-	getExp["邮政快递"] = "YZPY"
-}
-
 //顺丰快递状态码判定
 func getCode(Code string) string {
 	switch Code {
@@ -102,7 +93,6 @@ func UpdateState(engine models.Engine) {
 		for _, v := range engine.GetDb {
 			engine.Err = IFUpdate(v, engine)
 			if engine.Err != nil {
-				fmt.Println(engine.Err)
 				continue
 			}
 
@@ -112,6 +102,11 @@ func UpdateState(engine models.Engine) {
 }
 
 func main() {
+	getExp = make(map[string]string, 10)
+	getExp["圆通快递"] = "YTO"
+	getExp["中通快递"] = "ZTO"
+	getExp["EMS"] = "EMS"
+	getExp["邮政快递"] = "YZPY"
 
 	engine := models.Engine{}
 
@@ -146,7 +141,6 @@ func main() {
 				for _, v := range engine.GetDb {
 					engine.Err = IFUpdate(v, engine)
 					if engine.Err != nil {
-						fmt.Println(engine.Err)
 						continue
 					}
 				}
