@@ -16,17 +16,19 @@ type Kdlyzt struct {
 	THKDDH string `xorm:"varchar2(16) 'THKDDH'"`
 }
 
-type Kdlyxq struct {
-	KDDH   string `xorm:"varchar2(16) pk index notnull 'KDDH'"`
-	KDZT   string `xorm:"varchar2(128)  notnull 'KDDH'"`
-	KDZTSJ string `xorm:"datetime pk index notnull unique 'KDDH'"` //time.Time
-}
+//type Kdlyxq struct {
+//	KDDH   string `xorm:"varchar2(16) pk index notnull 'KDDH'"`
+//	KDZT   string `xorm:"varchar2(128)  notnull 'KDDH'"`
+//	KDZTSJ string `xorm:"datetime pk index notnull unique 'KDDH'"` //time.Time
+//}
 
 type Engine struct {
 	Engine *xorm.Engine
 	Err    error
 	GetDb  []Kdlyzt
 }
+
+var tbMappers core.PrefixMapper
 
 const (
 	TimeFormat = "2006-01-02 15:04:05"
@@ -37,18 +39,19 @@ const (
 
 func init() {
 	os.Setenv("NLS_LANG", "AMERICAN_AMERICA.AL32UTF8") //修正中文乱码
+	tbMappers = core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
 }
 
 //初始化化
 func (e *Engine) NewEngine() error {
-	var err error
-	e.Engine, err = xorm.NewEngine(driverName, dBconnect)
-	if err != nil {
-		return err
+
+	e.Engine, e.Err = xorm.NewEngine(driverName, dBconnect)
+	if e.Err != nil {
+		return e.Err
 	}
-	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
-	e.Engine.ShowSQL(true)
-	e.Engine.SetTableMapper(tbMapper)
+	//tbMappe := core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
+	//e.Engine.ShowSQL(true)
+	e.Engine.SetTableMapper(tbMappers)
 	return nil
 }
 
@@ -60,9 +63,9 @@ func (e *Engine) UpDateRefreshZT(setDQZT, setDQZTSJ, setTHKDDH, whereKDDH string
 	} else {
 		UpDateZTSql = fmt.Sprintf("UPDATE BLCRM.KDLYZT SET DQZT = '%v', DQZTSJ = TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') , THKDDH = %s WHERE KDDH = %v", setDQZT, setDQZTSJ, setTHKDDH, whereKDDH)
 	}
-	_, err := e.Engine.Exec(UpDateZTSql)
-	if err != nil {
-		return err
+	_, e.Err = e.Engine.Exec(UpDateZTSql)
+	if e.Err != nil {
+		return e.Err
 	}
 
 	return nil
@@ -70,11 +73,11 @@ func (e *Engine) UpDateRefreshZT(setDQZT, setDQZTSJ, setTHKDDH, whereKDDH string
 
 //插入路由信息
 func (e *Engine) InSetDateXQ(valueKDDH, valueKDZT, valueKDZTSJ string) error {
-	var InSetSql string
-	InSetSql = fmt.Sprintf("INSERT INTO BLCRM.KDLYXQ VALUES ( %s , '%s' , TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') )", valueKDDH, valueKDZT, valueKDZTSJ)
 
-	_, err := e.Engine.Exec(InSetSql)
-	if err != nil {
+	InSetSql := fmt.Sprintf("INSERT INTO BLCRM.KDLYXQ VALUES ( %s , '%s' , TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') )", valueKDDH, valueKDZT, valueKDZTSJ)
+
+	_, e.Err = e.Engine.Exec(InSetSql)
+	if e.Err != nil {
 		return fmt.Errorf("%s : 此记录已存在，跳过，下一条...", InSetSql)
 	}
 	return nil

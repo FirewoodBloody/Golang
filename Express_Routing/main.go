@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	getExp map[string]string
+	getExp                       map[string]string
+	hH, mM, sS, sLeep, num, Jnum int
 )
 
 //顺丰快递状态码判定
@@ -35,30 +36,23 @@ func getCode(Code string) string {
 
 func UpdateState(engine models.Engine) {
 	//计数变量
-	var num, Jnum int
 	for {
 
-		var hH, mM, sS int
-		var sleep int
 		hH = time.Now().Hour()
 		mM = time.Now().Minute()
 		sS = time.Now().Second()
 
 		if hH < 8 && hH > 20 {
 			if hH >= 20 {
-				sleep = (24-hH+8)*360 - mM*60 - sS
+				sLeep = (24-hH+8)*360 - mM*60 - sS
 			} else if hH < 8 {
-				sleep = 8 - hH - mM*60 - sS
+				sLeep = 8 - hH - mM*60 - sS
 			}
-			time.Sleep(time.Second * time.Duration(sleep))
+			time.Sleep(time.Second * time.Duration(sLeep))
 			continue
 		}
 
 		engine.Err = engine.NewEngine()
-		if engine.Err != nil {
-			continue
-		}
-		engine.Err = engine.Engine.Ping()
 		if engine.Err != nil {
 			continue
 		}
@@ -113,8 +107,6 @@ func main() {
 	go UpdateState(engine)
 
 	for {
-		var hH, mM, sS int
-		var sleep int
 		hH = time.Now().Hour()
 		mM = time.Now().Minute()
 		sS = time.Now().Second()
@@ -122,10 +114,6 @@ func main() {
 		if hH >= 8 || hH < 20 {
 			if mM == 0 {
 				engine.Err = engine.NewEngine()
-				if engine.Err != nil {
-					continue
-				}
-				engine.Err = engine.Engine.Ping()
 				if engine.Err != nil {
 					continue
 				}
@@ -145,20 +133,20 @@ func main() {
 					}
 				}
 
-				sleep = 60 - sS + 1
-				time.Sleep(time.Second * time.Duration(sleep))
+				sLeep = 60 - sS + 1
+				time.Sleep(time.Second * time.Duration(sLeep))
 			} else {
-				sleep = (60-mM)*60 - sS
-				time.Sleep(time.Second * time.Duration(sleep))
+				sLeep = (60-mM)*60 - sS
+				time.Sleep(time.Second * time.Duration(sLeep))
 			}
 
 		} else {
 			if hH >= 20 {
-				sleep = (24-hH+8)*360 - mM*60 - sS
+				sLeep = (24-hH+8)*360 - mM*60 - sS
 			} else if hH < 8 {
-				sleep = 8 - hH - mM*60 - sS
+				sLeep = 8 - hH - mM*60 - sS
 			}
-			time.Sleep(time.Second * time.Duration(sleep))
+			time.Sleep(time.Second * time.Duration(sLeep))
 		}
 	}
 }
@@ -169,10 +157,7 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 	if engine.Err != nil {
 		return engine.Err
 	}
-	engine.Err = engine.Engine.Ping()
-	if engine.Err != nil {
-		return engine.Err
-	}
+
 	defer engine.Engine.Close()
 
 	if v.THKDDH == "" {
@@ -212,9 +197,8 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 			go func() {
 				_ = engine.NewEngine()
 
-				_ = engine.Engine.Ping()
-
 				defer engine.Engine.Close()
+
 				for i := 0; i < len(data.Body.RouteResponse.Route); i++ {
 					if data.Body.RouteResponse.Route[i].Opcode == "648" {
 						v.DQZT = getCode(data.Body.RouteResponse.Route[i].Opcode)
@@ -271,9 +255,8 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 			go func() {
 				_ = engine.NewEngine()
 
-				_ = engine.Engine.Ping()
-
 				defer engine.Engine.Close()
+
 				for i := 0; i < len(data.Traces); i++ {
 
 					str := strings.Split(data.Traces[i].AcceptStation, " ")
@@ -326,9 +309,8 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 			go func() {
 				_ = engine.NewEngine()
 
-				_ = engine.Engine.Ping()
-
 				defer engine.Engine.Close()
+
 				for i := 0; i < len(data.Body.RouteResponse.Route); i++ {
 
 					if data.Body.RouteResponse.Route[i].Opcode == "648" {
@@ -385,9 +367,8 @@ func IFUpdate(v models.Kdlyzt, engine models.Engine) error {
 			go func() {
 				_ = engine.NewEngine()
 
-				_ = engine.Engine.Ping()
-
 				defer engine.Engine.Close()
+
 				for i := 0; i < len(data.Traces); i++ {
 
 					str := strings.Split(data.Traces[i].AcceptStation, " ")

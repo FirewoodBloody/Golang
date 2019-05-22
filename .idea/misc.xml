@@ -3,4 +3,9 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/oneHCJ/css/animate.min.css" />
+    <file url="file://$PROJECT_DIR$/oneHCJ/css/index.css" />
+    <file url="file://$PROJECT_DIR$/oneHCJ/css/index_mobile.css" />
+  </component>
 </project>
