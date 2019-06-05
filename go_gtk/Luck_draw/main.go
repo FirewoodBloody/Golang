@@ -138,7 +138,7 @@ func DrawingEvents(ctx *glib.CallbackContext) {
 	gc := gdk.NewGC(drawable)
 
 	//设置背景图片
-	bj, _ := gdkpixbuf.NewPixbufFromFileAtScale("./image/bj.jpg", year.w, year.h, false)
+	bj, _ := gdkpixbuf.NewPixbufFromFileAtScale("./image/1bj.jpg", year.w, year.h, false)
 	//画图，画背景图
 	//画图
 	//bg：需要绘图的 pixbuf，第5、6个参数为画图的起点（相对于窗口而言）

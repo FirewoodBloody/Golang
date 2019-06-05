@@ -43,7 +43,7 @@
             <child>
               <object class="GtkLabel" id="label_head">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">-------------------------------------------------------------------------------------------------------------------------------&#x6765;&#x8BBF;&#x767B;&#x8BB0;--------------------------------------------------------------------------------------------------------------------------------</property>
+                <property name="label" translatable="yes">--------------------------------------------&#x6765;&#x8BBF;&#x767B;&#x8BB0;----------------------------------------------</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -160,12 +160,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFixed" id="fixed10">
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="position">8</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
                   <object class="GtkFixed" id="fixed11">
@@ -230,6 +225,7 @@
                   <object class="GtkEntry" id="entry_name">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="editable">False</property>
                     <property name="invisible_char">&#x25CF;</property>
                     <property name="activates_default">True</property>
                   </object>
@@ -304,6 +300,7 @@
                   <object class="GtkEntry" id="entry_staff">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="editable">False</property>
                     <property name="invisible_char">&#x25CF;</property>
                     <property name="activates_default">True</property>
                   </object>
@@ -396,6 +393,7 @@
                   <object class="GtkEntry" id="entry_cellphone">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="editable">False</property>
                     <property name="invisible_char">&#x25CF;</property>
                     <property name="activates_default">True</property>
                   </object>
@@ -501,15 +499,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button_empty">
-                    <property name="label" translatable="yes">&#x6E05;&#x7A7A;</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                  </object>
-                  <packing>
-                    <property name="position">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
                   <object class="GtkFixed" id="fixed32">
@@ -697,7 +687,7 @@
             <child>
               <object class="GtkLabel" id="label_tail">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">-----------------------------------------------------------------------------------------------------------------------------&#x6765;&#x8BBF;&#x767B;&#x8BB0;&#x7EDF;&#x8BA1;-----------------------------------------------------------------------------------------------------------------------------</property>
+                <property name="label" translatable="yes">--------------------------------------------&#x6765;&#x8BBF;&#x767B;&#x8BB0;&#x7EDF;&#x8BA1;----------------------------------------------</property>
                 <property name="use_underline">True</property>
               </object>
               <packing>
@@ -794,7 +784,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label8label_statistics3">
+                  <object class="GtkLabel" id="label_statistics3">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">0</property>
                   </object>
