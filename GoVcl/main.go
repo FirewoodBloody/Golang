@@ -4,6 +4,7 @@ import (
 	"Golang/Express_Routing/express"
 	"fmt"
 	"github.com/ying32/govcl/vcl"
+	"github.com/ying32/govcl/vcl/types"
 	"strconv"
 	"strings"
 )
@@ -20,6 +21,7 @@ type TForm struct {
 	memo     *vcl.TMemo
 	grid     *vcl.TStringGrid
 	grids    *vcl.TStringGrid
+	listView *vcl.TListView
 }
 
 //初始化Tform
@@ -72,6 +74,41 @@ func (t *TForm) Init() {
 	t.memo.SetTop(100)          //设置位置 竖向
 	t.memo.Font().SetStyle(16)
 
+	//view自动列表
+	t.listView = vcl.NewListView(t.win)
+	t.listView.SetParent(t.win)
+	//t.listView.SetAlign(types.AlTop)
+	t.listView.SetRowSelect(true)
+	t.listView.SetReadOnly(false)
+	t.listView.SetViewStyle(types.VsReport)
+	t.listView.SetGridLines(true)
+	t.listView.SetWidth(900)
+	t.listView.SetHeight(500)
+	t.listView.SetLeft(220)
+	t.listView.SetTop(50)
+	t.listView.Font().SetStyle(16)
+	t.listView.Font().SetSize(11)
+
+	lvl := t.listView.Columns().Add()
+	lvl.SetCaption("序号")
+	lvl.SetWidth(50)
+
+	lvl = t.listView.Columns().Add()
+	lvl.SetCaption("快递单号")
+	lvl.SetWidth(100)
+
+	lvl = t.listView.Columns().Add()
+	lvl.SetCaption("当前所在地")
+	lvl.SetWidth(100)
+
+	lvl = t.listView.Columns().Add()
+	lvl.SetCaption("动态时间")
+	lvl.SetWidth(130)
+
+	lvl = t.listView.Columns().Add()
+	lvl.SetCaption("快递状态")
+	lvl.SetWidth(500)
+
 	t.grid = vcl.NewStringGrid(t.win) //新建自动列表
 	t.grid.SetParent(t.win)           //设置父容器
 	t.grid.SetLeft(220)               //设置位置  横向
@@ -122,13 +159,17 @@ func (t *TForm) Init() {
 func (t *TForm) incident() {
 
 	//自动列表内鼠标双击事件处理
-	t.grid.SetOnDblClick(func(sender vcl.IObject) {
+	//t.grid.SetOnDblClick(func(sender vcl.IObject) {
+	//
+	//
+	//})
+	//自动列表双击事件
+	t.listView.SetOnDblClick(func(sender vcl.IObject) {
 
-		data := strings.Split(t.memo.Text(), "\r\n")
-		str, err := IFStr(data[t.grid.Row()-1], t.combobox.Text())
-		if err != nil {
+		if t.listView.ItemIndex() == -1 {
 			return
 		}
+		str := t.listView.Selected().SubItems().Strings(0)
 
 		if t.combobox.Text() == "顺丰快递" {
 			datas, _ := express.SfCreateData(str)
@@ -166,7 +207,9 @@ func (t *TForm) incident() {
 		t.wins.Show()
 	})
 
+	//查询按钮事件
 	t.button.SetOnClick(func(sender vcl.IObject) {
+		t.listView.Clear()
 		data := strings.Split(t.memo.Text(), "\r\n")
 		types := t.combobox.Text()
 		if types != "顺丰快递" {
@@ -177,8 +220,9 @@ func (t *TForm) incident() {
 		//grid.SetCells(2, int32(0), "")
 		//grid.SetCells(3, int32(0), "")
 		//grid.SetCells(4, int32(0), "")
-		t.grid.SetRowCount(int32(len(data) + 1)) //重设行数
-
+		//t.grid.SetRowCount(int32(len(data) + 1)) //重设行数
+		//t.listView.Items().Update()
+		//t.listView.Items().EndUpdate()
 		for i, v := range data {
 			if v == "\t" || v == " " || v == "/" || v == "\t\r" || v == "" {
 				continue
@@ -189,26 +233,30 @@ func (t *TForm) incident() {
 				return
 			}
 
-			go func(i int32) {
+			go func(i int) {
 
 				if types == "顺丰快递" {
 					datas, _ := express.SfCreateData(str)
 
 					if len(datas.Body.RouteResponse.Route) == 0 {
 						vcl.ThreadSync(func() {
-							t.grid.SetCells(0, i, strconv.Itoa(int(i)))
-							t.grid.SetCells(1, i, str)
-							t.grid.SetCells(2, i, "")
-							t.grid.SetCells(3, i, "")
-							t.grid.SetCells(4, i, "查询失败（无路由信息）或单号错误！")
+							item := t.listView.Items().Add()
+							item.SetImageIndex(0)
+							item.SetCaption(fmt.Sprintf("%3d", i))
+							item.SubItems().Add(str)
+							item.SubItems().Add("")
+							item.SubItems().Add("")
+							item.SubItems().Add("查询失败（无路由信息）或单号错误！")
 						})
 					} else {
 						vcl.ThreadSync(func() {
-							t.grid.SetCells(0, i, strconv.Itoa(int(i)))
-							t.grid.SetCells(1, i, datas.Body.RouteResponse.Mailno)
-							t.grid.SetCells(2, i, datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Accept_Address)
-							t.grid.SetCells(3, i, datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Accept_Time)
-							t.grid.SetCells(4, i, datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Remark)
+							item := t.listView.Items().Add()
+							item.SetImageIndex(0)
+							item.SetCaption(fmt.Sprintf("%3d", i))
+							item.SubItems().Add(datas.Body.RouteResponse.Mailno)
+							item.SubItems().Add(datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Accept_Address)
+							item.SubItems().Add(datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Accept_Time)
+							item.SubItems().Add(datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Remark)
 						})
 					}
 				} else {
@@ -216,25 +264,45 @@ func (t *TForm) incident() {
 
 					if len(datas.Traces) == 0 {
 						vcl.ThreadSync(func() {
-							t.grid.SetCells(0, i, strconv.Itoa(int(i)))
-							t.grid.SetCells(1, i, str)
-							t.grid.SetCells(2, i, "")
-							t.grid.SetCells(3, i, "")
-							t.grid.SetCells(4, i, "查询失败（无路由信息）或单号错误！")
+							item := t.listView.Items().Add()
+							item.SetImageIndex(0)
+							item.SetCaption(fmt.Sprintf("%3d", i))
+							item.SubItems().Add(str)
+							item.SubItems().Add("")
+							item.SubItems().Add("")
+							item.SubItems().Add("查询失败（无路由信息）或单号错误！")
 						})
 					} else {
 						vcl.ThreadSync(func() {
-							t.grid.SetCells(0, i, strconv.Itoa(int(i)))
-							t.grid.SetCells(1, i, datas.LogisticCode)
-							t.grid.SetCells(2, i, "")
-							t.grid.SetCells(3, i, datas.Traces[len(datas.Traces)-1].AcceptTime)
-							t.grid.SetCells(4, i, datas.Traces[len(datas.Traces)-1].AcceptStation)
+							item := t.listView.Items().Add()
+							item.SetImageIndex(0)
+							item.SetCaption(fmt.Sprintf("%3d", i))
+							item.SubItems().Add(datas.LogisticCode)
+							item.SubItems().Add("")
+							item.SubItems().Add(datas.Traces[len(datas.Traces)-1].AcceptTime)
+							item.SubItems().Add(datas.Traces[len(datas.Traces)-1].AcceptStation)
 						})
 					}
 				}
-			}(int32(i + 1))
+			}(i + 1)
 		}
+		//t.listView.Items().EndUpdate()
 
+	})
+
+	//自动列表排序事件
+	t.listView.SetOnColumnClick(func(sender vcl.IObject, column *vcl.TListColumn) {
+		t.listView.CustomSort(0, int(column.Index()))
+
+	})
+
+	//自定义排序方法
+	t.listView.SetOnCompare(func(sender vcl.IObject, item1, item2 *vcl.TListItem, data int32, compare *int32) {
+		if data == 0 {
+			*compare = int32(strings.Compare(item1.Caption(), item2.Caption()))
+		} else {
+			*compare = int32(strings.Compare(item1.SubItems().Strings(data-1), item2.SubItems().Strings(data-1)))
+		}
 	})
 }
 
@@ -279,6 +347,8 @@ func main() {
 	Form := new(TForm)
 	Form.Init()
 	Form.incident()
+
 	Form.win.Show()
+	Form.grid.Hide()
 	vcl.Application.Run()
 }
