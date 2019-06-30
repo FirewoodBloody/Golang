@@ -40,8 +40,7 @@ func FtpStor(name string) error {
 	if err != nil {
 		return err
 	}
-	c.li
-	time.Sleep(time.Second * 5)
+
 	file, err := os.Open(name)
 	if err != nil {
 		return err
