@@ -313,17 +313,14 @@ func IFStr(str, types string) (string, error) {
 
 	if types == "顺丰快递" {
 
-		if len(strings.Replace(str, "\t", "", -1)) == 12 {
+		if len(strings.Replace(str, "\t", "", -1)) != len(str) {
 			str = strings.Replace(str, "\t", "", -1)
-		} else if len(strings.Replace(str, " ", "", -1)) == 12 {
+		} else if len(strings.Replace(str, " ", "", -1)) != len(str) {
 			str = strings.Replace(str, " ", "", -1)
-		} else if len(strings.Replace(str, "/", "", -1)) == 12 {
+		} else if len(strings.Replace(str, "/", "", -1)) != len(str) {
 			str = strings.Replace(str, "/", "", -1)
 		}
-		_, err := strconv.Atoi(str)
-		if err != nil {
-			return "", fmt.Errorf("str is not number!")
-		}
+
 	} else {
 		if len(strings.Replace(str, "\t", "", -1)) != len(str) {
 			str = strings.Replace(str, "\t", "", -1)

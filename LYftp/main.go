@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+//邮件错误发送
 func Mail(adder, dody string) {
 	//创建mail对象
 	m := gomail.NewMessage()
@@ -31,8 +32,8 @@ func Mail(adder, dody string) {
 }
 
 func FtpStor(name string) error {
-	str := strings.Split(name, "\\")                                                 //处理字符串
-	c, err := ftp.Dial("2shoucang.f3322.net:21", ftp.DialWithTimeout(5*time.Second)) //创建连接
+	str := strings.Split(name, "\\")                                           //处理字符串
+	c, err := ftp.Dial("192.168.0.19:21", ftp.DialWithTimeout(15*time.Second)) //创建连接
 	if err != nil {
 		return err
 	}
@@ -47,6 +48,7 @@ func FtpStor(name string) error {
 	}
 
 	defer file.Close()
+	time.Sleep(time.Second * 3)
 	//传输文件，指定传输的文件路径和文件名（针对于接收文件的服务器的根目录之下的），以及需要传输的文件IO
 	err = c.Stor(fmt.Sprintf("%d%02d%02d/%s", time.Now().Year(), int(time.Now().Month()), time.Now().Day(), str[len(str)-1]), file)
 	if err != nil {
@@ -73,24 +75,25 @@ func PathExists(path string) error {
 }
 
 func main() {
+	Mail("店面程序启动", "")
 	//自定义监控文件绝对路径
-	Path := fmt.Sprintf("D:/FTPROOT/%d%02d%02d", time.Now().Year(), int(time.Now().Month()), time.Now().Day())
+	Path := fmt.Sprintf("D:/Record/%d%02d%02d", time.Now().Year(), int(time.Now().Month()), time.Now().Day())
 	err := PathExists(Path) //判断监控文件是否存在，如不存在创建
 	if err != nil {
-		Mail("西安分公司FTP回传程序故障", fmt.Sprintf("%v", err))
+		Mail("店面FTP回传程序故障", fmt.Sprintf("检测监控文件出错：%v", err))
 		return
 	}
 	//创建一个监控对象
 	watch, err := fsnotify.NewWatcher()
 	if err != nil {
-		Mail("西安分公司FTP回传程序故障", fmt.Sprintf("%v", err))
+		Mail("店面FTP回传程序故障", fmt.Sprintf("创建监控对象是被失败：%v", err))
 		return
 	}
 	defer watch.Close()
 	//添加要监控的对象，文件或文件夹
 	err = watch.Add(Path)
 	if err != nil {
-		Mail("西安分公司FTP回传程序故障", fmt.Sprintf("%v", err))
+		Mail("店面FTP回传程序故障", fmt.Sprintf("添加监控对象失败：%v", err))
 		return
 	}
 	//我们另启一个goroutine来处理监控对象的事件
@@ -112,7 +115,10 @@ func main() {
 						//处理写入完成的监控文件，使用FTP进行回传
 						err := FtpStor(ev.Name)
 						if err != nil {
-							Mail("西安分公司FTP回传程序故障", fmt.Sprintf("%v：%v", err, ev.Name))
+							err := FtpStor(ev.Name)
+							if err != nil {
+								//Mail("高新汉唐FTP回传程序故障", fmt.Sprintf("录音回传失败：%v：%v", err, ev.Name))
+							}
 						}
 					}
 					//if ev.Op&fsnotify.Remove == fsnotify.Remove {
@@ -127,8 +133,7 @@ func main() {
 				}
 			case err := <-watch.Errors:
 				{
-					Mail("西安分公司FTP回传程序故障", fmt.Sprintf("%v", err))
-					return
+					Mail("店面FTP回传程序故障", fmt.Sprintf("监控出错：%v", err))
 				}
 
 			}

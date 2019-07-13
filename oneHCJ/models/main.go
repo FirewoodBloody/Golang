@@ -547,7 +547,7 @@ func main() {
 
 	Win.w = Win.CreateWin()
 	Win.EventProcessing()
-	//go updateshu(Win)
+	go updateshu(Win)
 	Win.w.ShowAll()
 
 	gtk.Main()
