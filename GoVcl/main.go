@@ -330,7 +330,7 @@ func IFStr(str, types string) (string, error) {
 			str = strings.Replace(str, "/", "", -1)
 		}
 	}
-	return str, nil
+	return strings.ToUpper(str), nil
 }
 
 func main() {
