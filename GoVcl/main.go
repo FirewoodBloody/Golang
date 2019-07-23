@@ -47,6 +47,8 @@ func (t *TForm) Init() {
 	t.combobox.AddItem("圆通快递", nil)
 	t.combobox.AddItem("中通快递", nil)
 	t.combobox.AddItem("邮政快递", nil)
+	t.combobox.AddItem("申通快递", nil)
+	t.combobox.AddItem("天天快递", nil)
 	t.combobox.AddItem("EMS", nil)
 
 	t.wins = vcl.Application.CreateForm() //新建窗口  用于进行窗口弹出
@@ -338,6 +340,8 @@ func main() {
 	getExp = make(map[string]string, 10)
 	getExp["圆通快递"] = "YTO"
 	getExp["中通快递"] = "ZTO"
+	getExp["申通快递"] = "STO"
+	getExp["天天快递"] = "HHTT"
 	getExp["EMS"] = "EMS"
 	getExp["邮政快递"] = "YZPY"
 
