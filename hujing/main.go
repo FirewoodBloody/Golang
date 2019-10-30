@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 )
 
 type GetAllUser struct {
@@ -65,7 +66,7 @@ const (
 	url2 = "http://siai.aihujing.com:9989/file/down"  //获取文件
 	url3 = "http://siai.aihujing.com:9989/api/user/getAllUser"
 
-	TimeFormat = "2006-01-02 15:04:05"
+	TimeFormat = "2006-01-02"
 	driverName = "oci8"
 	dBconnect  = "BLCRM/BLCRM2012@192.168.0.9:1521/BLDB"
 	tbMapper   = "BLCRM."
@@ -92,8 +93,8 @@ func (e *Engine) NewEngine() error {
 }
 
 //查询员工id
-func (e *Engine) SelectId(name string) (no, user string, err error) {
-	nomao, err := e.Engine.Query(fmt.Sprintf("SELECT NO FROM BLCRM.CRM_SYS02 WHERE NAME = '%s'", name))
+func (e *Engine) SelectId(mobil string) (no, user string, err error) {
+	nomao, err := e.Engine.Query(fmt.Sprintf("SELECT NO FROM BLCRM.CRM_SYS02 WHERE EMERGENCY_PHONE = '%s'", mobil))
 	if err != nil {
 		return no, user, err
 	}
@@ -277,21 +278,22 @@ func CreateFile(data []byte, filename string) error {
 func main() {
 
 	//获取员工信息
-	User := &GetAllUser{}
-	User, err := PostUserAll(url3)
-	if err != nil {
-		fmt.Println("1:", err)
-	}
+	//User := &GetAllUser{}
+	//User, err := PostUserAll(url3)
+	//if err != nil {
+	//	fmt.Println("1:", err)
+	//}
 
 	Engine := &Engine{}
 
-	var time1 = "2019-10-01 01:01:01"
+	time1 := fmt.Sprintf(time.Now().Format(TimeFormat)) + " 01:01:01"
+	//time1 := fmt.Sprintf("2019-10-29") + " 01:01:01"
 
 	for {
 
 		//获取通话记录
 		CallData := &CallJl{}
-		CallData, err = CallPost(time1, url1)
+		CallData, err := CallPost(time1, url1)
 		if err != nil {
 			fmt.Println("2:", err)
 		}
@@ -302,15 +304,14 @@ func main() {
 
 		}
 
-		time1 = CallData.Data[len(CallData.Data)-1].Update_time
-
 		err = Engine.NewEngine()
 		if err != nil {
 			fmt.Println("4:", err)
 		}
+		defer Engine.Engine.Close()
 
 		for _, v := range CallData.Data {
-			no, number, err := Engine.SelectUser(v.User_id, User)
+			no, number, err := Engine.SelectId(v.User_id)
 			if err != nil {
 				fmt.Println("5:", err)
 			}
@@ -352,9 +353,14 @@ func main() {
 				fmt.Println("9:", err)
 			}
 
-			//time.Sleep(time.Second * 5)
+			time.Sleep(time.Second * 5)
 		}
-		Engine.Engine.Close()
+		if len(CallData.Data) == 1000 {
+			time1 = CallData.Data[len(CallData.Data)-1].Update_time
+		} else {
+			return
+		}
+
 	}
 
 }

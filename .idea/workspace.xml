@@ -2,28 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_information/liblcl.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_information/libvcl.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_information/libvclx64.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_information/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Xor/1/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Xor/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hujing/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hujing/main.rc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Express_Routing/express/sfApi.go" beforeDir="false" afterPath="$PROJECT_DIR$/Express_Routing/express/sfApi.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoVcl/GoVcl.exe" beforeDir="false" afterPath="$PROJECT_DIR$/GoVcl/GoVcl.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoVcl/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/GoVcl/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MAai/123.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/123.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MAai/MAai.exe" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/MAai.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MAai/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jetbrains-agent.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hujing/hujing.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hujing/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/hujing/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/工作交接单.docx" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +47,7 @@
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/MAai" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/hujing" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -70,14 +57,15 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Go" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Go\src\Golang\MAai" />
-      <recent name="D:\Go\src\Golang\oneHCJ\image" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Go\src\Golang\Xor" />
       <recent name="D:\Go\src\Golang\oneHCJ" />
       <recent name="D:\Go\src\Golang" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Go\src\Golang\hujing" />
+      <recent name="D:\Go\src\Golang\MAai" />
+      <recent name="D:\Go\src\Golang\oneHCJ\image" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -156,8 +144,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build Golang/hujing" />
-        <item itemvalue="Go Build.go build main.go (3)" />
         <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Build.go build main.go (3)" />
         <item itemvalue="Go Build.go build Golang/Xor/1" />
         <item itemvalue="Go Build.go build main.go (2)" />
       </list>
@@ -223,7 +211,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/hujing/main.go</url>
-          <line>276</line>
+          <line>277</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
