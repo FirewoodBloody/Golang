@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	dBconnect  = "BLCRM/BLCRM2012@61.136.101.122:1521/BLSD"
+	dBconnect  = "BLCRM/BLCRM2012@114.118.1.132:1521/ORCL"
 	driverName = "oci8"
 	tbMapper   = "BLCRM."
 )
@@ -125,24 +125,34 @@ func (e *Engine) InSetConsume(TimeNum, Date, KHID, ConsumeID, num1, num2, num3 s
 
 func main() {
 	num := 1
-	Engine := new(Engine)
-	err := Engine.NewEngine()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer Engine.Engine.Close()
 
+	fmt.Println(1)
 	f, err := excelize.OpenFile("./123.xlsx")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
+	fmt.Println(2)
 	rows := f.GetRows("Sheet1")
+	fmt.Println(3)
+
+	Engine := new(Engine)
+	err = Engine.NewEngine()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer Engine.Engine.Close()
 	for i, data := range rows {
+
 		if i == 0 {
 			continue
+		}
+
+		if i%10000 == 0 {
+			Engine.Engine.Close()
+			time.Sleep(time.Second * 5)
+			err = Engine.NewEngine()
 		}
 
 		err := Engine.SelectId(data[4])
@@ -151,8 +161,7 @@ func main() {
 			continue
 		}
 		if Engine.ClientID == "" {
-			continue
-			err := Engine.InSetClient(data[3], data[4], data[5], 60004)
+			err := Engine.InSetClient(data[3], data[4], data[5], 60001)
 			if err != nil {
 				fmt.Println("创建客户信息失败：", data[4])
 			}
@@ -165,7 +174,7 @@ func main() {
 
 		timeNum := fmt.Sprintf("%2d%02d%02d%02d%02d%02d%03d\n", 19,
 			int(time.Now().Month()), time.Now().Day(), time.Now().Hour(), time.Now().Minute(), time.Now().Second(), num)
-		err = Engine.InSetConsume(timeNum, fmt.Sprintf("%s-%0s-%s", data[0], data[1], data[2]), Engine.ClientID, data[6], data[7], data[8], data[9])
+		err = Engine.InSetConsume(timeNum, fmt.Sprintf("%s-%s-%s", data[0], data[1], data[2]), Engine.ClientID, data[6], data[7], data[8], data[9])
 		if err != nil {
 			fmt.Println("购买记录写入失败：3", err, data[4])
 			continue
@@ -176,6 +185,7 @@ func main() {
 		}
 
 	}
+
 }
 
 //func main() {
