@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/hujing/main.rc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BeeApi/models/client.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hujing/hujing.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hujing/Call.exe" beforeDir="false" afterPath="$PROJECT_DIR$/hujing/Call.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hujing/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/hujing/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" afterDir="false" />
@@ -54,6 +54,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Go" />
   </component>
   <component name="RecentsManager">
@@ -68,6 +69,13 @@
       <recent name="D:\Go\src\Golang\oneHCJ\image" />
     </key>
   </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="？" />
+      <command value="“？”" />
+      <command value="go run main.go" />
+    </option>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -80,7 +88,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build Golang/hujing">
+  <component name="RunManager" selected="Go Build.go build main.go">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -111,12 +119,12 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go build main.go (2)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build main.go (1)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
       <parameters value="-i" />
       <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/Xor/1/main.go" />
+      <filePath value="$PROJECT_DIR$/API/main.go" />
       <package value="Golang" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
@@ -143,11 +151,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build Golang/hujing" />
         <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Build.go build Golang/hujing" />
+        <item itemvalue="Go Build.go build main.go (1)" />
         <item itemvalue="Go Build.go build main.go (3)" />
         <item itemvalue="Go Build.go build Golang/Xor/1" />
-        <item itemvalue="Go Build.go build main.go (2)" />
       </list>
     </recent_temporary>
   </component>

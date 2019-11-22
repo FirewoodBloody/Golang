@@ -87,7 +87,7 @@ func (e *Engine) NewEngine() error {
 		return e.Err
 	}
 	//tbMappe := core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
-	e.Engine.ShowSQL(true)
+	e.Engine.ShowSQL(false)
 	e.Engine.SetTableMapper(tbMappers)
 	return nil
 }
@@ -286,8 +286,8 @@ func main() {
 
 	Engine := &Engine{}
 
-	time1 := fmt.Sprintf(time.Now().Format(TimeFormat)) + " 01:01:01"
-	//time1 := fmt.Sprintf("2019-10-29") + " 01:01:01"
+	time1 := fmt.Sprintf(time.Now().Format(TimeFormat)) + " 01:00:00"
+	//time1 := fmt.Sprintf("2019-11-20") + " 01:00:00"
 
 	for {
 
@@ -324,6 +324,16 @@ func main() {
 			if no == "" {
 				if gonghao != "" {
 					no = gonghao
+
+					maps, _ := Engine.Engine.Query(fmt.Sprintf("SELECT LOGIN_NAME FROM BLCRM.CRM_SYS04_N WHERE OPER_NO = '%s'", no))
+
+					for _, v := range maps {
+						for _, i := range v {
+							if string(i) != "" {
+								number = string(i)
+							}
+						}
+					}
 				} else if gonghao == "" {
 					continue
 				}
@@ -353,7 +363,7 @@ func main() {
 				fmt.Println("9:", err)
 			}
 
-			time.Sleep(time.Second * 5)
+			//time.Sleep(time.Second * 5)
 		}
 		if len(CallData.Data) == 1000 {
 			time1 = CallData.Data[len(CallData.Data)-1].Update_time
