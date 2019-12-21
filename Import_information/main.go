@@ -45,7 +45,7 @@ func (l *LoginTForm) LoginClient() {
 	l.WinLogin.SetBorderIcons(3)  //设置窗口最大化 最小化 关闭按钮  3代表是 最大化按钮和功能无效
 	l.WinLogin.Font().SetSize(11) //整体字体大小
 	l.WinLogin.Font().SetStyle(16)
-	l.WinLogin.SetColor(100)
+	//l.WinLogin.SetColor(100)
 	l.WinLogin.SetFormStyle(3)
 
 	l.TButton1 = vcl.NewButton(l.WinLogin)
@@ -62,26 +62,26 @@ func (l *LoginTForm) LoginClient() {
 
 	l.TEdit1 = vcl.NewEdit(l.WinLogin)
 	l.TEdit1.SetParent(l.WinLogin)
-	l.TEdit1.SetTop(60)
-	l.TEdit1.SetLeft(170)
+	l.TEdit1.SetTop(90)
+	l.TEdit1.SetLeft(150)
 
-	l.TEdit2 = vcl.NewEdit(l.WinLogin)
-	l.TEdit2.SetParent(l.WinLogin)
-	l.TEdit2.SetTop(120)
-	l.TEdit2.SetLeft(170)
-	l.TEdit2.SetPasswordChar(7)
+	//l.TEdit2 = vcl.NewEdit(l.WinLogin)
+	//l.TEdit2.SetParent(l.WinLogin)
+	//l.TEdit2.SetTop(120)
+	//l.TEdit2.SetLeft(170)
+	//l.TEdit2.SetPasswordChar(7)
 
 	l.TLabel1 = vcl.NewLabel(l.WinLogin)
 	l.TLabel1.SetParent(l.WinLogin)
-	l.TLabel1.SetName("用户名")
-	l.TLabel1.SetLeft(90)
-	l.TLabel1.SetTop(65)
+	l.TLabel1.SetName("工号")
+	l.TLabel1.SetLeft(100)
+	l.TLabel1.SetTop(90)
 
-	l.TLabel2 = vcl.NewLabel(l.WinLogin)
-	l.TLabel2.SetParent(l.WinLogin)
-	l.TLabel2.SetName("密码")
-	l.TLabel2.SetLeft(90)
-	l.TLabel2.SetTop(125)
+	//l.TLabel2 = vcl.NewLabel(l.WinLogin)
+	//l.TLabel2.SetParent(l.WinLogin)
+	//l.TLabel2.SetName("密码")
+	//l.TLabel2.SetLeft(90)
+	//l.TLabel2.SetTop(125)
 
 }
 

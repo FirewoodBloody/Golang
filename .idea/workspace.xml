@@ -2,21 +2,86 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/BeeApi/models/client.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Import_Excel/event_processing/win.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Import_Excel/images/ICON.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Import_Excel/images/icon.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Import_Excel/images/open_file.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Import_Excel/main.rc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Import_Excel/main.syso" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/录音程序/images/ICON.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/录音程序/images/icon.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/录音程序/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/录音程序/main.manifest" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hujing/Call.exe" beforeDir="false" afterPath="$PROJECT_DIR$/hujing/Call.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/123.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/BeeApi.exe" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/BeeApi.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/conf/app.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/controllers/client.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/controllers/object.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/controllers/user.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/lastupdate.tmp" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/lastupdate.tmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/models/client.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/models/object.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/models/user.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/routers/commentsRouter_controllers.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/routers/router.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/favicon-16x16.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/favicon-32x32.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/oauth2-redirect.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui-bundle.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui-standalone-preset.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui-standalone-preset.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/tests/default_test.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoVcl/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/GoVcl/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Golang.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_information/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Import_information/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MAai/123.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/123.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MAai/MAai.exe" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/MAai.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MAai/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mp3/Mp3.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Mp3/Mp3.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mp3/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Mp3/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hujing/hujing.exe" beforeDir="false" afterPath="$PROJECT_DIR$/hujing/hujing.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hujing/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/hujing/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/测试/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/oneHCJ/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/oneHCJ/routers/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/oneHCJ/tests/default_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/oneHCJ/tests/default_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sfexpress/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/sfexpress/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sfexpress/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/sfexpress/routers/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sfexpress/tests/default_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/sfexpress/tests/default_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -33,6 +98,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="AUTO_COMMIT_ON_CHERRY_PICK" value="true" />
   </component>
+  <component name="GoLibraries">
+    <option name="useGoPathFromSystemEnvironment" value="false" />
+  </component>
   <component name="ProjectId" id="1PJB37UmBGWIVQaCQdLfwSl2meN" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
@@ -47,7 +115,7 @@
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/hujing" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Import_Excel" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -55,18 +123,22 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Go" />
+    <property name="settings.editor.selected.configurable" value="goland.project.structure" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Go\src\Golang\测试" />
+      <recent name="D:\Go\src\Golang" />
+      <recent name="D:\Go\src\Golang\录音程序" />
       <recent name="D:\Go\src\Golang\Xor" />
       <recent name="D:\Go\src\Golang\oneHCJ" />
-      <recent name="D:\Go\src\Golang" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Go\src\Golang\hujing" />
-      <recent name="D:\Go\src\Golang\MAai" />
-      <recent name="D:\Go\src\Golang\oneHCJ\image" />
+      <recent name="D:\Go\src\Golang\Import_Excel" />
+      <recent name="D:\Go\src\Golang\Import_Excel\images" />
+      <recent name="D:\Go\src\Golang\API\models" />
+      <recent name="D:\Go\src\Golang\API\controllers" />
+      <recent name="D:\Go\src\Golang\录音程序" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -99,23 +171,13 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go build Golang/Xor/1" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build Golang/测试" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
       <parameters value="-i" />
       <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/Xor/1/main.go" />
-      <package value="Golang/Xor/1" />
-      <directory value="$PROJECT_DIR$/" />
-      <method v="2" />
-    </configuration>
-    <configuration name="go build Golang/hujing" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="Golang" />
-      <working_directory value="$PROJECT_DIR$/" />
-      <parameters value="-i" />
-      <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/hujing/main.go" />
-      <package value="Golang/hujing" />
+      <filePath value="$PROJECT_DIR$/测试/main.go" />
+      <package value="Golang/测试" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
@@ -124,17 +186,7 @@
       <working_directory value="$PROJECT_DIR$/" />
       <parameters value="-i" />
       <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/API/main.go" />
-      <package value="Golang" />
-      <directory value="$PROJECT_DIR$/" />
-      <method v="2" />
-    </configuration>
-    <configuration name="go build main.go (3)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="Golang" />
-      <working_directory value="$PROJECT_DIR$/" />
-      <parameters value="-i" />
-      <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/hujing/main.go" />
+      <filePath value="$PROJECT_DIR$/测试/main.go" />
       <package value="Golang" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
@@ -144,7 +196,7 @@
       <working_directory value="$PROJECT_DIR$/" />
       <parameters value="-i" />
       <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/main.go" />
+      <filePath value="$PROJECT_DIR$/Import_Excel/main.go" />
       <package value="Golang" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
@@ -152,10 +204,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build main.go" />
-        <item itemvalue="Go Build.go build Golang/hujing" />
         <item itemvalue="Go Build.go build main.go (1)" />
-        <item itemvalue="Go Build.go build main.go (3)" />
-        <item itemvalue="Go Build.go build Golang/Xor/1" />
+        <item itemvalue="Go Build.go build Golang/测试" />
       </list>
     </recent_temporary>
   </component>
@@ -209,6 +259,9 @@
       </map>
     </option>
   </component>
+  <component name="VgoProject">
+    <proxy>https://goproxy.cn</proxy>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -219,7 +272,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/hujing/main.go</url>
-          <line>277</line>
+          <line>289</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	dBconnect  = "BLCRM/BLCRM2012@114.118.1.132:1521/ORCL"
+	dBconnect  = "BLCRM/BLCRM2012@192.168.0.9:1521/BLDB"
 	driverName = "oci8"
 	tbMapper   = "BLCRM."
 )
@@ -92,8 +92,8 @@ func (e *Engine) SelectId(MPno string) error {
 //新建客户  - 姓名 电话  地址  来源
 func (e *Engine) InSetClient(KHMC string, MOBIL string, DIZHI string, SOURCEID int) error {
 
-	Sql := fmt.Sprintf("INSERT INTO BLCRM.CRM_DAT001(KHMC,TYPEID,MOBIL,DIZHI,HUIFANG,HUIFANGJG,SOURCEID,ISVIP,RESERVE)"+
-		" VALUES('%s',506,%s,'%s',1,5,%d,0,1)", KHMC, MOBIL, DIZHI, SOURCEID)
+	Sql := fmt.Sprintf("INSERT INTO BLCRM.CRM_DAT001(KHMC,TYPEID,MOBIL,DIZHI,HUIFANG,HUIFANGJG,SOURCEID,ISVIP,RESERVE,GONGHAO)"+
+		" VALUES('%s',506,%s,'%s',1,5,%d,0,1,'1962')", KHMC, MOBIL, DIZHI, SOURCEID)
 
 	_, e.Err = e.Engine.Exec(Sql)
 	if e.Err != nil {
@@ -124,7 +124,7 @@ func (e *Engine) InSetConsume(TimeNum, Date, KHID, ConsumeID, num1, num2, num3 s
 }
 
 func main() {
-	num := 1
+	//num := 1
 
 	fmt.Println(1)
 	f, err := excelize.OpenFile("./123.xlsx")
@@ -149,9 +149,9 @@ func main() {
 			continue
 		}
 
-		if i%10000 == 0 {
+		if i%100 == 0 {
 			Engine.Engine.Close()
-			time.Sleep(time.Second * 5)
+			time.Sleep(time.Second * 1)
 			err = Engine.NewEngine()
 		}
 
@@ -161,7 +161,7 @@ func main() {
 			continue
 		}
 		if Engine.ClientID == "" {
-			err := Engine.InSetClient(data[3], data[4], data[5], 60001)
+			err := Engine.InSetClient(data[3], data[4], data[5], 60052)
 			if err != nil {
 				fmt.Println("创建客户信息失败：", data[4])
 			}
@@ -174,15 +174,15 @@ func main() {
 
 		timeNum := fmt.Sprintf("%2d%02d%02d%02d%02d%02d%03d\n", 19,
 			int(time.Now().Month()), time.Now().Day(), time.Now().Hour(), time.Now().Minute(), time.Now().Second(), num)
-		err = Engine.InSetConsume(timeNum, fmt.Sprintf("%s-%s-%s", data[0], data[1], data[2]), Engine.ClientID, data[6], data[7], data[8], data[9])
-		if err != nil {
-			fmt.Println("购买记录写入失败：3", err, data[4])
-			continue
-		}
-		num++
-		if num == 999 {
-			num = 1
-		}
+		//err = Engine.InSetConsume(timeNum, fmt.Sprintf("%s-%s-%s", data[0], data[1], data[2]), Engine.ClientID, data[6], data[7], data[8], data[9])
+		//if err != nil {
+		//	fmt.Println("购买记录写入失败：3", err, data[4])
+		//	continue
+		//}
+		//num++
+		//if num == 999 {
+		//	num = 1
+		//}
 
 	}
 

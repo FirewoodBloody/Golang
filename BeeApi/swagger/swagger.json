@@ -20,8 +20,6 @@
                 "tags": [
                     "client"
                 ],
-                "description": "Logs out current logged in user session",
-                "operationId": "ClientController.Accles",
                 "responses": {
                     "200": {
                         "description": "{string} accles success"

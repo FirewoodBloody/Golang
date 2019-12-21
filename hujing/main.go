@@ -87,7 +87,7 @@ func (e *Engine) NewEngine() error {
 		return e.Err
 	}
 	//tbMappe := core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
-	e.Engine.ShowSQL(false)
+	e.Engine.ShowSQL(true)
 	e.Engine.SetTableMapper(tbMappers)
 	return nil
 }
@@ -152,6 +152,18 @@ func (e *Engine) SelectClientId(mobil string) (khid, gonghao string, err error) 
 
 //插入通话记录
 func (e *Engine) InsertCallList(types, shichang int, time, gonghao, khid, telnomber, filename string) error {
+
+	//maps, _ := e.Engine.Query(fmt.Sprintf("SELECT GONGHAO FROM BLCRM.CRM_DAT101 WHERE SHIJIAN =TO_DATE('%v','yyyy-MM-dd HH24:mi:ss') AND TEL_NUM = '%v' AND "+
+	//	"SHICHANG = '%v' AND KHID = '%v',FILENAME = '%v'", time, telnomber, shichang, khid, filename))
+	//
+	//for _, v := range maps {
+	//	for _, i := range v {
+	//		if string(i) != "" {
+	//			return fmt.Errorf("次记录已存在")
+	//		}
+	//	}
+	//}
+
 	var sql string
 	switch types {
 	case 1:
@@ -287,7 +299,7 @@ func main() {
 	Engine := &Engine{}
 
 	time1 := fmt.Sprintf(time.Now().Format(TimeFormat)) + " 01:00:00"
-	//time1 := fmt.Sprintf("2019-11-20") + " 01:00:00"
+	//time1 := fmt.Sprintf("2019-11-26") + " 08:00:00"
 
 	for {
 
@@ -308,9 +320,17 @@ func main() {
 		if err != nil {
 			fmt.Println("4:", err)
 		}
-		defer Engine.Engine.Close()
 
-		for _, v := range CallData.Data {
+		for i, v := range CallData.Data {
+
+			if i%100 == 0 {
+				Engine.Engine.Close()
+				err = Engine.NewEngine()
+				if err != nil {
+					fmt.Println("44:", err)
+				}
+			}
+
 			no, number, err := Engine.SelectId(v.User_id)
 			if err != nil {
 				fmt.Println("5:", err)
@@ -370,7 +390,7 @@ func main() {
 		} else {
 			return
 		}
-
+		Engine.Engine.Close()
 	}
 
 }

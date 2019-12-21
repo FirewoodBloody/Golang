@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
@@ -15,6 +16,10 @@ type ClientMessage struct {
 	PhoneMumber string
 	Site        string
 	Error       string
+}
+type crm_dat101 struct {
+	Filename string `xorm:"VARCHAR2(64) 'FILENAME'"`
+	Shijian  string `xorm:"date  'SHIJIAN'"`
 }
 
 const (
@@ -31,9 +36,16 @@ func init() {
 	tbMappers = core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
 }
 
+type File struct {
+	Start string `json:"start"`
+	Stop  string `json:"stop"`
+	Times string `json:"times"`
+}
+
 type Engine struct {
-	Engine *xorm.Engine
-	Err    error
+	Engine   *xorm.Engine
+	Err      error
+	FileName []crm_dat101
 }
 
 func (e *Engine) NewEngine() error {
@@ -48,43 +60,65 @@ func (e *Engine) NewEngine() error {
 	return nil
 }
 
-func GetClientMessage(id string) map[string]ClientMessage {
-	var u = make(map[string]ClientMessage)
-	if id == "" {
-		return u
-	}
+func GetClientMessage(id string) (map[string]ClientMessage, []crm_dat101) {
 
-	str := strings.Split(id, ",")
+	File := new(File)
+	err := json.Unmarshal([]byte(id), File)
 
-	engine := new(Engine)
-	err := engine.NewEngine()
 	if err != nil {
-		fmt.Println(err)
-	}
-	defer engine.Engine.Close()
-
-	for _, v := range str {
-
-		clientMessage := ClientMessage{}
-		clientMessage.ClientId = v
-
-		a, _ := engine.Engine.Query(fmt.Sprintf("SELECT KHMC FROM CRM_DAT001 WHERE KHID = %v", v))
-		clientMessage.Name = Strings(a)
-
-		b, _ := engine.Engine.Query(fmt.Sprintf("SELECT MOBIL FROM CRM_DAT001 WHERE KHID = %v", v))
-		clientMessage.PhoneMumber = Strings(b)
-
-		c, _ := engine.Engine.Query(fmt.Sprintf("SELECT DIZHI FROM CRM_DAT001 WHERE KHID = %v", v))
-		clientMessage.Site = Strings(c)
-
-		if clientMessage.PhoneMumber == "" && clientMessage.Site == "" && clientMessage.Name == "" {
-			clientMessage.Error = "The query client does not exist"
+		var u = make(map[string]ClientMessage)
+		if id == "" {
+			return u, nil
 		}
 
-		u[v] = clientMessage
+		str := strings.Split(id, ",")
+
+		engine := new(Engine)
+		err := engine.NewEngine()
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer engine.Engine.Close()
+
+		for _, v := range str {
+
+			clientMessage := ClientMessage{}
+			clientMessage.ClientId = v
+
+			a, _ := engine.Engine.Query(fmt.Sprintf("SELECT KHMC FROM CRM_DAT001 WHERE KHID = %v", v))
+			clientMessage.Name = Strings(a)
+
+			b, _ := engine.Engine.Query(fmt.Sprintf("SELECT MOBIL FROM CRM_DAT001 WHERE KHID = %v", v))
+			clientMessage.PhoneMumber = Strings(b)
+
+			c, _ := engine.Engine.Query(fmt.Sprintf("SELECT DIZHI FROM CRM_DAT001 WHERE KHID = %v", v))
+			clientMessage.Site = Strings(c)
+
+			if clientMessage.PhoneMumber == "" && clientMessage.Site == "" && clientMessage.Name == "" {
+				clientMessage.Error = "The query client does not exist"
+			}
+
+			u[v] = clientMessage
+		}
+
+		return u, nil
+	} else if File.Start != "" && File.Stop != "" && File.Times != "" {
+		engine := new(Engine)
+		err := engine.NewEngine()
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer engine.Engine.Close()
+
+		err = engine.Engine.Where(fmt.Sprintf("SHIJIAN >= TO_DATE('%v 00:00:00', 'YYYY-MM-DD HH24:MI:SS') AND SHIJIAN <= TO_DATE('%v 23:59:59','YYYY-MM-DD HH24:MI:SS') AND SHICHANG >= '%v'", File.Start, File.Stop, File.Times)).Find(&engine.FileName)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		return nil, engine.FileName
 	}
 
-	return u
+	return nil, nil
 }
 
 func Strings(str []map[string][]byte) (str1 string) {

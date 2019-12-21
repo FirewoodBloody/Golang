@@ -2,8 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-)
-import (
+
 	"Golang/BeeApi/models"
 )
 
@@ -18,9 +17,16 @@ type ClientController struct {
 // @router /Accles [post]
 func (u *ClientController) Accles() {
 	id := u.GetString("Customer_number")
-	//s := u.Ctx.Input.RequestBody
-	uid := models.GetClientMessage(id)
+	//id := u.Ctx.Input.RequestBody
+	uid, uid1 := models.GetClientMessage(string(id))
+	if uid != nil {
+		if uid1 == nil {
+			u.Data["json"] = uid
+			u.ServeJSON()
+		}
 
-	u.Data["json"] = uid
-	u.ServeJSON()
+	} else if uid1 != nil {
+		u.Data["json"] = uid1
+		u.ServeJSON()
+	}
 }
