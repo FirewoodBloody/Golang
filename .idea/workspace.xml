@@ -2,68 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/Import_Excel/event_processing/win.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_Excel/images/ICON.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_Excel/images/icon.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_Excel/images/open_file.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_Excel/main.rc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Import_Excel/main.syso" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/录音程序/images/ICON.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/录音程序/images/icon.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/录音程序/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/录音程序/main.manifest" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BeeApi/controllers/sf.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BeeApi/models/sf.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Import_Excel/main.manifest" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/测试/1.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/123.mp3" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/BeeApi/BeeApi.exe" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/BeeApi.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/conf/app.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/controllers/client.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/controllers/object.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/controllers/user.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/lastupdate.tmp" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/lastupdate.tmp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/main.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/models/client.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/models/object.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/models/user.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/routers/commentsRouter_controllers.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/routers/router.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/favicon-16x16.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/favicon-32x32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/oauth2-redirect.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui-bundle.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui-bundle.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui-standalone-preset.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui-standalone-preset.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger-ui.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/tests/default_test.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoVcl/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/GoVcl/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Golang.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Import_information/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Import_information/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MAai/123.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/123.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MAai/MAai.exe" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/MAai.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MAai/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/MAai/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mp3/Mp3.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Mp3/Mp3.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mp3/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Mp3/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hujing/hujing.exe" beforeDir="false" afterPath="$PROJECT_DIR$/hujing/hujing.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hujing/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/hujing/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/controllers/object.go" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/controllers/object.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/controllers/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/controllers/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/routers/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/swagger/swagger.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/swagger/swagger.yml" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/swagger/swagger.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoVcl/main.manifest" beforeDir="false" afterPath="$PROJECT_DIR$/GoVcl/main.manifest" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_Excel/Import_Excel.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Import_Excel/Import_Excel.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_Excel/event_processing/win.go" beforeDir="false" afterPath="$PROJECT_DIR$/Import_Excel/event_processing/win.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_Excel/images/open_file.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_Excel/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Import_Excel/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_Excel/main.rc" beforeDir="false" afterPath="$PROJECT_DIR$/Import_Excel/main.rc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Import_Excel/main.syso" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hujing/images/icon.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/测试/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/oneHCJ/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/oneHCJ/routers/router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/oneHCJ/tests/default_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/oneHCJ/tests/default_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sfexpress/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/sfexpress/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sfexpress/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/sfexpress/routers/router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sfexpress/tests/default_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/sfexpress/tests/default_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/录音程序/images/icon.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/测试/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/测试/main.go" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -86,8 +51,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Go File" />
+        <option value="HTML File" />
         <option value="Go Application" />
       </list>
     </option>
@@ -103,6 +68,11 @@
   </component>
   <component name="ProjectId" id="1PJB37UmBGWIVQaCQdLfwSl2meN" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="DefaultGoTemplateProperty" value="Go Application" />
@@ -111,10 +81,11 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="configurable.Global.GOPATH.is.expanded" value="true" />
-    <property name="configurable.Module.GOPATH.is.expanded" value="false" />
+    <property name="configurable.Module.GOPATH.is.expanded" value="true" />
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
+    <property name="js.buildTools.grunt.grunt-cli.package" value="" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Import_Excel" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -123,7 +94,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="goland.project.structure" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Go" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -148,22 +119,11 @@
       <command value="go run main.go" />
     </option>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Go Build.go build main.go">
+  <component name="RunManager" selected="Go Build.go build 1.go">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
       <parameters value="-i" />
       <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/" />
@@ -171,52 +131,63 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go build Golang/测试" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build 1.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
       <parameters value="-i" />
-      <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/测试/main.go" />
-      <package value="Golang/测试" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/测试/1.go" />
+      <package value="Golang" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go build main.go (1)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build Golang/测试" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
       <parameters value="-i" />
       <kind value="FILE" />
       <filePath value="$PROJECT_DIR$/测试/main.go" />
-      <package value="Golang" />
+      <package value="Golang/测试" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
       <parameters value="-i" />
       <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/Import_Excel/main.go" />
+      <filePath value="$PROJECT_DIR$/测试/main.go" />
       <package value="Golang" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration default="true" type="js.build_tools.grunt">
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build main.go" />
-        <item itemvalue="Go Build.go build main.go (1)" />
+        <item itemvalue="Go Build.go build 1.go" />
         <item itemvalue="Go Build.go build Golang/测试" />
+        <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Build.go build main.go" />
       </list>
     </recent_temporary>
   </component>
   <component name="ServiceViewManager">
-    <option name="allServicesViewState">
-      <serviceView>
-        <treeState>
-          <expand />
-          <select />
-        </treeState>
-      </serviceView>
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
     </option>
   </component>
   <component name="SvnConfiguration">
@@ -261,6 +232,36 @@
   </component>
   <component name="VgoProject">
     <proxy>https://goproxy.cn</proxy>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="640" y="251" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1577761756496">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="640" y="251" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1577761756496" />
+    <state x="740" y="251" key="FileChooserDialogImpl" timestamp="1578112572590">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="740" y="251" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1578112572590" />
+    <state width="1877" height="372" key="GridCell.Tab.0.bottom" timestamp="1578037038818">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="372" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1578037038818" />
+    <state width="1877" height="372" key="GridCell.Tab.0.center" timestamp="1578037038818">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="372" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1578037038818" />
+    <state width="1877" height="372" key="GridCell.Tab.0.left" timestamp="1578037038818">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="372" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1578037038818" />
+    <state width="1877" height="372" key="GridCell.Tab.0.right" timestamp="1578037038818">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="372" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1578037038818" />
+    <state x="461" y="167" key="SettingsEditor" timestamp="1578121608923">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="461" y="167" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1578121608923" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -66,7 +66,7 @@ func (e *Engine) NewEngine() error {
 		return e.Err
 	}
 	//tbMappe := core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
-	e.Engine.ShowSQL(false)
+	e.Engine.ShowSQL(true)
 	e.Engine.SetTableMapper(tbMappers)
 	return nil
 }
@@ -81,146 +81,148 @@ func TheEventInit(t *module.TForm) {
 	//	选择导入类型时间触发
 	t.RadioButton1.SetOnClick(func(sender vcl.IObject) {
 		if t.RadioButton1.Checked() == true {
+			t.ProgressBar.SetPosition(0) //清空进度
 			t.Open_Import = false
-			vcl.ThreadSync(func() {
-				Import_Type_Name = t.RadioButton1.Name()
-				t.ListView.Clear()
-				t.ListView.Columns().Clear()
 
-				lvl := t.ListView.Columns().Add()
-				lvl.SetCaption("导入结果")
-				lvl.SetWidth(80)
-				lvl.SetAlignment(types.TaCenter)
+			Import_Type_Name = t.RadioButton1.Name()
+			t.ListView.Clear()
+			t.ListView.Columns().Clear()
 
-				lv1 := t.ListView.Columns().Add()
-				lv1.SetCaption("客户姓名")
-				lv1.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl := t.ListView.Columns().Add()
+			lvl.SetCaption("导入结果")
+			lvl.SetWidth(80)
+			lvl.SetAlignment(types.TaCenter)
 
-				lv1 = t.ListView.Columns().Add()
-				lv1.SetCaption("客户电话")
-				lv1.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lv1 := t.ListView.Columns().Add()
+			lv1.SetCaption("客户姓名")
+			lv1.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lv1 = t.ListView.Columns().Add()
-				lv1.SetCaption("客户地址")
-				lv1.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lv1 = t.ListView.Columns().Add()
+			lv1.SetCaption("客户电话")
+			lv1.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lv1 = t.ListView.Columns().Add()
-				lv1.SetCaption("员工工号")
-				lv1.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lv1 = t.ListView.Columns().Add()
+			lv1.SetCaption("客户地址")
+			lv1.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lv1 = t.ListView.Columns().Add()
-				lv1.SetCaption("客户分类")
-				lv1.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lv1 = t.ListView.Columns().Add()
+			lv1.SetCaption("员工工号")
+			lv1.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lv1 = t.ListView.Columns().Add()
-				lv1.SetCaption("来源")
-				lv1.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
-			})
+			lv1 = t.ListView.Columns().Add()
+			lv1.SetCaption("客户分类")
+			lv1.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
+
+			lv1 = t.ListView.Columns().Add()
+			lv1.SetCaption("来源")
+			lv1.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
+
 		}
 
 	})
 	//	选择导入类型事件触发
 	t.RadioButton2.SetOnClick(func(sender vcl.IObject) {
 		if t.RadioButton2.Checked() == true {
+			t.ProgressBar.SetPosition(0) //清空进度
 			t.Open_Import = false
-			vcl.ThreadSync(func() {
-				Import_Type_Name = t.RadioButton1.Name()
-				t.ListView.Clear()
-				t.ListView.Columns().Clear()
 
-				//初始化表头
-				lvl := t.ListView.Columns().Add()
-				lvl.SetCaption("导入结果")
-				lvl.SetWidth(80)
-				lvl.SetAlignment(types.TaCenter)
+			Import_Type_Name = t.RadioButton2.Name()
+			t.ListView.Clear()
+			t.ListView.Columns().Clear()
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("单据日期")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			//初始化表头
+			lvl := t.ListView.Columns().Add()
+			lvl.SetCaption("导入结果")
+			lvl.SetWidth(80)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("工号")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("单据日期")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("客户姓名")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("工号")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("客户编码")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("客户姓名")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("客户电话")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("客户编码")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("客户地址")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("客户电话")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("客户分类")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("客户地址")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("客户来源")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("客户分类")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("库房")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("客户来源")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("类别")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("库房")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("票号")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("类别")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("商品ID")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("票号")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("数量")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("商品ID")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("单价")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("数量")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-				lvl = t.ListView.Columns().Add()
-				lvl.SetCaption("备注")
-				lvl.SetWidth(t.PanelB.Width() / 10)
-				lvl.SetAlignment(types.TaCenter)
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("单价")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
 
-			})
+			lvl = t.ListView.Columns().Add()
+			lvl.SetCaption("备注")
+			lvl.SetWidth(t.PanelB.Width() / 10)
+			lvl.SetAlignment(types.TaCenter)
+
 		}
 	})
 	//	选择导入类型事件触发
 	t.RadioButton3.SetOnClick(func(sender vcl.IObject) {
 		if t.RadioButton3.Checked() == true {
+			t.ProgressBar.SetPosition(0) //清空进度
 			t.Open_Import = false
 			Import_Type_Name = t.RadioButton1.Name()
 			t.ListView.Clear()
@@ -231,6 +233,7 @@ func TheEventInit(t *module.TForm) {
 	//	选择导入类型事件触发
 	t.RadioButton4.SetOnClick(func(sender vcl.IObject) {
 		if t.RadioButton4.Checked() == true {
+			t.ProgressBar.SetPosition(0) //清空进度
 			t.Open_Import = false
 			Import_Type_Name = t.RadioButton1.Name()
 			t.ListView.Clear()
@@ -265,7 +268,19 @@ func TheEventInit(t *module.TForm) {
 				vcl.ShowMessageFmt("打开文件出错：%v", err)
 				return
 			}
-
+			fmt.Println(len(Data))
+			t.Windows.SetEnabled(false)
+			t.Button.SetEnabled(false)
+			t.OpenButton.SetEnabled(false)
+			t.RadioButton1.SetEnabled(false)
+			t.RadioButton2.SetEnabled(false)
+			t.RadioButton3.SetEnabled(false)
+			t.RadioButton4.SetEnabled(false)
+			t.ListView.SetEnabled(false)
+			t.PanelA.SetEnabled(false)
+			t.PanelB.SetEnabled(false)
+			t.PanelC.SetEnabled(false)
+			t.ProgressBar.SetEnabled(false)
 			//len1 := 0
 			//绘制列表数据
 			t.ListView.Clear()
@@ -281,6 +296,18 @@ func TheEventInit(t *module.TForm) {
 								continue
 							} else {
 								vcl.ShowMessageFmt("%v 与 %v 不匹配！", t.OpenTextFileDialog.FileName(), Import_Type_Name)
+								t.Windows.SetEnabled(true)
+								t.Button.SetEnabled(true)
+								t.OpenButton.SetEnabled(true)
+								t.RadioButton1.SetEnabled(true)
+								t.RadioButton2.SetEnabled(true)
+								t.RadioButton3.SetEnabled(true)
+								t.RadioButton4.SetEnabled(true)
+								t.ListView.SetEnabled(true)
+								t.PanelA.SetEnabled(true)
+								t.PanelB.SetEnabled(true)
+								t.PanelC.SetEnabled(true)
+								t.ProgressBar.SetEnabled(true)
 								return
 							}
 						}
@@ -301,6 +328,18 @@ func TheEventInit(t *module.TForm) {
 				}
 				//t.ListView.Items().EndUpdate()
 				t.Open_Import = true
+				t.Windows.SetEnabled(true)
+				t.Button.SetEnabled(true)
+				t.OpenButton.SetEnabled(true)
+				t.RadioButton1.SetEnabled(true)
+				t.RadioButton2.SetEnabled(true)
+				t.RadioButton3.SetEnabled(true)
+				t.RadioButton4.SetEnabled(true)
+				t.ListView.SetEnabled(true)
+				t.PanelA.SetEnabled(true)
+				t.PanelB.SetEnabled(true)
+				t.PanelC.SetEnabled(true)
+				t.ProgressBar.SetEnabled(true)
 			}()
 		}
 
@@ -444,9 +483,9 @@ func TheEventInit(t *module.TForm) {
 					Market.Remarks = t.ListView.Items().Item(int32(i)).SubItems().Strings(14)                     //备注
 					Market.Operator = t.Operator
 
-					if Market.Job_number == "" {
-						Market.Job_number, err = e.InSetClient(Market.Customer_name, Market.Customer_phon, Market.Customer_site, Market.Job_number, Market.Customer_type, Market.Customer_source)
-						if Market.Job_number == "" {
+					if Market.Customer_no == "" {
+						Market.Customer_no, err = e.InSetClient(Market.Customer_name, Market.Customer_phon, Market.Customer_site, Market.Job_number, Market.Customer_type, Market.Customer_source)
+						if Market.Customer_no == "" {
 							vcl.ThreadSync(func() {
 								t.ListView.Items().Item(int32(i)).SetCaption(fmt.Sprintf("错误：%v", err))
 								t.ProgressBar.SetPosition(int32(i+1) / t.ListView.Items().Count() * 100)
@@ -464,7 +503,7 @@ func TheEventInit(t *module.TForm) {
 
 					err = e.InSetConsume(Market)
 
-					if err != nil {
+					if err == nil {
 						vcl.ThreadSync(func() {
 							t.ListView.Items().Item(int32(i)).SetCaption("导入成功")
 						})
@@ -609,10 +648,6 @@ func (e *Engine) InSetConsume(sell *Market) error {
 		return fmt.Errorf("客户姓名为空")
 	} else if sell.Customer_no == "" {
 		return fmt.Errorf("客户编码为空")
-	} else if sell.Customer_type == "" {
-		return fmt.Errorf("客户分类为空")
-	} else if sell.Customer_source == "" {
-		return fmt.Errorf("客户来源为空")
 	} else if sell.DateTime == "" {
 		return fmt.Errorf("单据日期为空！")
 	} else if sell.Job_number == "" {
@@ -632,11 +667,12 @@ func (e *Engine) InSetConsume(sell *Market) error {
 	// BILLNO 随机时间  BILLTYPEID 导入类型  BILLDATE  单据时间  BILLFLAG 默认1  SALESMAN_ID  员工工号
 	// OPER_ID 操作员工号 CLIENT_ID  客户ID  WAREHOUSESID 库房   PIAOHAO  票号   NEWOROLD  新老客户
 	Sql := fmt.Sprintf("INSERT INTO BLCRM.CRM_DAT007(BILLNO,BILLTYPEID,BILLDATE,BILLFLAG,SALESMAN_ID,OPER_ID,CLIENT_ID,WAREHOUSESID,PIAOHAO,NEWOROLD)"+
-		" VALUES(%s,140001,TO_DATE('%s','YYYY-MM-DD HH24:MI:SS'),1,%v,%v,%v,%v,%v,'%v')", sell.TimeNumber, sell.DateTime, sell.Job_number, sell.Operator,
+		" VALUES(%s,140001,TO_DATE('%s','YYYY-MM-DD'),1,%v,%v,%v,%v,'%v','%v')", sell.TimeNumber, sell.DateTime, sell.Job_number, sell.Operator,
 		sell.Customer_no, sell.Warehouse, sell.Exchange_shop, sell.New_and_old_clients)
 
 	_, e.Err = e.Engine.Exec(Sql)
 	if e.Err != nil {
+		fmt.Println(e.Err)
 		return e.Err
 	}
 
@@ -645,7 +681,7 @@ func (e *Engine) InSetConsume(sell *Market) error {
 	Price_per_uni, _ := strconv.Atoi(sell.Price_per_uni)
 	sum := Num * Price_per_uni
 	SqL := fmt.Sprintf("INSERT INTO BLCRM.CRM_DAT009(BILLNO,GOODSID,AMOUNT,SUMPRICE,PRICE,REMARKS,KIND)"+
-		" VALUES(%s,%s,%s,%s,%s,'%v','%v')", sell.TimeNumber, sell.Job_number, sell.Num, sum, sell.Price_per_uni, sell.Remarks, sell.For_Sale)
+		" VALUES(%v,%v,%v,%v,%v,'%v','%v')", sell.TimeNumber, sell.Job_number, sell.Num, sum, sell.Price_per_uni, sell.Remarks, sell.For_Sale)
 
 	_, e.Err = e.Engine.Exec(SqL)
 	if e.Err != nil {
@@ -672,7 +708,7 @@ func (e *Engine) InSetConsume(sell *Market) error {
 		integral = sum / 100
 	}
 
-	_, e.Err = e.Engine.Exec(fmt.Sprintf("UPDATE BLCRM.CRM_DAT001 SET JIFEN = '%v' WHERE KHID = %v", integral, sell.Customer_no))
+	_, e.Err = e.Engine.Exec(fmt.Sprintf("UPDATE BLCRM.CRM_DAT001 SET JIFEN = %v WHERE KHID = %v", integral, sell.Customer_no))
 
 	if e.Err != nil {
 		return e.Err

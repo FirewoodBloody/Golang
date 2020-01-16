@@ -100,7 +100,7 @@ func (l *LoginTForm) LoginTFormSet(t *module.TForm) {
 			vcl.ShowMessageFmt("请输入工号！")
 			return
 		} else if l.TEdit1.Text() != "1973" {
-			t.RadioButton1.SetEnabled(false)
+			t.RadioButton1.Hide()
 		}
 		e := new(Engine)
 		e.NewEngine()

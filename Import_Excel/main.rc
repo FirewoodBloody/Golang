@@ -1,1 +1,2 @@
-IDI_ICON1 ICON "./images/ICON.ico"
+1 MANIFEST "main.manifest"
+MAINICON ICON "./images/ICON.ico"
