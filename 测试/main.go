@@ -101,7 +101,7 @@ func Create_application() {
 	RequestOrder.Receiver.City = "西安市,未央区"
 	RequestOrder.Receiver.Address = "唐延路1号旺座国际城E做25楼"
 	RequestOrder.Special = 0
-	RequestOrder.Items.Item = make([]Item, 1)
+	RequestOrder.Items.Item = make([]Item, 1) //初始化
 	RequestOrder.Items.Item[0].ItemName = "盛世中华"
 	RequestOrder.Items.Item[0].Number = 1
 
