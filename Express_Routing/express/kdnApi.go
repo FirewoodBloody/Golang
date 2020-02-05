@@ -71,6 +71,7 @@ func KdnExpressInformation(ShipperCode, LogisticCode string) (KdnDataStruct *Rou
 
 //新建请求内容，并进行加密处理
 //初始化请求数据，配置请求参数
+//需求快递的单号，以及快递对应的公司代码
 func KdnCreateData(ShipperCode, LogisticCode string) (requestParameters url.Values, err error) {
 	//定义快递请求信息
 	data := DataValue{

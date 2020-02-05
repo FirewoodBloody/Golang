@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="">
+      <change afterPath="$PROJECT_DIR$/express_api/modules/Express_bird.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/express_api/modules/sf_express_routing.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linshi/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Express_Routing/express/kdnApi.go" beforeDir="false" afterPath="$PROJECT_DIR$/Express_Routing/express/kdnApi.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/favicon-16x16.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/favicon-32x32.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/oauth2-redirect.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger-ui-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger-ui-bundle.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger-ui-standalone-preset.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger-ui-standalone-preset.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger-ui.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger-ui.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger-ui.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger-ui.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/测试/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/测试/main.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+        <option value="HTML File" />
+        <option value="Go Application" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="D:\Software_world\Golang" />
+  <component name="Git.Settings">
+    <option name="ROOT_SYNC" value="SYNC" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="AUTO_COMMIT_ON_CHERRY_PICK" value="true" />
+  </component>
+  <component name="GoLibraries">
+    <option name="useGoPathFromSystemEnvironment" value="false" />
+  </component>
+  <component name="ProjectId" id="1PJB37UmBGWIVQaCQdLfwSl2meN" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="DefaultGoTemplateProperty" value="Go Application" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="NewWatcherDialog.advanced.open" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="configurable.Global.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Module.GOPATH.is.expanded" value="true" />
+    <property name="configurable.Project.GOPATH.is.expanded" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="js.buildTools.grunt.grunt-cli.package" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Import_Excel" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Go" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Go\src\Golang\Import_Excel" />
+      <recent name="D:\Go\src\Golang\Import_Excel\images" />
+      <recent name="D:\Go\src\Golang\API\models" />
+      <recent name="D:\Go\src\Golang\API\controllers" />
+      <recent name="D:\Go\src\Golang\录音程序" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Go\src\Golang\测试" />
+      <recent name="D:\Go\src\Golang" />
+      <recent name="D:\Go\src\Golang\录音程序" />
+      <recent name="D:\Go\src\Golang\Xor" />
+      <recent name="D:\Go\src\Golang\oneHCJ" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="？" />
+      <command value="“？”" />
+      <command value="go run main.go" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Go Build.go build main.go (2)">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="Golang" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
+      <parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/" />
+      <package value="Golang" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build 1.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Golang" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
+      <parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/测试/1.go" />
+      <package value="Golang" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build Golang/测试" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Golang" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
+      <parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/测试/main.go" />
+      <package value="Golang/测试" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build kdnApi.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Golang" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
+      <parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/Express_Routing/express/kdnApi.go" />
+      <package value="Golang" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build main.go (1)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Golang" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
+      <parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/linshi/main.go" />
+      <package value="Golang" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build main.go (2)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Golang" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
+      <parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/Express_Routing/main.go" />
+      <package value="Golang" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="js.build_tools.grunt">
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build main.go (2)" />
+        <item itemvalue="Go Build.go build kdnApi.go" />
+        <item itemvalue="Go Build.go build main.go (1)" />
+        <item itemvalue="Go Build.go build 1.go" />
+        <item itemvalue="Go Build.go build Golang/测试" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="" />
+      <created>1556361685438</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1556361685438</updated>
+      <workItem from="1556361688517" duration="80000" />
+      <workItem from="1557739260500" duration="2772000" />
+      <workItem from="1557797946775" duration="809000" />
+      <workItem from="1557801858307" duration="13315000" />
+      <workItem from="1557999276166" duration="1934000" />
+      <workItem from="1558062782960" duration="4579000" />
+      <workItem from="1558084886891" duration="1312000" />
+      <workItem from="1558428861451" duration="10261000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="35062000" />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VgoProject">
+    <proxy>https://goproxy.cn</proxy>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="640" y="251" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1577761756496">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="640" y="251" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1577761756496" />
+    <state x="706" y="159" key="#go_build_kdnApi.go" timestamp="1579423422750">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="706" y="159" key="#go_build_kdnApi.go/0.0.1920.1050@0.0.1920.1050" timestamp="1579423422750" />
+    <state x="740" y="251" key="FileChooserDialogImpl" timestamp="1578112572590">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="740" y="251" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1578112572590" />
+    <state width="1877" height="372" key="GridCell.Tab.0.bottom" timestamp="1579423471207">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="372" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1579423471207" />
+    <state width="1877" height="372" key="GridCell.Tab.0.center" timestamp="1579423471207">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="372" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1579423471207" />
+    <state width="1877" height="372" key="GridCell.Tab.0.left" timestamp="1579423471207">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="372" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1579423471207" />
+    <state width="1877" height="372" key="GridCell.Tab.0.right" timestamp="1579423471207">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="372" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1579423471207" />
+    <state x="461" y="167" key="SettingsEditor" timestamp="1578121608923">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="461" y="167" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1578121608923" />
+    <state x="623" y="227" width="672" height="678" key="search.everywhere.popup" timestamp="1579403706795">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="623" y="227" width="672" height="678" key="search.everywhere.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1579403706795" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/express_api/modules/sf_express_routing.go</url>
+          <line>115</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

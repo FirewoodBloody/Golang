@@ -13,7 +13,10 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	dec, data, err := minimp3.DecodeFull(file)
+
+	//fmt.Printf("%#v", len(file))
+
+	dec, data, err := minimp3.DecodeFull(file[700000:])
 	if err != nil {
 		fmt.Println(err)
 	}

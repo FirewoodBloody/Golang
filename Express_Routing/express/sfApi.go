@@ -73,7 +73,7 @@ func SfPost(requestParameters url.Values) (SfDataStruct *Response, err error) {
 	data, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return
+		return nil, err
 	}
 	SfDataStruct = &Response{}
 

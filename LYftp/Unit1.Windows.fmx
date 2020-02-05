@@ -1,0 +1,34 @@
+inherited Form1_Windows: TForm1_Windows
+  ClientHeight = 290
+  ClientWidth = 668
+  DesignerMasterStyle = 0
+  inherited Label1: TLabel
+    Position.X = 97.000000000000000000
+    Position.Y = 51.000000000000000000
+  end
+  inherited Label2: TLabel
+    Position.X = 393.000000000000000000
+    Position.Y = 51.000000000000000000
+  end
+  inherited DateEdit1: TDateEdit
+    Position.X = 147.000000000000000000
+    Position.Y = 48.000000000000000000
+  end
+  inherited DateEdit2: TDateEdit
+    Position.X = 443.000000000000000000
+    Position.Y = 48.000000000000000000
+  end
+  inherited Button1: TButton
+    Position.X = 254.000000000000000000
+    Position.Y = 152.000000000000000000
+    Size.Width = 161.000000000000000000
+    Size.Height = 41.000000000000000000
+    Size.PlatformDefault = False
+  end
+  inherited ProgressBar1: TProgressBar
+    Position.X = -2.000000000000000000
+    Position.Y = 256.000000000000000000
+    Size.Width = 673.000000000000000000
+    Size.PlatformDefault = False
+  end
+end
