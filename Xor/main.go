@@ -50,5 +50,5 @@ func (a *Xor) dec(src string) string {
 func main() {
 	xor := Xor{}
 	fmt.Println(xor.enc("13991252603,20190724,094557"))
-	fmt.Println(xor.dec("9084956E2E530EB791829C7B2E530AB8918F9E6330530FB1958798"))
+	fmt.Println(xor.dec("9084956e2d510eb397879f7b2e530ab891809e63305302b594829b"))
 }

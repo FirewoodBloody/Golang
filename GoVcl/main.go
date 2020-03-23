@@ -2,6 +2,7 @@ package main
 
 import (
 	"Golang/Express_Routing/express"
+	"Golang/express_api/modules"
 	"fmt"
 	"github.com/ying32/govcl/vcl"
 	"github.com/ying32/govcl/vcl/types"
@@ -44,6 +45,7 @@ func (t *TForm) Init() {
 	t.combobox.SetTop(60)               //设置按钮位置 竖向
 	//设置下拉选项内容
 	t.combobox.AddItem("顺丰快递", nil)
+	t.combobox.AddItem("京东快递", nil)
 	t.combobox.AddItem("圆通快递", nil)
 	t.combobox.AddItem("中通快递", nil)
 	t.combobox.AddItem("邮政快递", nil)
@@ -188,6 +190,21 @@ func (t *TForm) incident() {
 				t.grids.SetCells(3, int32(k+1), v.Accept_Time)
 				t.grids.SetCells(4, int32(k+1), v.Remark)
 			}
+		} else if t.combobox.Text() == "京东快递" {
+			datas := modules.SelectData(str)
+			if len(datas.Querytrace_result.Data) == 0 {
+				return
+			}
+
+			t.grids.SetRowCount(int32(len(datas.Querytrace_result.Data) + 1)) //设置行的个数
+			for k, v := range datas.Querytrace_result.Data {
+				t.grids.SetCells(0, int32(k+1), strconv.Itoa(k+1))
+				t.grids.SetCells(1, int32(k+1), v.WaybillCode)
+				t.grids.SetCells(2, int32(k+1), v.OpeTitle)
+				t.grids.SetCells(3, int32(k+1), v.OpeTime)
+				t.grids.SetCells(4, int32(k+1), v.OpeRemark)
+			}
+
 		} else {
 			datas, _ := express.KdnExpressInformation(getExp[t.combobox.Text()], str)
 			if len(datas.Traces) == 0 {
@@ -214,7 +231,7 @@ func (t *TForm) incident() {
 		t.listView.Clear()
 		data := strings.Split(t.memo.Text(), "\r\n")
 		types := t.combobox.Text()
-		if types != "顺丰快递" {
+		if types != "顺丰快递" && types != "京东快递" {
 			types = getExp[types]
 		}
 		//grid.SetCells(0, int32(0), "")
@@ -259,6 +276,30 @@ func (t *TForm) incident() {
 							item.SubItems().Add(datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Accept_Address)
 							item.SubItems().Add(datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Accept_Time)
 							item.SubItems().Add(datas.Body.RouteResponse.Route[len(datas.Body.RouteResponse.Route)-1].Remark)
+						})
+					}
+				} else if types == "京东快递" {
+					datas := modules.SelectData(str)
+
+					if len(datas.Querytrace_result.Data) == 0 {
+						vcl.ThreadSync(func() {
+							item := t.listView.Items().Add()
+							item.SetImageIndex(0)
+							item.SetCaption(fmt.Sprintf("%3d", i))
+							item.SubItems().Add(str)
+							item.SubItems().Add("")
+							item.SubItems().Add("")
+							item.SubItems().Add("查询失败（无路由信息）或单号错误！")
+						})
+					} else {
+						vcl.ThreadSync(func() {
+							item := t.listView.Items().Add()
+							item.SetImageIndex(0)
+							item.SetCaption(fmt.Sprintf("%3d", i))
+							item.SubItems().Add(datas.Querytrace_result.Data[len(datas.Querytrace_result.Data)-1].WaybillCode)
+							item.SubItems().Add(datas.Querytrace_result.Data[len(datas.Querytrace_result.Data)-1].OpeTitle)
+							item.SubItems().Add(datas.Querytrace_result.Data[len(datas.Querytrace_result.Data)-1].OpeTime)
+							item.SubItems().Add(datas.Querytrace_result.Data[len(datas.Querytrace_result.Data)-1].OpeRemark)
 						})
 					}
 				} else {
