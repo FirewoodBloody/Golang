@@ -207,32 +207,44 @@ func (e *Engine) SelectAdd(file *excelize.File, number int) (string, string, str
 }
 
 func main() {
-	file, err := excelize.OpenFile("报名表单.xlsx")
+	//file, err := excelize.OpenFile("报名表单.xlsx")
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//
+	//row := file.GetRows("Sheet1")
+	//
+	//e := new(Engine)
+	//err = e.NewEngine()
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
+	//
+	//defer e.Engine.Close()
+	//
+	//for i, _ := range row {
+	//	if i == 0 {
+	//		continue
+	//	}
+	//	a, b, C := e.SelectAdd(file, i+1)
+	//
+	//	file.SetCellValue("Sheet1", fmt.Sprintf("E%v", i+1), a)
+	//	file.SetCellValue("Sheet1", fmt.Sprintf("F%v", i+1), b)
+	//	file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i+1), C)
+	//}
+	//
+	//file.Save()
+	e := Engine{}
+	e.NewEngine()
+	res, err := e.Engine.Query("SELECT DIZHI FROM BLCRM.CRM_DAT001 WHERE KHID = 7502723")
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	row := file.GetRows("Sheet1")
-
-	e := new(Engine)
-	err = e.NewEngine()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	defer e.Engine.Close()
-
-	for i, _ := range row {
-		if i == 0 {
-			continue
+	for _, v := range res {
+		for _, data := range v {
+			fmt.Println(string(data))
 		}
-		a, b, C := e.SelectAdd(file, i+1)
-
-		file.SetCellValue("Sheet1", fmt.Sprintf("E%v", i+1), a)
-		file.SetCellValue("Sheet1", fmt.Sprintf("F%v", i+1), b)
-		file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i+1), C)
 	}
-
-	file.Save()
 }

@@ -11,11 +11,6 @@ var XorKey []byte = []byte{0xA1, 0xB7, 0xAC, 0x57, 0x1C, 0x63, 0x3B, 0x81}
 type Xor struct {
 }
 
-//type m interface {
-//	enc(src string) string
-//	dec(src string) string
-//}
-
 //加密
 func (a *Xor) enc(src string) string {
 	var result string
