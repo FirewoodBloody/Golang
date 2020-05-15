@@ -16,6 +16,13 @@ type Engine struct {
 	Err    error
 }
 
+type count_sun struct {
+	SumHeji  string
+	Counts   string
+	Zengsong string
+	Tuihuo   string
+}
+
 const (
 	TimeFormat = "2006-01-02"
 	driverName = "oci8"
@@ -206,45 +213,291 @@ func (e *Engine) SelectAdd(file *excelize.File, number int) (string, string, str
 	return name, depname, KHID
 }
 
-func main() {
-	//file, err := excelize.OpenFile("报名表单.xlsx")
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//
-	//row := file.GetRows("Sheet1")
-	//
-	//e := new(Engine)
-	//err = e.NewEngine()
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return
-	//}
-	//
-	//defer e.Engine.Close()
-	//
-	//for i, _ := range row {
-	//	if i == 0 {
-	//		continue
-	//	}
-	//	a, b, C := e.SelectAdd(file, i+1)
-	//
-	//	file.SetCellValue("Sheet1", fmt.Sprintf("E%v", i+1), a)
-	//	file.SetCellValue("Sheet1", fmt.Sprintf("F%v", i+1), b)
-	//	file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i+1), C)
-	//}
-	//
-	//file.Save()
-	e := Engine{}
-	e.NewEngine()
-	res, err := e.Engine.Query("SELECT DIZHI FROM BLCRM.CRM_DAT001 WHERE KHID = 7502723")
-	if err != nil {
-		fmt.Println(err)
+func (e *Engine) Select09(id string) *count_sun {
+	as := new(count_sun)
+
+	res1, _ := e.Engine.Query(fmt.Sprintf("SELECT SUM(SUMPRICE) FROM CRM_DAT009_VIEW009 WHERE CLIENT_ID = %v AND KIND = '售' OR CLIENT_ID = %v AND KIND = '兑'", id, id))
+
+	for _, v := range res1 {
+		as.SumHeji = string(v["SUM(SUMPRICE)"])
 	}
 
-	for _, v := range res {
-		for _, data := range v {
-			fmt.Println(string(data))
+	res2, _ := e.Engine.Query(fmt.Sprintf("SELECT COUNT(SUMPRICE) FROM CRM_DAT009_VIEW009 WHERE CLIENT_ID = %v AND KIND = '售' OR CLIENT_ID = %v AND KIND = '兑'", id, id))
+	for _, v := range res2 {
+		as.Counts = string(v["COUNT(SUMPRICE)"])
+	}
+
+	res3, _ := e.Engine.Query(fmt.Sprintf("SELECT SUM(SUMPRICE) FROM CRM_DAT009_VIEW009 WHERE CLIENT_ID = %v AND KIND = '赠' ", id))
+	for _, v := range res3 {
+		as.Zengsong = string(v["SUM(SUMPRICE)"])
+	}
+
+	res4, _ := e.Engine.Query(fmt.Sprintf("SELECT SUM(SUMPRICE) FROM CRM_DAT009_VIEW009 WHERE CLIENT_ID = %v AND KIND = '退' ", id))
+	for _, v := range res4 {
+		as.Tuihuo = string(v["SUM(SUMPRICE)"])
+	}
+
+	return as
+}
+
+func main() {
+
+	file, _ := excelize.OpenFile("./客户模板.xlsx")
+	rows := file.GetRows("Sheet1")
+
+	e := Engine{}
+
+	s := 10
+	n := 5
+
+	for i := 2; i < len(rows)+1; i++ {
+
+		e.NewEngine()
+
+		res, err := e.Engine.Query(fmt.Sprintf("SELECT KHMC||'',KHID,TO_CHAR(BIRTHDAY,'YYYY-MM-DD'),AGE,SEX,YWY||'',TO_CHAR(XCYY,'YYYY-MM-DD'),RESERVE,SOURCESTR,TO_CHAR(FPRQ,'YYYY-MM-DD'),CONSUME_NATURES,JIFEN,TO_CHAR(SCGMRQ,'YYYY-MM-DD'),MAX_DBGM,TOTALPRICE FROM CRM_DAT001_VIEW001 WHERE KHID = %v ", file.GetCellValue("Sheet1", fmt.Sprintf("A%v", i))))
+		//res, err := e.Engine.Query("SELECT KHID,DIZHI||'' FROM BLCRM.CRM_DAT001 WHERE KHID = 7385707")
+		if err != nil {
+			fmt.Println(err)
+		}
+		as := e.Select09(file.GetCellValue("Sheet1", fmt.Sprintf("A%v", i)))
+		e.Engine.Close()
+		for _, v := range res {
+
+			//file.SetCellValue("Sheet1", fmt.Sprintf("A%v", i), string(v["KHID"]))
+			//file.SetCellValue("Sheet1", fmt.Sprintf("B%v", i), string(v["KHID"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("C%v", i), string(v["KHMC||''"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("D%v", i), string(v["TO_CHAR(BIRTHDAY,'YYYY-MM-DD')"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("F%v", i), string(v["SEX"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("I%v", i), string(v["YWY||''"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("J%v", i), string(v["TO_CHAR(XCYY,'YYYY-MM-DD')"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("K%v", i), string(v["RESERVE"]))
+			//file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), string(v["SOURCESTR"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("M%v", i), string(v["TO_CHAR(FPRQ,'YYYY-MM-DD')"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), string(v["CONSUME_NATURES"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("O%v", i), string(v["JIFEN"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("Q%v", i), string(v["TO_CHAR(SCGMRQ,'YYYY-MM-DD')"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("S%v", i), string(v["MAX_DBGM"]))
+			file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), string(v["TOTALPRICE"]))
+
+			switch string(v["SOURCESTR"]) {
+			case "客户中心未购":
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "自拓展")
+
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "意向客户")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+
+			case "客户中心已购":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "自拓展")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "准已购")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "电商已购":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "电商")
+				file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "天猫")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "准已购")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "店面白单来访":
+				s++
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "专卖店来访")
+				if s%10 == 1 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "新华书店大厦店")
+				} else if s%10 == 2 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "新华书店钟楼店")
+				} else if s%10 == 3 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "汉唐小寨店")
+				} else if s%10 == 4 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "汉唐高新店")
+				} else if s%10 == 5 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "卜蜂高新店")
+				} else if s%10 == 6 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "人人乐电子城店")
+				} else if s%10 == 7 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "大雁塔店")
+				} else if s%10 == 8 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "新华书店曲江店")
+				} else if s%10 == 9 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "新华书店四海店")
+				} else if s%10 == 0 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "军区小寨店")
+				}
+
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "潜在客户")
+					//file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "店面来访登记":
+				n++
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "专卖店")
+				if n%10 == 1 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "大厦店")
+				} else if n%10 == 2 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "四海店")
+				} else if n%10 == 3 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "卜蜂店")
+				} else if n%10 == 4 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "军区店")
+				} else if n%10 == 0 {
+					file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "曲江店")
+				}
+
+				as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "意向客户")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "新媒体进线":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "新媒体")
+				file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "头条")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "意向客户")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "新媒体未妥投":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "新媒体")
+				file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "头条")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "准已购")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "活动引流":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "历史活动")
+				//file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "头条")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "意向客户")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "新媒体已购":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "新媒体")
+				file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "头条")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "准已购")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "业内已购":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "公司拓展")
+				//file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "头条")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "意向客户")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "2020鼠年生肖纪念币兑换":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "新媒体")
+				file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "头条")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "准已购")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			case "新媒体本地已购":
+				file.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), "新媒体")
+				file.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), "头条")
+				//as := e.Select09(string(v["KHID"]))
+				if as.SumHeji == "" || as.SumHeji == "0" {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "准已购")
+					file.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), "钱币类")
+				} else {
+					file.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), "已购客户")
+				}
+
+				file.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), as.SumHeji)
+				file.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), as.Counts)
+				file.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), as.Zengsong)
+				file.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), as.Tuihuo)
+			}
+			i++
+
 		}
 	}
+	file.Save()
 }

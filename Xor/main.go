@@ -18,6 +18,9 @@ func (a *Xor) enc(src string) string {
 	s := ""
 	bt := []rune(src)
 	for i := 0; i < len(bt); i++ {
+		if i == 0 {
+			fmt.Println(bt[i], "###", byte(bt[i]))
+		}
 		s = strconv.FormatInt(int64(byte(bt[i])^XorKey[j]), 16)
 		if len(s) == 1 {
 			s = "0" + s
