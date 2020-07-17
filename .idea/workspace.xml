@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/watcherTasks.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BeeApi/BeeApi.exe" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/BeeApi.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" afterDir="false" />
@@ -38,14 +56,11 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" path="D:\Software_world\Golang" />
+  <component name="GOROOT" path="$PROJECT_DIR$/../../../Software_world/GO" />
   <component name="Git.Settings">
     <option name="ROOT_SYNC" value="SYNC" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="AUTO_COMMIT_ON_CHERRY_PICK" value="true" />
-  </component>
-  <component name="GoLibraries">
-    <option name="useGoPathFromSystemEnvironment" value="false" />
   </component>
   <component name="ProjectId" id="1PJB37UmBGWIVQaCQdLfwSl2meN" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -61,6 +76,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="ask.go.tool.to.install.GoImportsTaskConsumer" value="true" />
     <property name="configurable.Global.GOPATH.is.expanded" value="true" />
     <property name="configurable.Module.GOPATH.is.expanded" value="false" />
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
@@ -75,7 +91,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="settings.editor.selected.configurable" value="go.autoimport" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -100,7 +116,7 @@
       <command value="go run main.go" />
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build main.go (3)">
+  <component name="RunManager" selected="Go Build.go build main.go">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -120,17 +136,6 @@
       <kind value="PACKAGE" />
       <filePath value="$PROJECT_DIR$/测试/main.go" />
       <package value="Golang/测试" />
-      <directory value="$PROJECT_DIR$/" />
-      <method v="2" />
-    </configuration>
-    <configuration name="go build Golang/express_api" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="Golang" />
-      <working_directory value="$PROJECT_DIR$/" />
-      <useCustomBuildTags value="true" />
-      <parameters value="-i" />
-      <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/express_api/main.go" />
-      <package value="Golang/express_api" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
@@ -167,6 +172,17 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="Golang" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <useCustomBuildTags value="true" />
+      <parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/linshi/通话记录统计查询下载/main.go" />
+      <package value="Golang" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="js.build_tools.grunt">
       <node-interpreter value="project" />
       <envs />
@@ -174,11 +190,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build main.go" />
         <item itemvalue="Go Build.go build main.go (3)" />
         <item itemvalue="Go Build.go build main.go (2)" />
         <item itemvalue="Go Build.go build Golang/测试 (1)" />
         <item itemvalue="Go Build.go build main.go (1)" />
-        <item itemvalue="Go Build.go build Golang/express_api" />
       </list>
     </recent_temporary>
   </component>
@@ -230,83 +246,56 @@
     <proxy>https://goproxy.cn</proxy>
   </component>
   <component name="WindowStateProjectService">
-    <state x="729" y="243" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1584765367011">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="519" y="171" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.738@0.0.1366.738" timestamp="1581649652498" />
-    <state x="729" y="243" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050@0.0.1920.1050" timestamp="1584765367011" />
     <state x="640" y="259" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1587096718449">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="640" y="259" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1587096718449" />
-    <state x="701" y="147" key="#go_build_Golang/测试" timestamp="1583483561938">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="701" y="147" key="#go_build_Golang/测试/0.0.1920.1050@0.0.1920.1050" timestamp="1583483561938" />
-    <state x="701" y="147" key="#go_build_jd_express_routing.go" timestamp="1584769730958">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="701" y="147" key="#go_build_jd_express_routing.go/0.0.1920.1050@0.0.1920.1050" timestamp="1584769730958" />
     <state x="552" y="165" key="#插件" timestamp="1589180614057">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="552" y="165" key="#插件/0.0.1920.1050@0.0.1920.1050" timestamp="1589180614057" />
-    <state x="740" y="251" key="FileChooserDialogImpl" timestamp="1587527419866">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="267" y="50" key="EditFileWatcherDialog" timestamp="1594983940951">
+      <screen x="0" y="0" width="1366" height="738" />
     </state>
+    <state x="267" y="50" key="EditFileWatcherDialog/0.0.1366.738@0.0.1366.738" timestamp="1594983940951" />
+    <state x="526" y="176" key="FileChooserDialogImpl" timestamp="1594981728818">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="526" y="176" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1594981728818" />
     <state x="740" y="251" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1587527419866" />
-    <state width="2517" height="348" key="GridCell.Tab.0.bottom" timestamp="1590033635602">
-      <screen x="0" y="0" width="2560" height="1410" />
+    <state width="1323" height="287" key="GridCell.Tab.0.bottom" timestamp="1594984287975">
+      <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1323" height="341" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1581653276986" />
+    <state width="1323" height="287" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594984287975" />
     <state width="1877" height="243" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1589183747676" />
     <state width="2517" height="348" key="GridCell.Tab.0.bottom/0.0.2560.1410@0.0.2560.1410" timestamp="1590033635602" />
-    <state width="2517" height="348" key="GridCell.Tab.0.center" timestamp="1590033635602">
-      <screen x="0" y="0" width="2560" height="1410" />
+    <state width="1323" height="287" key="GridCell.Tab.0.center" timestamp="1594984287975">
+      <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1323" height="341" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1581653276986" />
+    <state width="1323" height="287" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594984287975" />
     <state width="1877" height="243" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1589183747676" />
     <state width="2517" height="348" key="GridCell.Tab.0.center/0.0.2560.1410@0.0.2560.1410" timestamp="1590033635602" />
-    <state width="2517" height="348" key="GridCell.Tab.0.left" timestamp="1590033635602">
-      <screen x="0" y="0" width="2560" height="1410" />
+    <state width="1323" height="287" key="GridCell.Tab.0.left" timestamp="1594984287975">
+      <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1323" height="341" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1581653276986" />
+    <state width="1323" height="287" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594984287975" />
     <state width="1877" height="243" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1589183747676" />
     <state width="2517" height="348" key="GridCell.Tab.0.left/0.0.2560.1410@0.0.2560.1410" timestamp="1590033635602" />
-    <state width="2517" height="348" key="GridCell.Tab.0.right" timestamp="1590033635602">
-      <screen x="0" y="0" width="2560" height="1410" />
+    <state width="1323" height="287" key="GridCell.Tab.0.right" timestamp="1594984287975">
+      <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1323" height="341" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1581653276986" />
+    <state width="1323" height="287" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594984287975" />
     <state width="1877" height="243" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1589183747676" />
     <state width="2517" height="348" key="GridCell.Tab.0.right/0.0.2560.1410@0.0.2560.1410" timestamp="1590033635602" />
-    <state width="1877" height="482" key="GridCell.Tab.1.bottom" timestamp="1584958602895">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="183" y="30" key="SettingsEditor" timestamp="1594983993578">
+      <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1877" height="482" key="GridCell.Tab.1.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1584958602895" />
-    <state width="1877" height="482" key="GridCell.Tab.1.center" timestamp="1584958602895">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1877" height="482" key="GridCell.Tab.1.center/0.0.1920.1050@0.0.1920.1050" timestamp="1584958602895" />
-    <state width="1877" height="482" key="GridCell.Tab.1.left" timestamp="1584958602895">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1877" height="482" key="GridCell.Tab.1.left/0.0.1920.1050@0.0.1920.1050" timestamp="1584958602895" />
-    <state width="1877" height="482" key="GridCell.Tab.1.right" timestamp="1584958602895">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state width="1877" height="482" key="GridCell.Tab.1.right/0.0.1920.1050@0.0.1920.1050" timestamp="1584958602895" />
-    <state x="465" y="144" key="SettingsEditor" timestamp="1587805310388">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
+    <state x="183" y="30" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1594983993578" />
     <state x="465" y="144" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1587805310388" />
-    <state x="734" y="96" key="com.goide.refactor.move.GoMoveDeclarationDialog" timestamp="1583483641791">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state x="465" y="315" key="com.goide.codeInsight.imports.GoImportConfigurable$AddImportExclusionDialog" timestamp="1594983981992">
+      <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="734" y="96" key="com.goide.refactor.move.GoMoveDeclarationDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1583483641791" />
-    <state x="633" y="105" width="652" height="837" key="find.popup" timestamp="1586338293237">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="633" y="105" width="652" height="837" key="find.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1586338293237" />
+    <state x="465" y="315" key="com.goide.codeInsight.imports.GoImportConfigurable$AddImportExclusionDialog/0.0.1366.738@0.0.1366.738" timestamp="1594983981992" />
     <state x="691" y="337" width="618" height="283" key="org.intellij.images.editor.actions.BackgroundImageDialog" timestamp="1587799502809">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
@@ -321,7 +310,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/express_api/modules/sf_express_routing.go</url>
-          <line>115</line>
+          <line>120</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

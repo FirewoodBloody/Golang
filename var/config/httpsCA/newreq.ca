@@ -1,0 +1,56 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 0 (0x0)
+    Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=CN, ST=SH, L=SH, O=newrock, OU=newrock, CN=www.newrocktech.com/emailAddress=fli@newrocktech.com
+        Validity
+            Not Before: Feb 24 07:07:24 2014 GMT
+            Not After : Feb 22 07:07:24 2024 GMT
+        Subject: C=CN, ST=SH, O=newrock, OU=newrock, CN=www.newrocktech.com/emailAddress=fli@newrocktech.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (1024 bit)
+                Modulus:
+                    00:d3:c4:f5:6d:c1:1d:f6:6f:97:54:f0:00:b9:9b:
+                    7f:1a:05:18:8f:4a:cf:73:12:5e:16:08:97:6d:4f:
+                    43:2b:9f:a2:0c:3f:c8:e1:49:15:9d:43:8c:6b:05:
+                    06:82:b3:6d:2d:7a:c8:7b:43:b0:de:22:46:0b:b0:
+                    7d:37:e1:dc:c6:24:d5:c6:a8:69:a7:50:31:8f:8a:
+                    7f:aa:f3:37:68:42:2c:9a:87:15:5c:4b:72:1b:78:
+                    08:08:2c:53:6c:24:47:48:96:b2:31:34:7d:08:dc:
+                    d0:ac:71:f8:34:54:30:42:e7:43:6d:67:10:2f:80:
+                    af:6f:a9:0f:9a:11:7e:29:fb
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier: 
+                19:D2:F2:77:73:C3:DB:2C:A6:AA:80:7F:A1:3C:21:AC:DB:72:30:57
+            X509v3 Authority Key Identifier: 
+                keyid:D7:8A:76:0F:48:28:DD:54:AF:70:A5:70:35:9E:82:CA:E9:BD:A5:EF
+
+    Signature Algorithm: sha1WithRSAEncryption
+         82:bd:45:f4:49:41:ed:8c:70:3f:cd:75:fe:7a:45:ae:69:bd:
+         ce:80:f7:31:ae:3b:bb:b9:72:87:e6:9d:ab:2c:db:53:a8:8a:
+         71:ef:0e:8d:9b:a2:fa:9c:5f:6a:3b:dc:11:5a:c8:b1:a7:f7:
+         9f:1a:b0:52:0b:aa:77:f6:17:94
+-----BEGIN CERTIFICATE-----
+MIICvzCCAmmgAwIBAgIBADANBgkqhkiG9w0BAQUFADCBjTELMAkGA1UEBhMCQ04x
+CzAJBgNVBAgMAlNIMQswCQYDVQQHDAJTSDEQMA4GA1UECgwHbmV3cm9jazEQMA4G
+A1UECwwHbmV3cm9jazEcMBoGA1UEAwwTd3d3Lm5ld3JvY2t0ZWNoLmNvbTEiMCAG
+CSqGSIb3DQEJARYTZmxpQG5ld3JvY2t0ZWNoLmNvbTAeFw0xNDAyMjQwNzA3MjRa
+Fw0yNDAyMjIwNzA3MjRaMIGAMQswCQYDVQQGEwJDTjELMAkGA1UECAwCU0gxEDAO
+BgNVBAoMB25ld3JvY2sxEDAOBgNVBAsMB25ld3JvY2sxHDAaBgNVBAMME3d3dy5u
+ZXdyb2NrdGVjaC5jb20xIjAgBgkqhkiG9w0BCQEWE2ZsaUBuZXdyb2NrdGVjaC5j
+b20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANPE9W3BHfZvl1TwALmbfxoF
+GI9Kz3MSXhYIl21PQyufogw/yOFJFZ1DjGsFBoKzbS16yHtDsN4iRguwfTfh3MYk
+1caoaadQMY+Kf6rzN2hCLJqHFVxLcht4CAgsU2wkR0iWsjE0fQjc0Kxx+DRUMELn
+Q21nEC+Ar2+pD5oRfin7AgMBAAGjezB5MAkGA1UdEwQCMAAwLAYJYIZIAYb4QgEN
+BB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBQZ0vJ3
+c8PbLKaqgH+hPCGs23IwVzAfBgNVHSMEGDAWgBTXinYPSCjdVK9wpXA1noLK6b2l
+7zANBgkqhkiG9w0BAQUFAANBAIK9RfRJQe2McD/Ndf56Ra5pvc6A9zGuO7u5cofm
+nass21OoinHvDo2bovqcX2o73BFayLGn958asFILqnf2F5Q=
+-----END CERTIFICATE-----
