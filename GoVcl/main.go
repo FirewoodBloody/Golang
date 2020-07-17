@@ -29,7 +29,7 @@ type TForm struct {
 func (t *TForm) Init() {
 	vcl.Application.Initialize()         //初始化环境
 	t.win = vcl.Application.CreateForm() //新建窗口
-	t.win.SetName("快递查询")                //程序名
+	t.win.SetName("express_routing")     //程序名
 	t.win.SetHeight(668)                 //高
 	t.win.SetWidth(1160)                 //宽
 	t.win.ScreenCenter()                 //居于当前屏幕中心
@@ -53,21 +53,21 @@ func (t *TForm) Init() {
 	t.combobox.AddItem("天天快递", nil)
 	t.combobox.AddItem("EMS", nil)
 
-	t.wins = vcl.Application.CreateForm() //新建窗口  用于进行窗口弹出
-	t.wins.SetName("快递详细路由")              //指定窗口名称
-	t.wins.SetHeight(768)                 //高度
-	t.wins.SetWidth(920)                  //跨密度
-	t.wins.ScreenCenter()                 //居于当前屏幕中心
-	t.wins.SetBorderIcons(1)              //设置窗口最大化 最小化 关闭按钮  1代表是 只有关闭按钮生效
-	t.wins.Font().SetSize(10)             //设置窗口字体大小
-	t.wins.Font().SetStyle(16)            //设置窗口字体样式
+	t.wins = vcl.Application.CreateForm()     //新建窗口  用于进行窗口弹出
+	t.wins.SetName("express_routing_details") //指定窗口名称
+	t.wins.SetHeight(768)                     //高度
+	t.wins.SetWidth(920)                      //跨密度
+	t.wins.ScreenCenter()                     //居于当前屏幕中心
+	t.wins.SetBorderIcons(1)                  //设置窗口最大化 最小化 关闭按钮  1代表是 只有关闭按钮生效
+	t.wins.Font().SetSize(10)                 //设置窗口字体大小
+	t.wins.Font().SetStyle(16)                //设置窗口字体样式
 
 	t.button = vcl.NewButton(t.win) //新建按钮
 	t.button.SetLeft(150)           //设置按钮位置  横向
 	t.button.SetTop(450)            //设置按钮位置 竖向
 	t.button.SetHeight(40)          //按钮的高度
 	t.button.SetWidth(50)           //按钮的宽度
-	t.button.SetName("查询")          //按钮显示文字  名称
+	t.button.SetName("Query")       //按钮显示文字  名称
 	t.button.SetParent(t.win)       //设置父容器
 
 	t.memo = vcl.NewMemo(t.win) //新建多行文本框
@@ -192,12 +192,12 @@ func (t *TForm) incident() {
 			}
 		} else if t.combobox.Text() == "京东快递" {
 			datas := modules.SelectData(str)
-			if len(datas.Querytrace_result.Data) == 0 {
+			if len(datas.Data) == 0 {
 				return
 			}
 
-			t.grids.SetRowCount(int32(len(datas.Querytrace_result.Data) + 1)) //设置行的个数
-			for k, v := range datas.Querytrace_result.Data {
+			t.grids.SetRowCount(int32(len(datas.Data) + 1)) //设置行的个数
+			for k, v := range datas.Data {
 				t.grids.SetCells(0, int32(k+1), strconv.Itoa(k+1))
 				t.grids.SetCells(1, int32(k+1), v.WaybillCode)
 				t.grids.SetCells(2, int32(k+1), v.OpeTitle)
@@ -229,7 +229,7 @@ func (t *TForm) incident() {
 	//查询按钮事件
 	t.button.SetOnClick(func(sender vcl.IObject) {
 		t.listView.Clear()
-		data := strings.Split(t.memo.Text(), "\r\n")
+		data := strings.Split(t.memo.Text(), "\n\r")
 		types := t.combobox.Text()
 		if types != "顺丰快递" && types != "京东快递" {
 			types = getExp[types]
@@ -281,7 +281,7 @@ func (t *TForm) incident() {
 				} else if types == "京东快递" {
 					datas := modules.SelectData(str)
 
-					if len(datas.Querytrace_result.Data) == 0 {
+					if len(datas.Data) == 0 {
 						vcl.ThreadSync(func() {
 							item := t.listView.Items().Add()
 							item.SetImageIndex(0)
@@ -296,10 +296,10 @@ func (t *TForm) incident() {
 							item := t.listView.Items().Add()
 							item.SetImageIndex(0)
 							item.SetCaption(fmt.Sprintf("%3d", i))
-							item.SubItems().Add(datas.Querytrace_result.Data[len(datas.Querytrace_result.Data)-1].WaybillCode)
-							item.SubItems().Add(datas.Querytrace_result.Data[len(datas.Querytrace_result.Data)-1].OpeTitle)
-							item.SubItems().Add(datas.Querytrace_result.Data[len(datas.Querytrace_result.Data)-1].OpeTime)
-							item.SubItems().Add(datas.Querytrace_result.Data[len(datas.Querytrace_result.Data)-1].OpeRemark)
+							item.SubItems().Add(str)
+							item.SubItems().Add(datas.Data[len(datas.Data)-1].OpeTitle)
+							item.SubItems().Add(datas.Data[len(datas.Data)-1].OpeTime)
+							item.SubItems().Add(datas.Data[len(datas.Data)-1].OpeRemark)
 						})
 					}
 				} else {

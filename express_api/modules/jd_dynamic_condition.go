@@ -16,7 +16,8 @@ const (
 	App_key      = "5BA6F95488F2BA2655367595505F7057" //应用标识
 	App_secret   = "0053e1814a6345a19d7e06009281d5e9" //应用密钥
 	access_token = "c5ec850f6c2a4c7288b51d7910df3673yzg1"
-	method2      = "jingdong.ldop.receive.trace.get"
+	//method2      = "jingdong.ldop.receive.trace.get"
+	method2 = "jingdong.trace.dynamicQueryService.queryDynamicTraceInfo"
 )
 
 //用户验证信息
@@ -45,31 +46,32 @@ type RequestData struct {
 
 //返回参数
 type ParametersSelect struct {
-	jingdong_ldop_receive_trace_get_responce `json:"jingdong_ldop_receive_trace_get_responce"`
+	Jingdong_trace_dynamicQueryService_queryDynamicTraceInfo_responce `json:"jingdong_trace_dynamicQueryService_queryDynamicTraceInfo_responce"`
 }
 
 //返回参数
-type jingdong_ldop_receive_trace_get_responce struct {
-	Querytrace_result `json:"querytrace_result"` //	返回结果
-	Code              string                     `json:"code"` //状态
+type Jingdong_trace_dynamicQueryService_queryDynamicTraceInfo_responce struct {
+	Responses `json:"response"` //	返回结果
+	Code      string            `json:"code"` //状态
 }
 
 //	返回结果
-type Querytrace_result struct {
-	Messsage string `json:"messsage"` //	返回信息
-	Code     int    `json:"code"`     //返回编码
-	Data     []Data `json:"data"`     //返回数据
+type Responses struct {
+	Messsage string `json:"msg"`  //	返回信息
+	Code     int    `json:"code"` //返回编码
+	Data     []Data `json:"data"` //返回数据
 }
 
 //路由信息
 type Data struct {
 	OpeTitle    string `json:"opeTitle"`    //操作标题
 	OpeRemark   string `json:"opeRemark"`   //操作详情
-	OpeName     string `json:"opeName"`     //操作人姓名
+	OpeName     string `json:"opeName"`     //快递公司名称
 	OpeTime     string `json:"opeTime"`     //操作时间
 	WaybillCode string `json:"waybillCode"` //	运单号
 	Courier     string `json:"courier"`     //配送员
 	CourierTel  string `json:"courierTel"`  //配送员电话
+	State       string `json:"state"`
 }
 
 func (p *PublicParametersr) GetOrder1() *ParametersSelect {
@@ -104,7 +106,7 @@ func (p *PublicParametersr) GetOrder1() *ParametersSelect {
 	}
 
 	dataStruc := &ParametersSelect{}
-
+	//fmt.Println(string(data))
 	err = json.Unmarshal(data, dataStruc) //返回数据进行JSON反序列化
 	if err != nil {
 		fmt.Println("3:", err)

@@ -7,14 +7,8 @@ import (
 )
 
 func main() {
-	P := new(modules.PublicParametersr)
+	data, _ := modules.SfCreateData("SF1026386232204")
+	a, _ := json.Marshal(data)
+	fmt.Println(string(a))
 
-	R := new(modules.RequestData)
-
-	R.CustomerCode = "029K708772"
-	R.WaybillCode = "JDVG00272341243"
-
-	data, _ := json.Marshal(R)
-	pstr := P.SetUserLogin1(data)
-	fmt.Printf("%v", pstr)
 }

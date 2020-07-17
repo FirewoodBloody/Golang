@@ -14,9 +14,11 @@ import (
 )
 
 const (
-	UserId  = "BLWHYSP_tipea"                                            //顾客编码
-	UserKey = "eJXycwXzucwcxit4a8WK7b3qGl4UfkB1"                         //秘钥
-	ApiUrl  = "http://bsp-oisp.sf-express.com/bsp-oisp/sfexpressService" //请求地址
+	UserId  = "BLWHYSP_tipea" //顾客编码
+	UserKey = "eJXycwXzucwcxit4a8WK7b3qGl4UfkB1"
+	//UserKey = "eJXycwXzucwcxit4a8WK7b3qGI4UfkB1"
+
+	ApiUrl = "http://bsp-oisp.sf-express.com/bsp-oisp/sfexpressService" //请求地址
 )
 
 //-------------------------------------------------------------
@@ -70,6 +72,7 @@ type Route struct {
 
 //Post 查询请求路由请求（顺丰）
 //resp 返回快递路由信息
+//export  SfPost
 func SfPost(requestParameters url.Values) (SfDataStruct *Response, err error) {
 	resp, err := http.PostForm(ApiUrl, requestParameters)
 	if err != nil {
@@ -77,7 +80,7 @@ func SfPost(requestParameters url.Values) (SfDataStruct *Response, err error) {
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
-
+	//fmt.Println(string(data))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +113,9 @@ func SfCreateData(CourierNumber string) (SfDataStruct *Response, err error) {
 	}
 
 	// xml 序列化
-	dataXml, err := xml.MarshalIndent(body, "", "")
+	dataXml, err := xml.Marshal(body)
+	//dataXml := "<Request service='RouteService' lang='zh-CN'>\n    <Head>BLWHYSP_tipea</Head>\n    <Body>\n        <RouteRequest \n         tracking_type='1' \n         method_type='1' \n         tracking_number='SF1026576234877'/>\n    </Body>\n</Request>"
+
 	if err != nil {
 		return nil, err
 	}
@@ -119,6 +124,8 @@ func SfCreateData(CourierNumber string) (SfDataStruct *Response, err error) {
 	md5Key := md5.New()
 	md5Key.Write([]byte(fmt.Sprintf("%s%s", dataXml, UserKey)))
 	xmlKey := base64.StdEncoding.EncodeToString(md5Key.Sum(nil))
+	//fmt.Println("md5 : ", md5Key.Sum(nil))
+	//fmt.Println("MD5+base64 : ", xmlKey)
 
 	//配置请求参数,
 	requestParameters := url.Values{}

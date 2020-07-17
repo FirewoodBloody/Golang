@@ -2,16 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/测试/客户模板.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Xor/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Xor/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BeeApi/BeeApi.exe" beforeDir="false" afterPath="$PROJECT_DIR$/BeeApi/BeeApi.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_17/user_server/main_server.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_20/runtime/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_21/json/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/测试/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/测试/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/测试/报名表单.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/测试/测试.exe" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,19 +78,19 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Go\src\Golang\测试" />
-      <recent name="D:\Go\src\Golang\录音程序" />
-      <recent name="D:\Go\src\Golang\MAai" />
-      <recent name="D:\Go\src\Golang\Xor\2" />
-      <recent name="D:\Go\src\Golang" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Go\src\Golang\测试" />
       <recent name="D:\Go\src\Golang\main" />
       <recent name="D:\Go\src\Golang\Import_Excel" />
       <recent name="D:\Go\src\Golang\Import_Excel\images" />
       <recent name="D:\Go\src\Golang\API\models" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Go\src\Golang\测试" />
+      <recent name="D:\Go\src\Golang\录音程序" />
+      <recent name="D:\Go\src\Golang\MAai" />
+      <recent name="D:\Go\src\Golang\Xor\2" />
+      <recent name="D:\Go\src\Golang" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -104,7 +100,7 @@
       <command value="go run main.go" />
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build main.go (2)">
+  <component name="RunManager" selected="Go Build.go build main.go (3)">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
@@ -160,13 +156,13 @@
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
-    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build main.go (3)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="Golang" />
       <working_directory value="$PROJECT_DIR$/" />
       <useCustomBuildTags value="true" />
       <parameters value="-i" />
       <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/express_api/main.go" />
+      <filePath value="$PROJECT_DIR$/BeeApi/main.go" />
       <package value="Golang" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
@@ -178,11 +174,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build main.go (3)" />
         <item itemvalue="Go Build.go build main.go (2)" />
         <item itemvalue="Go Build.go build Golang/测试 (1)" />
         <item itemvalue="Go Build.go build main.go (1)" />
         <item itemvalue="Go Build.go build Golang/express_api" />
-        <item itemvalue="Go Build.go build main.go" />
       </list>
     </recent_temporary>
   </component>
@@ -259,26 +255,30 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="740" y="251" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1587527419866" />
-    <state width="1877" height="243" key="GridCell.Tab.0.bottom" timestamp="1589183747676">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state width="2517" height="348" key="GridCell.Tab.0.bottom" timestamp="1590033635602">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state width="1323" height="341" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1581653276986" />
     <state width="1877" height="243" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1589183747676" />
-    <state width="1877" height="243" key="GridCell.Tab.0.center" timestamp="1589183747676">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state width="2517" height="348" key="GridCell.Tab.0.bottom/0.0.2560.1410@0.0.2560.1410" timestamp="1590033635602" />
+    <state width="2517" height="348" key="GridCell.Tab.0.center" timestamp="1590033635602">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state width="1323" height="341" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1581653276986" />
     <state width="1877" height="243" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1589183747676" />
-    <state width="1877" height="243" key="GridCell.Tab.0.left" timestamp="1589183747676">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state width="2517" height="348" key="GridCell.Tab.0.center/0.0.2560.1410@0.0.2560.1410" timestamp="1590033635602" />
+    <state width="2517" height="348" key="GridCell.Tab.0.left" timestamp="1590033635602">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state width="1323" height="341" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1581653276986" />
     <state width="1877" height="243" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1589183747676" />
-    <state width="1877" height="243" key="GridCell.Tab.0.right" timestamp="1589183747676">
-      <screen x="0" y="0" width="1920" height="1050" />
+    <state width="2517" height="348" key="GridCell.Tab.0.left/0.0.2560.1410@0.0.2560.1410" timestamp="1590033635602" />
+    <state width="2517" height="348" key="GridCell.Tab.0.right" timestamp="1590033635602">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state width="1323" height="341" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1581653276986" />
     <state width="1877" height="243" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1589183747676" />
+    <state width="2517" height="348" key="GridCell.Tab.0.right/0.0.2560.1410@0.0.2560.1410" timestamp="1590033635602" />
     <state width="1877" height="482" key="GridCell.Tab.1.bottom" timestamp="1584958602895">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
