@@ -16,10 +16,55 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:origin/master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="06d064c0-6ea8-422b-bac2-7c747323ad73" name="默认更改列表" comment="">
+      <change afterPath="$PROJECT_DIR$/GoVcl/liblcl.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/express_api/modules/jd_anomaly.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linshi/通话记录统计查询下载/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linshi/通话记录统计查询下载/电话量统计报表.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/linshi/通话记录统计查询下载/通话记录统计查询下载.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/agprofile.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/app.fac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/app.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/autoupd.fac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/autoupd.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/baseline.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/bin_version" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/boa.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/cfg_group.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/cloud/cloud_plugin_version.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/cloud/cloudae.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/cloud/pluginmgr.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/ems.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/feature.fac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/feature.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/httpsCA/newreq.ca" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/httpsCA/newreq.key" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/iptable.fac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/iptable.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/outconfig.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/phone.fac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/phone.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/radiusclient/dictionary" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/radiusclient/issue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/radiusclient/port-id-map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/radiusclient/radius.seq" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/radiusclient/radiusclient.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/radiusclient/servers" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/route.fac" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/route.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/snmp_profile.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/tone.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/var/config/voiceservice.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/watcherTasks.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" beforeDir="false" afterPath="$PROJECT_DIR$/listen_go/listen_04/auto_01.go" afterDir="false" />
@@ -230,7 +275,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
