@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
-	_ "github.com/wendal/go-oci8"
+	//_ "github.com/wendal/go-oci8"
 	"github.com/ying32/govcl/vcl"
 	"os"
 )

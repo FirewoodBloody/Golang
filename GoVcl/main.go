@@ -29,7 +29,7 @@ type TForm struct {
 func (t *TForm) Init() {
 	vcl.Application.Initialize()         //初始化环境
 	t.win = vcl.Application.CreateForm() //新建窗口
-	t.win.SetName("express_routing")     //程序名
+	t.win.SetCaption("快递查询")             //程序名
 	t.win.SetHeight(668)                 //高
 	t.win.SetWidth(1160)                 //宽
 	t.win.ScreenCenter()                 //居于当前屏幕中心
@@ -53,21 +53,21 @@ func (t *TForm) Init() {
 	t.combobox.AddItem("天天快递", nil)
 	t.combobox.AddItem("EMS", nil)
 
-	t.wins = vcl.Application.CreateForm()     //新建窗口  用于进行窗口弹出
-	t.wins.SetName("express_routing_details") //指定窗口名称
-	t.wins.SetHeight(768)                     //高度
-	t.wins.SetWidth(920)                      //跨密度
-	t.wins.ScreenCenter()                     //居于当前屏幕中心
-	t.wins.SetBorderIcons(1)                  //设置窗口最大化 最小化 关闭按钮  1代表是 只有关闭按钮生效
-	t.wins.Font().SetSize(10)                 //设置窗口字体大小
-	t.wins.Font().SetStyle(16)                //设置窗口字体样式
+	t.wins = vcl.Application.CreateForm() //新建窗口  用于进行窗口弹出
+	t.wins.SetCaption("快递路由详情")           //指定窗口名称
+	t.wins.SetHeight(768)                 //高度
+	t.wins.SetWidth(920)                  //跨密度
+	t.wins.ScreenCenter()                 //居于当前屏幕中心
+	t.wins.SetBorderIcons(1)              //设置窗口最大化 最小化 关闭按钮  1代表是 只有关闭按钮生效
+	t.wins.Font().SetSize(10)             //设置窗口字体大小
+	t.wins.Font().SetStyle(16)            //设置窗口字体样式
 
 	t.button = vcl.NewButton(t.win) //新建按钮
 	t.button.SetLeft(150)           //设置按钮位置  横向
 	t.button.SetTop(450)            //设置按钮位置 竖向
 	t.button.SetHeight(40)          //按钮的高度
 	t.button.SetWidth(50)           //按钮的宽度
-	t.button.SetName("Query")       //按钮显示文字  名称
+	t.button.SetCaption("查询")       //按钮显示文字  名称
 	t.button.SetParent(t.win)       //设置父容器
 
 	t.memo = vcl.NewMemo(t.win) //新建多行文本框
@@ -229,7 +229,8 @@ func (t *TForm) incident() {
 	//查询按钮事件
 	t.button.SetOnClick(func(sender vcl.IObject) {
 		t.listView.Clear()
-		data := strings.Split(t.memo.Text(), "\n\r")
+		data := strings.Split(t.memo.Text(), "\r\n")
+
 		types := t.combobox.Text()
 		if types != "顺丰快递" && types != "京东快递" {
 			types = getExp[types]
@@ -246,7 +247,9 @@ func (t *TForm) incident() {
 			if v == "\t" || v == " " || v == "/" || v == "\t\r" || v == "" {
 				continue
 			}
+
 			str, err := IFStr(v, types)
+
 			if err != nil {
 				vcl.ShowMessage(fmt.Sprintf("%v - NO(%v)：%v", v, i+1, err))
 				return
@@ -255,7 +258,8 @@ func (t *TForm) incident() {
 			go func(i int) {
 
 				if types == "顺丰快递" {
-					datas, _ := express.SfCreateData(str)
+
+					datas, _ := modules.SfCreateData(str)
 
 					if len(datas.Body.RouteResponse.Route) == 0 {
 						vcl.ThreadSync(func() {

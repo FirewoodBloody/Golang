@@ -5,6 +5,7 @@ import (
 	"github.com/hajimehoshi/oto"
 	"github.com/tosone/minimp3"
 	"io/ioutil"
+	"time"
 )
 
 func main() {
@@ -16,12 +17,15 @@ func main() {
 
 	//fmt.Printf("%#v", len(file))
 
-	dec, data, err := minimp3.DecodeFull(file[700000:])
+	dec, data, err := minimp3.DecodeFull(file[:])
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	player, _ := oto.NewPlayer(dec.SampleRate, dec.Channels, 2, 1024)
-	player.Write(data)
-
+	go func() {
+		player.Write(data)
+	}()
+	time.Sleep(time.Second * 10)
+	player.Close()
 }

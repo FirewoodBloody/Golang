@@ -6,22 +6,22 @@ import (
 )
 
 type TForm struct {
-	Windows            *vcl.TForm     //win 窗口
-	PanelA             *vcl.TPanel    //左侧容器
-	PanelB             *vcl.TPanel    //右侧容器
-	PanelC             *vcl.TPanel    //下册容器
-	ListView           *vcl.TListView //自动列表
-	Button             *vcl.TButton   //导出功能按钮
-	OpenButton         *vcl.TButton   //导出功能按钮
-	RadioButton1       *vcl.TRadioButton
-	RadioButton2       *vcl.TRadioButton
-	RadioButton3       *vcl.TRadioButton
-	RadioButton4       *vcl.TRadioButton
-	OpenTextFileDialog *vcl.TOpenTextFileDialog
-	ProgressBar        *vcl.TProgressBar //进度条
-	TLabel             *vcl.TLabel
-	Operator           string
-	Open_Import        bool //打开文件次数
+	Windows      *vcl.TForm     //win 窗口
+	PanelA       *vcl.TPanel    //左侧容器
+	PanelB       *vcl.TPanel    //右侧容器
+	PanelC       *vcl.TPanel    //下册容器
+	ListView     *vcl.TListView //自动列表
+	Button       *vcl.TButton   //导出功能按钮
+	OpenButton   *vcl.TButton   //导出功能按钮
+	RadioButton1 *vcl.TRadioButton
+	RadioButton2 *vcl.TRadioButton
+	RadioButton3 *vcl.TRadioButton
+	RadioButton4 *vcl.TRadioButton
+	//OpenTextFileDialog *vcl.TOpenTextFileDialog
+	ProgressBar *vcl.TProgressBar //进度条
+	TLabel      *vcl.TLabel
+	Operator    string
+	Open_Import bool //打开文件次数
 }
 
 func (t *TForm) Init() {
@@ -242,7 +242,7 @@ func (t *TForm) RadioButtonSet() {
 //打开文件-属性设置-操作打开文件的隐藏按钮
 func (t *TForm) TOpenTextFileDialogSet() {
 	//创建按钮
-	t.OpenTextFileDialog = vcl.NewOpenTextFileDialog(t.Windows)
+	//t.OpenTextFileDialog = vcl.NewOpenTextFileDialog(t.Windows)
 	//指定父容器
 	//t.OpenTextFileDialog.SetName("打开文件")
 	//t.OpenTextFileDialog.Execute()

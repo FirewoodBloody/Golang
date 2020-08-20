@@ -6,7 +6,7 @@ import (
 	"github.com/Luxurioust/excelize"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
-	_ "github.com/wendal/go-oci8"
+	//_ "github.com/wendal/go-oci8"
 	"github.com/ying32/govcl/vcl"
 	"github.com/ying32/govcl/vcl/types"
 	"os"
@@ -261,87 +261,87 @@ func TheEventInit(t *module.TForm) {
 		//	return
 		//}
 
-		if t.OpenTextFileDialog.Execute() {
-
-			Data, err := OpenFile(t.OpenTextFileDialog.FileName())
-			if err != nil {
-				vcl.ShowMessageFmt("打开文件出错：%v", err)
-				return
-			}
-			fmt.Println(len(Data))
-			t.Windows.SetEnabled(false)
-			t.Button.SetEnabled(false)
-			t.OpenButton.SetEnabled(false)
-			t.RadioButton1.SetEnabled(false)
-			t.RadioButton2.SetEnabled(false)
-			t.RadioButton3.SetEnabled(false)
-			t.RadioButton4.SetEnabled(false)
-			t.ListView.SetEnabled(false)
-			t.PanelA.SetEnabled(false)
-			t.PanelB.SetEnabled(false)
-			t.PanelC.SetEnabled(false)
-			t.ProgressBar.SetEnabled(false)
-			//len1 := 0
-			//绘制列表数据
-			t.ListView.Clear()
-			//t.ListView.Items().BeginUpdate()
-			go func() {
-				for k, v := range Data {
-					if k == 0 { //对比表头信息
-						//len1 = len(v)
-						//fmt.Println(len(v))
-						for i, d := range v {
-							//fmt.Println(t.ListView.Column(int32(i) + 1).DisplayName())
-							if d == t.ListView.Column(int32(i)+1).DisplayName() { //判断导入表格与用户选择的导入类型是否匹配
-								continue
-							} else {
-								vcl.ShowMessageFmt("%v 与 %v 不匹配！", t.OpenTextFileDialog.FileName(), Import_Type_Name)
-								t.Windows.SetEnabled(true)
-								t.Button.SetEnabled(true)
-								t.OpenButton.SetEnabled(true)
-								t.RadioButton1.SetEnabled(true)
-								t.RadioButton2.SetEnabled(true)
-								t.RadioButton3.SetEnabled(true)
-								t.RadioButton4.SetEnabled(true)
-								t.ListView.SetEnabled(true)
-								t.PanelA.SetEnabled(true)
-								t.PanelB.SetEnabled(true)
-								t.PanelC.SetEnabled(true)
-								t.ProgressBar.SetEnabled(true)
-								return
-							}
-						}
-						continue
-					}
-
-					//绘制数据表数据
-
-					item := t.ListView.Items().Add()
-					//item.SetImageIndex(0)
-					//item.SetCaption("")
-
-					for _, d := range v {
-						vcl.ThreadSync(func() {
-							item.SubItems().Add(d)
-						})
-					}
-				}
-				//t.ListView.Items().EndUpdate()
-				t.Open_Import = true
-				t.Windows.SetEnabled(true)
-				t.Button.SetEnabled(true)
-				t.OpenButton.SetEnabled(true)
-				t.RadioButton1.SetEnabled(true)
-				t.RadioButton2.SetEnabled(true)
-				t.RadioButton3.SetEnabled(true)
-				t.RadioButton4.SetEnabled(true)
-				t.ListView.SetEnabled(true)
-				t.PanelA.SetEnabled(true)
-				t.PanelB.SetEnabled(true)
-				t.PanelC.SetEnabled(true)
-				t.ProgressBar.SetEnabled(true)
-			}()
-		}
+		//if t.OpenTextFileDialog.Execute() {
+		//
+		//	Data, err := OpenFile(t.OpenTextFileDialog.FileName())
+		//	if err != nil {
+		//		vcl.ShowMessageFmt("打开文件出错：%v", err)
+		//		return
+		//	}
+		//	fmt.Println(len(Data))
+		//	t.Windows.SetEnabled(false)
+		//	t.Button.SetEnabled(false)
+		//	t.OpenButton.SetEnabled(false)
+		//	t.RadioButton1.SetEnabled(false)
+		//	t.RadioButton2.SetEnabled(false)
+		//	t.RadioButton3.SetEnabled(false)
+		//	t.RadioButton4.SetEnabled(false)
+		//	t.ListView.SetEnabled(false)
+		//	t.PanelA.SetEnabled(false)
+		//	t.PanelB.SetEnabled(false)
+		//	t.PanelC.SetEnabled(false)
+		//	t.ProgressBar.SetEnabled(false)
+		//	//len1 := 0
+		//	//绘制列表数据
+		//	t.ListView.Clear()
+		//	//t.ListView.Items().BeginUpdate()
+		//	go func() {
+		//		for k, v := range Data {
+		//			if k == 0 { //对比表头信息
+		//				//len1 = len(v)
+		//				//fmt.Println(len(v))
+		//				for i, d := range v {
+		//					//fmt.Println(t.ListView.Column(int32(i) + 1).DisplayName())
+		//					if d == t.ListView.Column(int32(i)+1).DisplayName() { //判断导入表格与用户选择的导入类型是否匹配
+		//						continue
+		//					} else {
+		//						vcl.ShowMessageFmt("%v 与 %v 不匹配！", t.OpenTextFileDialog.FileName(), Import_Type_Name)
+		//						t.Windows.SetEnabled(true)
+		//						t.Button.SetEnabled(true)
+		//						t.OpenButton.SetEnabled(true)
+		//						t.RadioButton1.SetEnabled(true)
+		//						t.RadioButton2.SetEnabled(true)
+		//						t.RadioButton3.SetEnabled(true)
+		//						t.RadioButton4.SetEnabled(true)
+		//						t.ListView.SetEnabled(true)
+		//						t.PanelA.SetEnabled(true)
+		//						t.PanelB.SetEnabled(true)
+		//						t.PanelC.SetEnabled(true)
+		//						t.ProgressBar.SetEnabled(true)
+		//						return
+		//					}
+		//				}
+		//				continue
+		//			}
+		//
+		//			//绘制数据表数据
+		//
+		//			item := t.ListView.Items().Add()
+		//			//item.SetImageIndex(0)
+		//			//item.SetCaption("")
+		//
+		//			for _, d := range v {
+		//				vcl.ThreadSync(func() {
+		//					item.SubItems().Add(d)
+		//				})
+		//			}
+		//		}
+		//		//t.ListView.Items().EndUpdate()
+		//		t.Open_Import = true
+		//		t.Windows.SetEnabled(true)
+		//		t.Button.SetEnabled(true)
+		//		t.OpenButton.SetEnabled(true)
+		//		t.RadioButton1.SetEnabled(true)
+		//		t.RadioButton2.SetEnabled(true)
+		//		t.RadioButton3.SetEnabled(true)
+		//		t.RadioButton4.SetEnabled(true)
+		//		t.ListView.SetEnabled(true)
+		//		t.PanelA.SetEnabled(true)
+		//		t.PanelB.SetEnabled(true)
+		//		t.PanelC.SetEnabled(true)
+		//		t.ProgressBar.SetEnabled(true)
+		//	}()
+		//}
 
 	})
 
