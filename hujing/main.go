@@ -323,6 +323,7 @@ func main() {
 
 		for i, v := range CallData.Data {
 
+			//没100次重新建立Oracle 链接
 			if i%100 == 0 {
 				Engine.Engine.Close()
 				err = Engine.NewEngine()
@@ -331,11 +332,13 @@ func main() {
 				}
 			}
 
+			//查询员工信息
 			no, number, err := Engine.SelectId(v.User_id)
 			if err != nil {
 				fmt.Println("5:", err)
 			}
 
+			//查询客户信息
 			client, gonghao, err := Engine.SelectClientId(v.Contact_phone)
 			if err != nil {
 				fmt.Println("6:", err)
@@ -386,6 +389,7 @@ func main() {
 			//time.Sleep(time.Second * 5)
 		}
 		if len(CallData.Data) == 1000 {
+			//Update_time  这个字段为下一次请求时间开始的字段，之前我的程序是1天定时计划任务，我们可以改成1小时，数量应该不会超过1000  获取数量等于1000，那就需要使用Update_time 这个的值再次进行获取Update_time 截止当前时刻的通话记录
 			time1 = CallData.Data[len(CallData.Data)-1].Update_time
 		} else {
 			return
