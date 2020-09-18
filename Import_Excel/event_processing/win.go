@@ -1,8 +1,8 @@
 package event_processing
 
 import (
-	"Golang/Import_Excel/module"
 	"fmt"
+	"github.com/FirewoodBloody/Golang/Import_Excel/module"
 	"github.com/Luxurioust/excelize"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
