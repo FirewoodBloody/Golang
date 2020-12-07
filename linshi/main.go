@@ -300,8 +300,7 @@ func PathExists(path string) error {
 
 func main() {
 	TForm := new(Windows)
-	TForm.
-		TForm.Onclick()
+	TForm.Onclick()
 
 	TForm.win.Show()
 	vcl.Application.Run()

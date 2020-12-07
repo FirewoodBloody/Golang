@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Golang/Express_Routing/express"
-	"Golang/express_api/modules"
 	"fmt"
+	"github.com/FirewoodBloody/Golang/Express_Routing/express"
+	"github.com/FirewoodBloody/Golang/express_api/modules"
 	"github.com/ying32/govcl/vcl"
 	"github.com/ying32/govcl/vcl/types"
 	"strconv"

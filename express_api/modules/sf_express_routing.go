@@ -19,6 +19,7 @@ const (
 	//UserKey = "eJXycwXzucwcxit4a8WK7b3qGI4UfkB1"
 
 	ApiUrl = "http://bsp-oisp.sf-express.com/bsp-oisp/sfexpressService" //请求地址
+	//ApiUrl = "http://219.134.187.221/bsp-oisp/sfexpressService" //请求地址
 )
 
 //-------------------------------------------------------------

@@ -38,7 +38,7 @@ func (l *LoginTForm) LoginClient() {
 	vcl.Application.Initialize()
 	l.WinLogin = vcl.Application.CreateForm()
 	l.WinLogin.SetAlphaBlend(true)
-	l.WinLogin.SetName("登陆")
+	l.WinLogin.SetCaption("数据报表查询")
 	l.WinLogin.SetHeight(300)
 	l.WinLogin.SetWidth(400)
 	l.WinLogin.ScreenCenter()
@@ -50,13 +50,13 @@ func (l *LoginTForm) LoginClient() {
 
 	l.TButton1 = vcl.NewButton(l.WinLogin)
 	l.TButton1.SetParent(l.WinLogin)
-	l.TButton1.SetName("登陆")
+	l.TButton1.SetCaption("登陆")
 	l.TButton1.SetLeft(80)
 	l.TButton1.SetTop(200)
 
 	l.TButton2 = vcl.NewButton(l.WinLogin)
 	l.TButton2.SetParent(l.WinLogin)
-	l.TButton2.SetName("取消")
+	l.TButton2.SetCaption("取消")
 	l.TButton2.SetLeft(240)
 	l.TButton2.SetTop(200)
 
@@ -65,23 +65,23 @@ func (l *LoginTForm) LoginClient() {
 	l.TEdit1.SetTop(90)
 	l.TEdit1.SetLeft(150)
 
-	//l.TEdit2 = vcl.NewEdit(l.WinLogin)
-	//l.TEdit2.SetParent(l.WinLogin)
-	//l.TEdit2.SetTop(120)
-	//l.TEdit2.SetLeft(170)
-	//l.TEdit2.SetPasswordChar(7)
+	l.TEdit2 = vcl.NewEdit(l.WinLogin)
+	l.TEdit2.SetParent(l.WinLogin)
+	l.TEdit2.SetTop(120)
+	l.TEdit2.SetLeft(170)
+	l.TEdit2.SetPasswordChar(42)
 
 	l.TLabel1 = vcl.NewLabel(l.WinLogin)
 	l.TLabel1.SetParent(l.WinLogin)
-	l.TLabel1.SetName("工号")
+	l.TLabel1.SetCaption("工号")
 	l.TLabel1.SetLeft(100)
 	l.TLabel1.SetTop(90)
 
-	//l.TLabel2 = vcl.NewLabel(l.WinLogin)
-	//l.TLabel2.SetParent(l.WinLogin)
-	//l.TLabel2.SetName("密码")
-	//l.TLabel2.SetLeft(90)
-	//l.TLabel2.SetTop(125)
+	l.TLabel2 = vcl.NewLabel(l.WinLogin)
+	l.TLabel2.SetParent(l.WinLogin)
+	l.TLabel2.SetCaption("密码")
+	l.TLabel2.SetLeft(90)
+	l.TLabel2.SetTop(125)
 
 }
 

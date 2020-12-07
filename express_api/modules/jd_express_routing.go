@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	Url1          = "https://api.jd.com/routerjson"
+	Url1 = "https://api.jd.com/routerjson"
+	//Url1          = "https://106.39.169.86/routerjson"
 	JdLoginId1    = "029K708772"
 	App_key1      = "5BA6F95488F2BA2655367595505F7057" //应用标识
 	App_secret1   = "0053e1814a6345a19d7e06009281d5e9" //应用密钥
