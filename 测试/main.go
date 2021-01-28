@@ -85,7 +85,7 @@ type Order struct {
 	MerchantCode   string  `json:"merchantCode"`   // 否 商家编码
 }
 
-func main() {
+func sf() {
 	sfOrder := new(ExternalOrderRequestVo)
 	sfOrder.LoginAccount = "api001"
 	sfOrder.CallBackUrl = "http://61.185.225.118:19374/v1/object/"
@@ -153,4 +153,10 @@ func main() {
 		fmt.Println("2:", err)
 	}
 	fmt.Println(string(datas))
+}
+
+func main() {
+	hour, _ := time.ParseDuration("-168h")
+	nows := time.Now().Add(hour)
+	fmt.Println(nows.Format("2006-01-06"))
 }
