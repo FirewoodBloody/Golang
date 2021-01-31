@@ -2,10 +2,16 @@ package models
 
 import (
 	"fmt"
+	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
 	"math"
 	"strconv"
 	"time"
+)
+
+const (
+	dateFormatNow   = "%Y-%m-%d 23:59:59"
+	dateFormatStart = "%Y-%m-01 00:00:00"
 )
 
 //	附加
@@ -192,14 +198,42 @@ func CheckOrderData() {
 	}
 }
 
+func (e *Engine) depart(departId string) (string, error) {
+	depart_id_str := make(map[int]string, 500) //定义一个用来存储每次查询结果的map
+	depart_id_str[0] = departId
+	//查询回收名单归属部门
+	//开始查询员工当前部门以及以下所有部门，并进行字符串的拼接
+	i := 0
+	for {
+		resp, err := e.Engine.Query(fmt.Sprintf("SELECT id FROM bl_depart WHERE parent_id in ('%v')", depart_id_str[i]))
+		if err != nil {
+			return "", err
+		}
+		if len(resp) == 0 {
+			return depart_id_str[0], nil
+		}
+
+		for k, v := range resp {
+			if k == 0 {
+				depart_id_str[i+1] = string(v["id"])
+				continue
+			}
+			depart_id_str[i+1] = depart_id_str[i+1] + "," + string(v["id"])
+		}
+		depart_id_str[0] = depart_id_str[0] + "," + depart_id_str[i+1]
+		i++
+	}
+}
+
 //每日凌晨四点进行新媒体客户回收计划运行
 func RecoveryOfTheCustomer() {
 	e := new(Engine)
 	_ = e.NewEngine()
 	//查询回收名单归属部门
-	departId, err := e.Login_depart_id_permissions("33")
+	//开始查询员工当前部门以及以下所有部门，并进行字符串的拼接
+	departId, err := e.depart(beego.AppConfig.String("Depart_id"))
 	if err != nil {
-		return
+		panic(err)
 	}
 	e.Close()
 
@@ -207,18 +241,21 @@ func RecoveryOfTheCustomer() {
 	for {
 		//查询需要回收的所有客户
 		_ = e.NewEngine()
-		result, err := e.Engine.Query(fmt.Sprintf("SELECT \ncc.id AS id,\ncca.first_category AS first_category,\ncc.user_id AS user_id\nFROM\nbl_crm_customer cc \nLEFT JOIN bl_crm_customer_append cca on cca.customer_id = cc.id\nLEFT JOIN bl_users ccu on ccu.id = cc.user_id\nWHERE\ncc.depart_id in (%v)", departId))
+		result, err := e.Engine.Query(fmt.Sprintf("SELECT \ncc.id AS id,\ncca.first_category AS first_category,\ncc.user_id AS user_id ,cc.created_at AS created_at\nFROM\nbl_crm_customer cc \nLEFT JOIN bl_crm_customer_append cca on cca.customer_id = cc.id\nLEFT JOIN bl_users ccu on ccu.id = cc.user_id\nWHERE\nccu.depart_id in (%v)\nAND ccu.user_type = 2 \nAND cc.created_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')", departId, dateFormatNow))
 		if err != nil {
-			fmt.Println(err)
+			panic(err)
 		}
 		e.Close()
 		//开始执行回收计划
 		//每日凌晨4点进行回收计划进行
 		//依据客户的当前情况进行客户的回收保留
-		for _, v := range result {
+		for k, v := range result {
+			if k%100 == 0 {
+				time.Sleep(time.Second * 10)
+			}
 			_ = e.NewEngine()
 
-			//尅是执行回收计划；判断客户的一级分类，根据一级分类的类型进行不同方式的回收和保留
+			//执行回收计划；判断客户的一级分类，根据一级分类的类型进行不同方式的回收和保留
 
 			//客户的一级分类为 已购客户
 			if string(v["first_category"]) == "1" {
@@ -232,40 +269,54 @@ func RecoveryOfTheCustomer() {
 				}
 
 				//当前客户在当前归属员工名下历史消费记录没有有单笔大于等于 10000 万 时，进行此客户的回收计划
-				hour, _ := time.ParseDuration("-168h")
-				knows := time.Now().Add(hour)
-				Month := fmt.Sprintf("%02d", int(knows.Month()))
 
-				hour, _ = time.ParseDuration("-336h")
-				know := time.Now().Add(hour)
 				//依据客户是否为当月引进新 并且历史首次消费的客户
-				orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND performance_user_id = %v\nAND deleted_at IS NULL\nAND ((\n\t\t\t`status` = 90 \n\t\t\tAND type = 1 \n\t\t\tAND performance_at IS NOT NULL \n\t\t\tAND performance_at > '%v-%v-01 00:00:00' \n\t\t\tAND performance_at < '%v 23:59:59' \n\t\t) \n\tOR ( `status` = 90 AND performance_at IS NULL AND created_at < '%v 00:00:00'))", string(v["id"]), string(v["user_id"]), knows.Year(), Month, knows.Format("2006-01-06"), know.Format("2006-01-06")))
+				orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND performance_user_id = %v\nAND deleted_at IS NULL\nAND `status` = 90 \nAND type = 1 \nAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY), '%v') \nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')\nAND channel_id >2", string(v["id"]), string(v["user_id"]), dateFormatStart, dateFormatNow))
 				//判断如果客户在员工名下当月消费记录是否为0
 				if string(orderCounts[0]["count_id"]) == "0" {
+					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tCOUNT( DISTINCT id ) AS count_id \nFROM\n\tbl_mall_order \nWHERE\n\tcustomer_id = %v \n\tAND performance_user_id = %v\n\tAND type = 1\n\tAND deleted_at IS NULL \n\tAND `status` <= 90 AND `status` > 30  AND performance_at IS NULL ", string(v["id"]), string(v["user_id"])))
+					//客户名下有未完成的订单跳过本次回收
+					if string(orderCounts[0]["count_id"]) != "0" {
+						e.Close()
+						continue
+					}
+					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND performance_user_id = %v\nAND deleted_at IS NULL\nAND `status` <= 90 \nAND type = 1 \nAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v') \nAND performance_at < NOW()", string(v["id"]), string(v["user_id"]), dateFormatNow))
+					//客户名下有未完成的订单跳过本次回收
+					if string(orderCounts[0]["count_id"]) != "0" {
+						e.Close()
+						continue
+					}
+
+					//判断如果客户在员工名下当月消费记录是否为0
+
 					//判断客户当月在其他员工名下的消费记录
-					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND ((\n\t\t\t`status` = 90 \n\t\t\tAND type = 1 \n\t\t\tAND performance_at IS NOT NULL \n\t\t\tAND performance_at > '%v-%v-01 00:00:00' \n\t\t\tAND performance_at < '%v 23:59:59' \n\t\t) \n\tOR ( `status` = 90 AND performance_at IS NULL AND created_at < '%v 00:00:00'))", string(v["id"]), knows.Year(), Month, knows.Format("2006-01-06"), know.Format("2006-01-06")))
+					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND ((\n\t\t\t`status` = 90 \n\t\t\tAND type = 1 \n\t\t\tAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v') \nAND performance_at <NOW() \n\t\tAND channel_id >2) \n\tOR ( `status` = 90 AND performance_at IS NULL AND channel_id >2))", string(v["id"]), dateFormatStart))
 					//当月消费记录为空
 					if string(orderCounts[0]["count_id"]) == "0" {
 						//没有购买记录的客户
 						//判断历史是否存在消费记录
-						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < '%v-%v-01 00:00:00'", string(v["id"]), knows.Year(), fmt.Sprintf("%02d", int(knows.Month()))))
+						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')", string(v["id"]), dateFormatStart))
 						if string(orderCounts[0]["count_id"]) == "0" {
 							//历史不存在购买记录 回收纸系统工程师名下
-							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 1427,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：1427}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 1427,assign_at = NOW() WHERE id = %v", string(v["id"])))
 						} else {
 							//历史存在购买记录回收至 新媒体新进已购名单
-							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2168,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2168}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2168,assign_at = NOW() WHERE id = %v", string(v["id"])))
 						}
 					} else {
 						//当月消费记录不为空
 						//判断历史是否存在消费记录
-						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < '%v-%v-01 00:00:00'", string(v["id"]), knows.Year(), fmt.Sprintf("%02d", int(knows.Month()))))
+						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')", string(v["id"]), dateFormatStart))
 						if string(orderCounts[0]["count_id"]) == "0" {
 							//历史不存在购买记录 回收至新媒体新进已购库
-							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2156,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2156}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2156,assign_at = NOW() WHERE id = %v", string(v["id"])))
 						} else {
 							//历史存在购买记录回收至 新媒体新进已购名单
-							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2168,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2168}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2168,assign_at = NOW() WHERE id = %v", string(v["id"])))
 						}
 					}
 				} else {
@@ -273,84 +324,73 @@ func RecoveryOfTheCustomer() {
 					//判断历史是否有消费记录
 					//当月消费记录不为空
 					//判断历史是否存在消费记录
-					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < '%v-%v-01 00:00:00'", string(v["id"]), knows.Year(), fmt.Sprintf("%02d", int(knows.Month()))))
+					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')", string(v["id"]), dateFormatStart))
 					if string(orderCounts[0]["count_id"]) == "0" {
 						//历史不存在购买记录 回收至新媒体新进已购库
-						_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2156,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+						_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2156}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+						_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2156,assign_at = NOW() WHERE id = %v", string(v["id"])))
 					} else {
 						//历史存在购买记录回收至 新媒体新进已购名单
-						_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2168,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+						_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2168}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+						_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2168,assign_at = NOW() WHERE id = %v", string(v["id"])))
 					}
 
 				}
 
 			} else if string(v["first_category"]) == "2" {
-				hour, _ := time.ParseDuration("-720h")
-				knows := time.Now().Add(hour)
+				hour, _ := time.ParseDuration("-1020h")
+				know := time.Now().Add(hour)
 				//未购客户（准已购）是暂时暂时性的，有客户会进行变化
 				//准已购：凡是有订单的但是没有成交订单的客户定义为准已购
 				//首先需要排除目前一致的有订单未完结的客户
 
 				//查询客户是否有未完结的订单
-				orderCounts, _ := e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount\nFROM\nbl_mall_order\nWHERE\ndeleted_at IS NULL\nAND type = 1\nAND `status` < 90 \nAND `status` > 1\nAND customer_id = %v\nAND user_id = %v", string(v["id"]), string(v["user_id"])))
+				orderCounts, _ := e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount\nFROM\nbl_mall_order\nWHERE\ndeleted_at IS NULL\nAND type = 1\nAND `status` <= 90 \nAND `status` > 1\nAND customer_id = %v\nAND performance_user_id = %v\nAND performance_at IS NOT NULL", string(v["id"]), string(v["user_id"])))
 				if string(orderCounts[0]["orderCount"]) != "0" {
 					//当前客户 在当前员工 名下存在未完成的订单，跳过当前客户回收计划
 					e.Close()
 					continue
 				} else {
-					//当前客户 在 当前员工名下 不存在未完成的订单
-					//准已购客户回收规则是 30 天
-					//查询当前客户 30 天 是否存在 已完成未成交的订单
-					orderCounts, _ := e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount\nFROM\nbl_mall_order\nWHERE\ndeleted_at IS NULL\nAND type = 1\nAND (`status` > 90 OR `status` = 1)\nAND customer_id = %v\nAND performance_at < '%v'", string(v["id"]), knows.Format("2006-01-06")))
-					if string(orderCounts[0]["orderCount"]) == "0" {
-						//判断是否为假单客户
-						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount \nFROM\n\tbl_mall_order_media \nWHERE\n\tdeleted_at IS NULL \n\tAND `status` = 40 \n\tAND ((verify_order_comment = 50 ) OR ( verify_order_comment != 50 AND remark LIKE '%v' )) \n\tAND customer_id = %v", "%假单%", string(v["id"])))
-						if string(orderCounts[0]["orderCount"]) == "0" {
-							//判断客户是否在当前员工名下存在核单数据
-							orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount \nFROM\n\tbl_mall_order_media \nWHERE\n`status` > 20\nAND deleted_at IS NULL\nAND customer_id =%v \nAND assign_user_id = %v", string(v["id"]), string(v["user_id"])))
-							if string(orderCounts[0]["orderCount"]) == "0" {
-								//30天前当前客户存在已完成的为成交订单，并且非假单客户；回收名单至 新媒体未妥投
-								_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2105,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
 
-							} else {
-								//如果当前客户 不是假单 当前员工名下存在未完成的新媒体订单，不进行回收
-								e.Close()
-								continue
-							}
+					//判断是否为假单客户
+					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount \nFROM\n\tbl_mall_order_media \nWHERE\n\tdeleted_at IS NULL \n\tAND `status` = 40 \n\tAND ((verify_order_comment = 50 ) OR ( verify_order_comment != 50 AND remark LIKE '%v' )) \n\tAND customer_id = %v", "%假单%", string(v["id"])))
+					if string(orderCounts[0]["orderCount"]) == "0" {
+						timec, _ := time.Parse("2006-01-02 15:04:05", string(v["created_at"]))
+						if !timec.Before(know) {
+							e.Close()
+							continue
+						}
+
+						//判断客户是否在当前员工名下存在核单数据
+						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount \nFROM\n\tbl_mall_order_media \nWHERE\n`status` > 30\nAND deleted_at IS NULL\nAND customer_id =%v \nAND assign_user_id = %v", string(v["id"]), string(v["user_id"])))
+						if string(orderCounts[0]["orderCount"]) == "0" {
+							//30天前当前客户存在已完成的为成交订单，并且非假单客户；回收名单至 新媒体未妥投
+							_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2105}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2105,assign_at = NOW() WHERE id = %v", string(v["id"])))
+
 						} else {
-							//假单客户；回收名单至 假单名单库
-							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2132,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+							//如果当前客户 不是假单 当前员工名下存在未完成的新媒体订单，不进行回收
+							e.Close()
+							continue
 						}
 					} else {
-						//判断是否为假单客户
-						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount \nFROM\n\tbl_mall_order_media \nWHERE\n\tdeleted_at IS NULL \n\tAND `status` = 40 \n\tAND ((verify_order_comment = 50 ) OR ( verify_order_comment != 50 AND remark LIKE '%v' )) \n\tAND customer_id = %v", "%假单%", string(v["id"])))
-						if string(orderCounts[0]["orderCount"]) == "0" {
-							//判断客户是否在当前员工名下存在核单数据
-							orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount \nFROM\n\tbl_mall_order_media \nWHERE\n`status` > 20\nAND deleted_at IS NULL\nAND customer_id =%v \nAND assign_user_id = %v", string(v["id"]), string(v["user_id"])))
-							if string(orderCounts[0]["orderCount"]) == "0" {
-								//30天前当前客户存在已完成的为成交订单，并且非假单客户；回收名单至 新媒体未妥投
-								_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2105,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
-
-							} else {
-								//如果当前客户 不是假单 当前员工名下存在未完成的新媒体订单，不进行回收
-								e.Close()
-								continue
-							}
-						} else {
-							//假单客户；回收名单至 假单名单库
-							_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2132,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
-						}
+						//假单客户；回收名单至 假单名单库
+						_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2132}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+						_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2132,assign_at = NOW() WHERE id = %v", string(v["id"])))
 					}
+
 				}
 			} else {
-				_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 1427,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+				//意向客户  潜在客户回收
+				_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：1427}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+				_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 1427,assign_at = NOW() WHERE id = %v", string(v["id"])))
 			}
 			e.Close()
 		}
 
 		//查询需要回收的管理员名下所有客户
 		_ = e.NewEngine()
-		result, err = e.Engine.Query("SELECT\nid \nFROM\n\tbl_crm_customer \nWHERE\n\tuser_id = 1 \n\tAND deleted_at IS NULL \n\tAND id IN (\n\tSELECT\n\t\tcustomer_id \n\tFROM\n\t\tbl_mall_order_media \nWHERE\n\t`status` >= 30)")
+		result, err = e.Engine.Query("SELECT\nid,user_id \nFROM\n\tbl_crm_customer \nWHERE\n\tuser_id = 1 \n\tAND deleted_at IS NULL \n\tAND id IN (\n\tSELECT\n\t\tcustomer_id \n\tFROM\n\t\tbl_mall_order_media \nWHERE\n\t`status` >= 30)")
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -363,11 +403,13 @@ func RecoveryOfTheCustomer() {
 			orderCounts, _ := e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS orderCount \nFROM\n\tbl_mall_order_media \nWHERE\n\tdeleted_at IS NULL \n\tAND `status` = 40 \n\tAND ((verify_order_comment = 50 ) OR ( verify_order_comment != 50 AND remark LIKE '%v' )) \n\tAND customer_id = %v", "%假单%", string(v["id"])))
 			if string(orderCounts[0]["orderCount"]) == "0" {
 				//30天前当前客户存在已完成的为成交订单，并且非假单客户；回收名单至 新媒体未妥投
-				_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2105,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+				_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2105}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+				_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2105,assign_at = NOW() WHERE id = %v", string(v["id"])))
 
 			} else {
 				//假单客户；回收名单至 假单名单库
-				_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2132,assign_at = '%v' WHERE id = %v", time.Now().Format("2006-01-06 15:04:05"), string(v["id"])))
+				_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2132}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
+				_, _ = e.Engine.Query(fmt.Sprintf("UPDATE bl_crm_customer SET user_id = 2132,assign_at = NOW() WHERE id = %v", string(v["id"])))
 			}
 			e.Close()
 		}

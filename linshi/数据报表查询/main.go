@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	v = "0.3.1"
+	v = "0.3.2"
 )
 
 type V struct {
