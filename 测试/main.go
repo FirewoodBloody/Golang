@@ -8,13 +8,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 const (
-	appKey    = "ExmlGKdGnSOzyfyywNqB7R"
-	appSecret = "2226200909753282995473596416"
-	Url       = "https://ds-sit.sf-express.com/externalapi/order/create/"
+	appKey    = "ExuXufHwRagVqNkCxgSsMT"
+	appSecret = "16920210202806206424614043648"
+	Url       = "https://ds-api.sf-express.com/externalapi/order/create"
 )
 
 type ExternalOrderRequestVo struct {
@@ -130,7 +131,7 @@ func sf() {
 	data, _ := json.Marshal(sfOrder)
 	timeUnix := time.Now().UnixNano() / 1e6
 
-	str := Url + string(data) + "&appSecret=" + appSecret + "&timestamp=" + fmt.Sprintf("%v", timeUnix)
+	str := Url + string(data) + "&appSecret=" + appSecret + "&timestamp=" + strconv.FormatInt(timeUnix, 10)
 	sha := sha512.New()
 	sha.Write([]byte(str))
 	sign := sha.Sum(nil)
@@ -139,11 +140,13 @@ func sf() {
 	client := &http.Client{}
 
 	//提交请求
-	reqest, err := http.NewRequest("POST", Url, bytes.NewBuffer(data))
+	reqest, err := http.NewRequest("POST", Url, bytes.NewBufferString(string(data)))
 
-	reqest.Header.Add("appKey", appKey)
-	reqest.Header.Add("timestamp", fmt.Sprintf("%v", timeUnix))
-	reqest.Header.Add("sign", shastr2)
+	reqest.Header.Set("Content-Type", "application/json")
+	reqest.Header.Set("charset", "UTF-8")
+	reqest.Header.Set("appKey", appKey)
+	reqest.Header.Set("timestamp", fmt.Sprintf("%v", timeUnix))
+	reqest.Header.Set("sign", shastr2)
 
 	resp, _ := client.Do(reqest)
 	defer resp.Body.Close()
@@ -156,7 +159,6 @@ func sf() {
 }
 
 func main() {
-	hour, _ := time.ParseDuration("-168h")
-	nows := time.Now().Add(hour)
-	fmt.Println(nows.Format("2006-01-06"))
+	sf()
+
 }

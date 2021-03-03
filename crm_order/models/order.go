@@ -241,7 +241,7 @@ func RecoveryOfTheCustomer() {
 	for {
 		//查询需要回收的所有客户
 		_ = e.NewEngine()
-		result, err := e.Engine.Query(fmt.Sprintf("SELECT \ncc.id AS id,\ncca.first_category AS first_category,\ncc.user_id AS user_id ,cc.created_at AS created_at\nFROM\nbl_crm_customer cc \nLEFT JOIN bl_crm_customer_append cca on cca.customer_id = cc.id\nLEFT JOIN bl_users ccu on ccu.id = cc.user_id\nWHERE\nccu.depart_id in (%v)\nAND ccu.user_type = 2 \nAND cc.created_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')", departId, dateFormatNow))
+		result, err := e.Engine.Query(fmt.Sprintf("SELECT \ncc.id AS id,\ncca.first_category AS first_category,\ncc.user_id AS user_id ,cc.created_at AS created_at\nFROM\nbl_crm_customer cc \nLEFT JOIN bl_crm_customer_append cca on cca.customer_id = cc.id\nLEFT JOIN bl_users ccu on ccu.id = cc.user_id\nWHERE\nccu.depart_id in (%v)\nAND ccu.user_type = 2 \nAND cc.created_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 4 DAY),'%v')", departId, dateFormatNow))
 		if err != nil {
 			panic(err)
 		}
@@ -271,7 +271,7 @@ func RecoveryOfTheCustomer() {
 				//当前客户在当前归属员工名下历史消费记录没有有单笔大于等于 10000 万 时，进行此客户的回收计划
 
 				//依据客户是否为当月引进新 并且历史首次消费的客户
-				orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND performance_user_id = %v\nAND deleted_at IS NULL\nAND `status` = 90 \nAND type = 1 \nAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY), '%v') \nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')\nAND channel_id >2", string(v["id"]), string(v["user_id"]), dateFormatStart, dateFormatNow))
+				orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND performance_user_id = %v\nAND deleted_at IS NULL\nAND `status` = 90 \nAND type = 1 \nAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 4 DAY), '%v') \nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 4 DAY),'%v')\nAND channel_id >2", string(v["id"]), string(v["user_id"]), dateFormatStart, dateFormatNow))
 				//判断如果客户在员工名下当月消费记录是否为0
 				if string(orderCounts[0]["count_id"]) == "0" {
 					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tCOUNT( DISTINCT id ) AS count_id \nFROM\n\tbl_mall_order \nWHERE\n\tcustomer_id = %v \n\tAND performance_user_id = %v\n\tAND type = 1\n\tAND deleted_at IS NULL \n\tAND `status` <= 90 AND `status` > 30  AND performance_at IS NULL ", string(v["id"]), string(v["user_id"])))
@@ -280,7 +280,7 @@ func RecoveryOfTheCustomer() {
 						e.Close()
 						continue
 					}
-					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND performance_user_id = %v\nAND deleted_at IS NULL\nAND `status` <= 90 \nAND type = 1 \nAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v') \nAND performance_at < NOW()", string(v["id"]), string(v["user_id"]), dateFormatNow))
+					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND performance_user_id = %v\nAND deleted_at IS NULL\nAND `status` <= 90 \nAND type = 1 \nAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 4 DAY),'%v') \nAND performance_at < NOW()", string(v["id"]), string(v["user_id"]), dateFormatNow))
 					//客户名下有未完成的订单跳过本次回收
 					if string(orderCounts[0]["count_id"]) != "0" {
 						e.Close()
@@ -290,12 +290,12 @@ func RecoveryOfTheCustomer() {
 					//判断如果客户在员工名下当月消费记录是否为0
 
 					//判断客户当月在其他员工名下的消费记录
-					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND ((\n\t\t\t`status` = 90 \n\t\t\tAND type = 1 \n\t\t\tAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v') \nAND performance_at <NOW() \n\t\tAND channel_id >2) \n\tOR ( `status` = 90 AND performance_at IS NULL AND channel_id >2))", string(v["id"]), dateFormatStart))
+					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND ((\n\t\t\t`status` = 90 \n\t\t\tAND type = 1 \n\t\t\tAND performance_at IS NOT NULL \nAND performance_at > DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 4 DAY),'%v') \nAND performance_at <NOW() \n\t\tAND channel_id >2) \n\tOR ( `status` = 90 AND performance_at IS NULL AND channel_id >2))", string(v["id"]), dateFormatStart))
 					//当月消费记录为空
 					if string(orderCounts[0]["count_id"]) == "0" {
 						//没有购买记录的客户
 						//判断历史是否存在消费记录
-						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')", string(v["id"]), dateFormatStart))
+						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 4 DAY),'%v')", string(v["id"]), dateFormatStart))
 						if string(orderCounts[0]["count_id"]) == "0" {
 							//历史不存在购买记录 回收纸系统工程师名下
 							_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：1427}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
@@ -308,7 +308,7 @@ func RecoveryOfTheCustomer() {
 					} else {
 						//当月消费记录不为空
 						//判断历史是否存在消费记录
-						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')", string(v["id"]), dateFormatStart))
+						orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 4 DAY),'%v')", string(v["id"]), dateFormatStart))
 						if string(orderCounts[0]["count_id"]) == "0" {
 							//历史不存在购买记录 回收至新媒体新进已购库
 							_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2156}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
@@ -324,7 +324,7 @@ func RecoveryOfTheCustomer() {
 					//判断历史是否有消费记录
 					//当月消费记录不为空
 					//判断历史是否存在消费记录
-					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 7 DAY),'%v')", string(v["id"]), dateFormatStart))
+					orderCounts, _ = e.Engine.Query(fmt.Sprintf("SELECT\nCOUNT(DISTINCT id) AS count_id\nFROM\nbl_mall_order\nWHERE\ncustomer_id = %v\nAND deleted_at IS NULL\nAND `status` = 90\nAND type = 1\nAND performance_at IS NOT NULL\nAND performance_at < DATE_FORMAT(DATE_ADD(NOW(),INTERVAL - 4 DAY),'%v')", string(v["id"]), dateFormatStart))
 					if string(orderCounts[0]["count_id"]) == "0" {
 						//历史不存在购买记录 回收至新媒体新进已购库
 						_, _ = e.Engine.Query(fmt.Sprintf("INSERT INTO `bl_crm`.`bl_crm_customer_opt_log`(`name`, `is_enable`, `remark`, `rank_num`, `created_at`, `updated_at`, `type`, `customer_id`, `user_id`, `content`, `deleted_at`, `depart_id`, `customer_name`, `customer_code`, `create_user_id`, `user_depart_id`, `user_depart_name`) VALUES ('修改tag', 1, NULL, 888, NOW(), NOW(), 'update_tag', %v, %v, '新媒体客户回收{将当前user_id：%v替换为：2156}', NULL, NULL, NULL, NULL, 1427, NULL, NULL);", string(v["id"]), string(v["user_id"]), string(v["user_id"])))
