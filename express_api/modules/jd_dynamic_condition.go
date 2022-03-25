@@ -15,7 +15,7 @@ const (
 	JdLoginId    = "029K708772"
 	App_key      = "5BA6F95488F2BA2655367595505F7057" //应用标识
 	App_secret   = "0053e1814a6345a19d7e06009281d5e9" //应用密钥
-	access_token = "c5ec850f6c2a4c7288b51d7910df3673yzg1"
+	access_token = "b08917e1e17e42e7b63a56eb6245320alyja"
 	//method2      = "jingdong.ldop.receive.trace.get"
 	method2 = "jingdong.trace.dynamicQueryService.queryDynamicTraceInfo"
 )

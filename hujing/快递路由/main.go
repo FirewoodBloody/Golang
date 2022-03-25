@@ -11,7 +11,7 @@ import (
 
 const (
 	TimeFormat = "2006-01-02"
-	driverName = "mysql"
+	driverName = "sql"
 	dBconnect  = "root:dcf4aa3f7b982ce4@tcp(192.168.0.11:3306)/bl_crm?charset=utf8"
 )
 

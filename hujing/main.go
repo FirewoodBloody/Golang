@@ -9,51 +9,27 @@ import (
 	"os"
 )
 
-//员工信息结构体
-type GetAllUser struct {
-	Error_code int    `json:"error_code"`
-	Message    string `json:"message"`
-	Data       Datas
-}
-
-//员工信息结构体
-type Datas struct {
-	CurrentPage int `json:"currentpage"` //当前页数
-	TotalCount  int `json:"totalcount"`  //总条数
-	TotalPage   int `json:"totalpage"`   //总页数
-	Result      []User
-}
-
-//员工信息结构体
-type User struct {
-	CreateTime      string `json:"create_time"`     //销售创建时间（yyyy-MM-dd HH:mm:ss）
-	User_id         string `json:"user_id"`         //销售账号
-	Username        string `json:"username"`        //销售名称
-	Department_id   int    `json:"department_id"`   //部门id
-	Department_name string `json:"department_name"` //部门名称
-}
-
 //通话记录
 type CallJl struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
-	Data    []Data
+	Data    []Data `json:"data"`
 }
 
 //通话记录
 type Data struct {
-	Id            int    `json:"id"`            //记录id
-	User_id       string `json:"user_id"`       //员工id
-	Type          int    `json:"type"`          //通话类型 1 呼出 2呼入 3呼出未接 4呼入未接
-	Duration      int    `json:"duration"`      //通话时长(单位秒)
-	File          string `json:"file"`          //通话文件
-	Contact_name  string `json:"contact_name"`  //通话人名称
-	Contact_phone string `json:"contact_phone"` //通话人号码
-	Start_time    string `json:"start_time"`    //通话开始时间
-	End_time      string `json:"end_time"`      //通话结束时间
-	Update_time   string `json:"update_time"`   //更新时间 (该时间为查询时间）,获取了相同的id进行更新操作 用于下次请求通话记录
-	Data_type     int    `json:"data_type"`     //通话类别 0 系统电话 1.微信语音 2.微信通话
-	//Riend_id          int    `json:"riend_id"`          //好友id
+	Id                int    `json:"id"`                //记录id
+	Type              int    `json:"type"`              //通话类型 1 呼出 2呼入 3呼出未接 4呼入未接
+	Duration          int    `json:"duration"`          //通话时长(单位秒)
+	File              string `json:"file"`              //通话文件
+	User_id           string `json:"user_id"`           //员工id
+	Contact_name      string `json:"contact_name"`      //通话人名称
+	Contact_phone     string `json:"contact_phone"`     //通话人号码
+	Start_time        string `json:"start_time"`        //通话开始时间
+	End_time          string `json:"end_time"`          //通话结束时间
+	Update_time       string `json:"update_time"`       //更新时间 (该时间为查询时间）,获取了相同的id进行更新操作 用于下次请求通话记录
+	Data_type         int    `json:"data_type"`         //通话类别 0 系统电话 1.微信语音 2.微信通话
+	Riend_id          int    `json:"riend_id"`          //好友id
 	Friend_wx_id      string `json:"friend_wx_id"`      //String	好友微信Id
 	Friend_alias      string `json:"friend_alias"`      //String	好友微信号
 	Friend_chat_title string `json:"friend_chat_title"` //String	好友备注
@@ -96,33 +72,6 @@ func CallPost(time, Url string) (*CallJl, error) {
 	return CallAll, nil
 }
 
-//获取员工信息
-func PostUserAll(Url string) (*GetAllUser, error) {
-	query := url.Values{}
-	query.Add("app_id", key)
-	query.Add("page", "1")
-	query.Add("page_size", "200")
-
-	response, err := http.PostForm(Url, query)
-	if err != nil {
-		return nil, err
-	}
-
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	User := &GetAllUser{}
-	err = json.Unmarshal(body, User)
-	if err != nil {
-		return nil, err
-	}
-	return User, nil
-}
-
 //存储录音文件
 func CreateFile(data []byte, filename string) error {
 	f, err := os.Create(filename)
@@ -140,7 +89,7 @@ func CreateFile(data []byte, filename string) error {
 
 func main() {
 
-	time1 := fmt.Sprintf("2020-08-01") + " 08:00:00"
+	time1 := fmt.Sprintf("2021-03-01") + " 08:00:00"
 
 	for {
 
@@ -162,27 +111,9 @@ func main() {
 				continue
 			}
 
-			fmt.Println(v)
-			//拼接文件请求地址，获
-			resp, _ := http.Get(url2 + "?file_path=" + v.File)
-			defer resp.Body.Close()
-			body, _ := ioutil.ReadAll(resp.Body)
-
-			resp, _ = http.Get(string(body))
-			defer resp.Body.Close()
-			data, _ := ioutil.ReadAll(resp.Body)
-
-			CreateFile(data, "./file.mp3")
+			fmt.Printf("%#v", v)
 			return
 		}
-
-		//if len(CallData.Data) == 1000 {
-		//	//Update_time  这个字段为下一次请求时间开始的字段，之前我的程序是1天定时计划任务，我们可以改成1小时，数量应该不会超过1000  获取数量等于1000，那就需要使用Update_time 这个的值再次进行获取Update_time 截止当前时刻的通话记录
-		//	time1 = CallData.Data[len(CallData.Data)-1].Update_time
-		//} else {
-		//	return
-		//}
-
 	}
 
 }

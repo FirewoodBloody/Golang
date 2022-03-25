@@ -6,12 +6,12 @@ import (
 	"github.com/astaxie/beego"
 )
 
-// Operations about object
+// ObjectController Operations about object
 type ObjectController struct {
 	beego.Controller
 }
 
-// @Title Create
+// Post @Title Create
 // @Description create object
 // @Param	body		body 	models.Object	true		"The object content"
 // @Success 200 {string} models.Object.Id
@@ -39,7 +39,31 @@ func (o *ObjectController) Post() {
 	o.ServeJSON()
 }
 
-// @Title Get
+// NewSelect @Title NewSelect
+// @Description create object
+// @Param	body		body 	models.Object	true		"The object content"
+// @Success 200 {string} models.Object.Id
+// @Failure 403 body is empty
+// @router /NewSelect [post]
+func (o *ObjectController) NewSelect() {
+	//id := o.GetString("Mysql_Select")
+	start_time := o.GetString("Start_Time")
+	stop_time := o.GetString("Stop_Time")
+	login_name := o.GetString("Login_Name")
+	//cient_Models := o.GetString("Client_Models")
+
+	resulist, err := models.Select("新媒体线上明细", start_time, stop_time, login_name, "")
+	if len(resulist) == 0 {
+		o.Data["json"] = err
+	} else {
+		o.Data["json"] = resulist
+	}
+
+	o.ServeJSON()
+
+}
+
+// Get @Title Get
 // @Description find object by objectid
 // @Param	objectId		path 	string	true		"the objectid you want to get"
 // @Success 200 {object} models.Object
@@ -58,7 +82,7 @@ func (o *ObjectController) Get() {
 	//o.ServeJSON()
 }
 
-// @Title GetAll
+// GetAll @Title GetAll
 // @Description get all objects
 // @Success 200 {object} models.Object
 // @Failure 403 :objectId is empty
@@ -69,7 +93,7 @@ func (o *ObjectController) GetAll() {
 	//o.ServeJSON()
 }
 
-// @Title Update
+// Put @Title Update
 // @Description update the object
 // @Param	objectId		path 	string	true		"The objectid you want to update"
 // @Param	body		body 	models.Object	true		"The body"
@@ -90,7 +114,7 @@ func (o *ObjectController) Put() {
 	//o.ServeJSON()
 }
 
-// @Title Delete
+// Delete @Title Delete
 // @Description delete the object
 // @Param	objectId		path 	string	true		"The objectId you want to delete"
 // @Success 200 {string} delete success!

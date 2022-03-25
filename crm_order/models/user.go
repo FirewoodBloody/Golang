@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-
 	"fmt"
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
@@ -64,10 +63,10 @@ func GetClientMessage(client_Models, login_name string) *Users {
 			rd.Client_Models = "TsaveDialog"
 
 			//新媒体
-		} else if depart_id == "11" || depart_id == "33" {
-			str := beego.AppConfig.String("Medium_TsaveDialog")
-			rd.Err = json.Unmarshal([]byte(str), &rd)
-			rd.Client_Models = "Medium_TsaveDialog"
+			//} else if depart_id == "33" || depart_id == "123" || depart_id == "124" {
+			//	str := beego.AppConfig.String("Medium_TsaveDialog")
+			//	rd.Err = json.Unmarshal([]byte(str), &rd)
+			//	rd.Client_Models = "Medium_TsaveDialog"
 
 			//财务部
 		} else if depart_id == "10" || depart_id == "30" || depart_id == "31" || depart_id == "32" {

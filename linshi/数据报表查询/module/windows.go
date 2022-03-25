@@ -55,7 +55,7 @@ type Windows struct {
 
 const (
 	TimeFormat = "2006-01-02"
-	driverName = "mysql"
+	driverName = "sql"
 	dBconnect  = "root:dcf4aa3f7b982ce4@tcp(192.168.0.11:3306)/bl_crm?charset=utf8"
 )
 
@@ -230,7 +230,7 @@ func (w *Windows) Onclick() {
 						vcl.ThreadSync(func() {
 							w.Progress_bar.SetPosition(0)
 						})
-						go func() { Order_select(w, file) }()
+						go func() { OrderSelect(w, file) }()
 					} else if w.Taskdlg.RadioButton().Caption() == "新媒体线上明细" {
 						vcl.ThreadSync(func() {
 							w.Progress_bar.SetPosition(0)

@@ -12,7 +12,7 @@ import (
 
 const (
 	TimeFormat    = "2006-01-02"
-	driverName    = "mysql"
+	driverName    = "sql"
 	dBconnect     = "root:dcf4aa3f7b982ce4@tcp(192.168.0.11:3306)/bl_crm?charset=utf8"
 	start_at      = "2020-08-14 00:00:00"
 	start_at_type = "%Y-%m-%d %H:%i:%s"

@@ -1,0 +1,191 @@
+object Form1: TForm1
+  Left = 414
+  Height = 704
+  Top = 166
+  Width = 1020
+  AllowDropFiles = True
+  AlphaBlend = True
+  Caption = 'Form1'
+  ClientHeight = 704
+  ClientWidth = 1020
+  Color = clMoneyGreen
+  Font.CharSet = GB2312_CHARSET
+  Font.Color = clBlack
+  Font.Height = -12
+  Font.Name = '隶书'
+  Font.Pitch = fpFixed
+  Font.Quality = fqDraft
+  OnCreate = FormCreate
+  UseDockManager = True
+  LCLVersion = '2.0.12.0'
+  Visible = True
+  WindowState = wsMaximized
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 2
+    Height = 702
+    Top = 1
+    Width = 170
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 1
+    BorderSpacing.Around = 1
+    Caption = 'Panel1'
+    ClientHeight = 702
+    ClientWidth = 170
+    TabOrder = 0
+    object Button1: TButton
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 21
+      Height = 25
+      Top = 201
+      Width = 128
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 20
+      BorderSpacing.Top = 200
+      BorderSpacing.Right = 20
+      Caption = 'Button1'
+      OnClick = Button1Click
+      TabOrder = 0
+    end
+    object Button2: TButton
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel3
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 2
+      Height = 25
+      Top = 433
+      Width = 166
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 1
+      Caption = 'Button2'
+      TabOrder = 1
+    end
+    object Panel3: TPanel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Button1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 1
+      Height = 206
+      Top = 226
+      Width = 168
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Panel3'
+      ClientHeight = 206
+      ClientWidth = 168
+      TabOrder = 2
+      object Button4: TButton
+        AnchorSideLeft.Control = Panel3
+        AnchorSideTop.Control = Panel3
+        AnchorSideRight.Control = Panel3
+        AnchorSideRight.Side = asrBottom
+        Left = 2
+        Height = 25
+        Top = 2
+        Width = 164
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 1
+        Caption = 'Button4'
+        OnClick = Button4Click
+        TabOrder = 0
+      end
+    end
+  end
+  object Panel2: TPanel
+    AnchorSideLeft.Control = Panel1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 174
+    Height = 702
+    Top = 1
+    Width = 844
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 1
+    BorderSpacing.Right = 1
+    BorderSpacing.Around = 1
+    Caption = 'Panel2'
+    ClientHeight = 702
+    ClientWidth = 844
+    TabOrder = 1
+    object PageControl1: TPageControl
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = Panel2
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel2
+      AnchorSideBottom.Side = asrBottom
+      Left = 1
+      Height = 700
+      Top = 1
+      Width = 842
+      ActivePage = TabSheet2
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      MultiLine = True
+      TabIndex = 1
+      TabOrder = 0
+      TabPosition = tpLeft
+      TabWidth = 100
+      OnChange = Button2Click
+      Options = [nboMultiLine]
+      object TabSheet1: TTabSheet
+        AnchorSideLeft.Control = PageControl1
+        AnchorSideTop.Control = PageControl1
+        AnchorSideRight.Control = PageControl1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = PageControl1
+        AnchorSideBottom.Side = asrBottom
+        BiDiMode = bdRightToLeft
+        ClientHeight = 756
+        ClientWidth = 820
+        ParentBiDiMode = False
+        TabVisible = False
+        object Button3: TButton
+          AnchorSideLeft.Control = TabSheet1
+          AnchorSideRight.Control = TabSheet1
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = TabSheet1
+          AnchorSideBottom.Side = asrBottom
+          Left = 0
+          Height = 25
+          Top = 731
+          Width = 820
+          Anchors = [akLeft, akRight, akBottom]
+          Caption = 'Button3'
+          TabOrder = 0
+        end
+      end
+      object TabSheet2: TTabSheet
+        Caption = 'TabSheet2'
+        ClientHeight = 692
+        ClientWidth = 816
+        TabVisible = False
+        object Edit1: TEdit
+          AnchorSideLeft.Control = TabSheet2
+          AnchorSideTop.Control = TabSheet2
+          AnchorSideRight.Control = TabSheet2
+          AnchorSideRight.Side = asrBottom
+          Left = 0
+          Height = 20
+          Top = 0
+          Width = 816
+          Anchors = [akTop, akLeft, akRight]
+          TabOrder = 0
+          Text = 'Edit1'
+        end
+      end
+    end
+  end
+end

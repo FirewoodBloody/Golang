@@ -71,7 +71,7 @@ type Route struct {
 
 //------------------------------------------------------------------------------------------
 
-//Post 查询请求路由请求（顺丰）
+// SfPost Post 查询请求路由请求（顺丰）
 //resp 返回快递路由信息
 //export  SfPost
 func SfPost(requestParameters url.Values) (SfDataStruct *Response, err error) {

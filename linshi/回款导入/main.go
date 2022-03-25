@@ -31,8 +31,8 @@ type Windows struct {
 
 const (
 	TimeFormat = "2006-01-02"
-	driverName = "mysql"
-	dBconnect  = "root:dcf4aa3f7b982ce4@tcp(192.168.0.11:3306)/bl_crm?charset=utf8"
+	driverName = "sql"
+	dBconnect  = "root:dcf4aa3f7b982ce4@tcp(61.185.225.118:45678)/bl_crm?charset=utf8"
 )
 
 var tbMappers core.PrefixMapper
@@ -172,29 +172,21 @@ func (w *Windows) Onclick() {
 					continue
 				}
 
-				if file.GetCellValue("Sheet1", fmt.Sprintf("E%v", i)) == "顺丰快递" {
-					if file.GetCellValue("Sheet1", fmt.Sprintf("B%v", i)) == "" {
-						vcl.ThreadSync(func() {
-							vcl.ShowMessage(fmt.Sprintf("D%v :快递面单信息为空，跳过此列！", i))
-							w.progress_bar.SetPosition(int32(float64(i) / float64(len(file.GetRows("Sheet1"))) * 100))
-						})
-						continue
-					}
-					number, _ := w.Engine.Engine.Query(fmt.Sprintf("SELECT\n\tmo.order_no AS order_no \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id \nWHERE\n\tei.ship_channel_no = '%v'", file.GetCellValue("Sheet1", fmt.Sprintf("B%v", i))))
-					for _, v := range number {
-						fmt.Println(string(v["order_no"]))
-						file.SetCellValue("Sheet1", fmt.Sprintf("A%v", i), string(v["order_no"]))
-					}
+				if file.GetCellValue("Sheet1", fmt.Sprintf("B%v", i)) == "" {
 					vcl.ThreadSync(func() {
-						w.progress_bar.SetPosition(int32(float64(i) / float64(len(file.GetRows("Sheet1"))) * 100))
-					})
-				} else {
-
-					vcl.ThreadSync(func() {
+						vcl.ShowMessage(fmt.Sprintf("D%v :快递面单信息为空，跳过此列！", i))
 						w.progress_bar.SetPosition(int32(float64(i) / float64(len(file.GetRows("Sheet1"))) * 100))
 					})
 					continue
 				}
+				number, _ := w.Engine.Engine.Query(fmt.Sprintf("SELECT\n\tmo.order_no AS order_no \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id \nWHERE\n\tei.ship_channel_no = '%v'", file.GetCellValue("Sheet1", fmt.Sprintf("B%v", i))))
+				for _, v := range number {
+					fmt.Println(string(v["order_no"]))
+					file.SetCellValue("Sheet1", fmt.Sprintf("A%v", i), string(v["order_no"]))
+				}
+				vcl.ThreadSync(func() {
+					w.progress_bar.SetPosition(int32(float64(i) / float64(len(file.GetRows("Sheet1"))) * 100))
+				})
 
 			}
 			vcl.ShowMessageFmt("匹配完成，正在保存！")

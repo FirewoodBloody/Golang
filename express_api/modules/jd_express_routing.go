@@ -42,7 +42,7 @@ type PublicParameters struct {
 
 //请求快递信息 data数据
 type Format struct {
-	SalePlat     string `json:"salePlat"`     //销售平台（非 JD 商城请填： 0030001）
+	SalePlat     string `json:"salePlat"`     //销售平台（非 jd 商城请填： 0030001）
 	CustomerCode string `json:"customerCode"` // 商家编码
 	OrderId      string `json:"orderId"`      //订单号
 

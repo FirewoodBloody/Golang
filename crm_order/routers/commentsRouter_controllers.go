@@ -52,6 +52,15 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["github.com/FirewoodBloody/Golang/crm_order/controllers:ObjectController"] = append(beego.GlobalControllerRouter["github.com/FirewoodBloody/Golang/crm_order/controllers:ObjectController"],
+        beego.ControllerComments{
+            Method: "NewSelect",
+            Router: "/NewSelect",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["github.com/FirewoodBloody/Golang/crm_order/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/FirewoodBloody/Golang/crm_order/controllers:UserController"],
         beego.ControllerComments{
             Method: "Post",

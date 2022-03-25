@@ -6,12 +6,12 @@ import (
 	"github.com/astaxie/beego"
 )
 
-// Operations about Users
+// UserController Operations about Users
 type UserController struct {
 	beego.Controller
 }
 
-// @Title CreateUser
+// Post @Title CreateUser
 // @Description create users
 // @Param	body		body 	models.User	true		"body for user content"
 // @Success 200 {int} models.User.Id
@@ -47,7 +47,7 @@ func (u *UserController) Post() {
 	u.ServeJSON()
 }
 
-// @Title CreateUser
+// Version @Title CreateUser
 // @Description create users
 // @Param	body		body 	models.User	true		"body for user content"
 // @Success 200 {int} models.User.Id
@@ -75,7 +75,7 @@ func (u *UserController) Version() {
 	u.ServeJSON()
 }
 
-// @Title Client_ModelsUser
+// Client_Models @Title Client_ModelsUser
 // @Description create users
 // @Param	body		body 	models.User	true		"body for user content"
 // @Success 200 {int} models.User.Id
@@ -95,7 +95,7 @@ func (u *UserController) Client_Models() {
 	u.ServeJSON()
 }
 
-// @Title GetAll
+// GetAll @Title GetAll
 // @Description get all Users
 // @Success 200 {object} models.User
 // @router / [get]

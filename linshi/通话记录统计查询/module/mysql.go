@@ -12,10 +12,11 @@ import (
 )
 
 var (
-	URL  = "http://192.168.0.12:8888/v1/object/"            //请求数据
-	Url  = "http://192.168.0.12:8888/v1/user/"              //数据报表类型
-	Url2 = "http://192.168.0.12:8888/v1/user/Version"       //版本
-	Url1 = "http://192.168.0.12:8888/v1/user/Client_Models" //版本 和 数据报表类型
+	URL = "http://61.185.225.118:19374/v1/object/" //请求数据
+	//URL  = "http://61.185.225.118:19374/v1/object/"            //请求数据
+	Url  = "http://61.185.225.118:19374/v1/user/"              //数据报表类型
+	Url2 = "http://61.185.225.118:19374/v1/user/Version"       //版本
+	Url1 = "http://61.185.225.118:19374/v1/user/Client_Models" //版本 和 数据报表类型
 )
 
 //通话记录统计

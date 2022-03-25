@@ -56,14 +56,14 @@ func main() {
 	Progress_bar.SetPosition(100)
 	data, _ := ioutil.ReadAll(exe.Body)
 
-	file, _ := os.Create("D:\\Program Files (x86)\\数据报表查询\\install.exe")
+	file, _ := os.Create("./install.exe")
 
 	file.Write(data)
 	file.Close()
 	defer os.Exit(0)
 
 	Win.Hide()
-	cmd := exec.Command("D:\\Program Files (x86)\\数据报表查询\\install.exe")
+	cmd := exec.Command("./install.exe")
 	cmd.Start()
 	os.Exit(0)
 }

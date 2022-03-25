@@ -11,18 +11,20 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
 var (
 	URL  = "http://192.168.0.12:8888/v1/object/"            //请求数据
+	URL3 = "http://192.168.0.12:8888/v1/object/NewSelect"   //请求数据
 	Url  = "http://192.168.0.12:8888/v1/user/"              //数据报表类型
 	Url2 = "http://192.168.0.12:8888/v1/user/Version"       //版本
 	Url1 = "http://192.168.0.12:8888/v1/user/Client_Models" //版本 和 数据报表类型
 )
 
 //销售订单明细
-func Order_select(w *Windows, f *excelize.File) {
+func OrderSelect(w *Windows, f *excelize.File) {
 	bady := url.Values{}
 	bady.Add("Mysql_Select", w.Taskdlg.RadioButton().Caption())
 	bady.Add("Start_Time", w.Date_strat_label.DateTime().Format("2006-01-02"))
@@ -114,15 +116,15 @@ func Order_select(w *Windows, f *excelize.File) {
 		if string(v["订单状态"]) == "订单配送中" || string(v["订单状态"]) == "订单未妥投" {
 			if string(v["快递单号"]) != "" {
 				if string(v["配送方式"]) == "顺丰快递" {
-					data, _ := express.SfCreateData(string(v["快递单号"]))
+					data, _ := modules.SfCreateData(string(v["快递单号"]))
+					//fmt.Println(err)
 					if len(data.Body.RouteResponse.Route) != 0 {
 						//fmt.Println(data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Remark)
 						f.SetCellValue("Sheet1", fmt.Sprintf("AF%v", k+2), data.Body.RouteResponse.Route[len(data.Body.RouteResponse.Route)-1].Remark)
 					}
-				} else if string(v["配送方式"]) == "京东快递" {
+				} else if strings.Contains(string(v["配送方式"]), "京东快递") {
 					data := modules.SelectData(string(v["快递单号"]))
 					if len(data.Data) != 0 {
-						//fmt.Println(data.Data[len(data.Data)-1].OpeRemark)
 						f.SetCellValue("Sheet1", fmt.Sprintf("AF%v", k+2), data.Data[len(data.Data)-1].OpeRemark)
 					}
 				}
@@ -163,11 +165,22 @@ func Order_xs_select(w *Windows, f *excelize.File) {
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 
-	var resulist []map[string][]byte
-	err = json.Unmarshal(data, &resulist)
+	resp1, err := http.PostForm(URL3, bady)
 	if err != nil {
 		vcl.ShowMessage(fmt.Sprintf("%v", err))
 	}
+	defer resp1.Body.Close()
+	data1, err := ioutil.ReadAll(resp1.Body)
+
+	var resulist []map[string][]byte
+	var resulist1 []map[string][]byte
+	err = json.Unmarshal(data, &resulist)
+	err = json.Unmarshal(data1, &resulist1)
+	if err != nil {
+		vcl.ShowMessage(fmt.Sprintf("%v", err))
+	}
+
+	i := len(resulist) + 2
 
 	for k, v := range resulist {
 		if k == 0 {
@@ -243,9 +256,46 @@ func Order_xs_select(w *Windows, f *excelize.File) {
 			f.SetCellValue("Sheet1", fmt.Sprintf("AA%v", k+2), v["快递状态"])
 		}
 		vcl.ThreadSync(func() {
-			w.Progress_bar.SetPosition(int32(float64(k+1) / float64(len(resulist)) * 100))
+			w.Progress_bar.SetPosition(int32(float64(k+1) / float64(len(resulist)+len(resulist1)) * 100))
 		})
+
 	}
+	for _, v := range resulist1 {
+		f.SetCellValue("Sheet1", fmt.Sprintf("A%v", i), v["线上下单时间"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("B%v", i), v["线上下单渠道"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("C%v", i), v["客户编码"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("D%v", i), v["下单客户姓名"])
+		//处理下单商品
+		f.SetCellValue("Sheet1", fmt.Sprintf("E%v", i), v["下单商品"])
+
+		//f.SetCellValue("Sheet1", fmt.Sprintf("F%v", i), v["渠道订单号"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("G%v", i), v["核单状态"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("H%v", i), v["核单备注"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("I%v", i), v["部门"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("J%v", i), v["员工姓名"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("K%v", i), v["员工工号"])
+		//f.SetCellValue("Sheet1", fmt.Sprintf("L%v", i), v["员工状态"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("M%v", i), v["系统订单号"])
+		//f.SetCellValue("Sheet1", fmt.Sprintf("N%v", i), v["订单类型"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("O%v", i), v["订单状态"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("P%v", i), v["订单应收金额"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("Q%v", i), v["订单优惠总额"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("R%v", i), v["订单实收金额"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("S%v", i), v["订单商品"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("T%v", i), v["商品数量"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("U%v", i), v["商品原价"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("V%v", i), v["商品售价"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("W%v", i), v["商品总价"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("X%v", i), v["配送方式"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("Y%v", i), v["快递单号"])
+		//f.SetCellValue("Sheet1", fmt.Sprintf("Z%v", i), v["客户地址"])
+		f.SetCellValue("Sheet1", fmt.Sprintf("AA%v", i), v["快递状态"])
+		vcl.ThreadSync(func() {
+			w.Progress_bar.SetPosition(int32(float64(i) / float64(len(resulist)+len(resulist1)) * 100))
+		})
+		i++
+	}
+
 	vcl.ThreadSync(func() {
 		w.Progress_bar.SetPosition(100)
 		f.SaveAs(w.TsaveDialog.FileName())

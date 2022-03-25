@@ -27,23 +27,23 @@ const (
 )
 
 //读取配置文件信息
-func OpenConfig(c *ConfigIni, filename string) {
+func (c *ConfigIni) OpenConfig(filename string) {
 	cfg, err := goconfig.LoadConfigFile(filename)
 	if err != nil {
 		fmt.Println("File Open failed:", err)
 	}
 
 	//从配置文件中读取所需要的授权口令和刷新授权的access_token
-	c.Access_token, _ = cfg.GetValue("JD", "access_token")
-	c.Refresh_token, _ = cfg.GetValue("JD", "refresh_token")
-	c.Open_id, _ = cfg.GetValue("JD", "open_id")
+	c.Access_token, _ = cfg.GetValue("jd", "access_token")
+	c.Refresh_token, _ = cfg.GetValue("jd", "refresh_token")
+	c.Open_id, _ = cfg.GetValue("jd", "open_id")
 }
 
 //刷新授权时效
 func RefreshKey(c *ConfigIni) {
 
 	//http get 请求刷新，使用 KEY +秘钥 + grant_type + 刷新字符refresh_token
-	resp, err := http.Get(fmt.Sprintf("https://open-oauth.jd.com/oauth2/refresh_token?app_key=%v&app_secret=%v&grant_type=refresh_token&refresh_token=%v", app_key, app_secret, c.Refresh_token))
+	resp, err := http.Get(fmt.Sprintf("https://open-oauth.jd.com/oauth2/refresh_token?app_key=%v&app_secret=%v&grant_type=refresh_token&refresh_token=%v", app_key, app_secret, "59ae5c699368495ba1620cd73ebfffbcnjk5"))
 	if err != nil {
 		fmt.Println(err)
 	}

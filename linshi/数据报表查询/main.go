@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	v = "0.3.2"
+	v = "1.3.3"
 )
 
 type V struct {
@@ -42,6 +42,7 @@ func main() {
 	}
 	defer resp.Body.Close()
 	data, _ := ioutil.ReadAll(resp.Body)
+
 	V := V{}
 	json.Unmarshal(data, &V)
 

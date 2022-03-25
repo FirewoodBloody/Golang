@@ -105,7 +105,7 @@ func KdnCreateData(ShipperCode, LogisticCode string) (requestParameters url.Valu
 	return
 }
 
-//Post 查询请求路由请求（快递鸟）
+// KdnPost Post 查询请求路由请求（快递鸟）
 //resp 返回快递路由信息
 func KdnPost(ApiURL string, value url.Values) (rs []byte, err error) {
 	resp, err := http.PostForm(ApiURL, value)

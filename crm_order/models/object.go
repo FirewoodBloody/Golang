@@ -9,10 +9,12 @@ import (
 )
 
 const (
-	TimeFormat = "2006-01-02"
-	driverName = "mysql"
-	dBconnect  = "root:dcf4aa3f7b982ce4@tcp(192.168.0.11:3306)/bl_crm?charset=utf8"
-	sss        = "%Y-%m-%d %H:%m:%s"
+	TimeFormat   = "2006-01-02"
+	driverName   = "sql"
+	dBconnect    = "root:dcf4aa3f7b982ce4@tcp(192.168.0.11:3306)/bl_crm?charset=utf8"
+	NewdBconnect = "bolong:bolong2021!@#@tcp(192.168.0.17:3306)/crm_prod?charset=utf8"
+
+	sss = "%Y-%m-%d %H:%m:%s"
 )
 
 type Order struct {
@@ -44,13 +46,26 @@ func (e *Engine) NewEngine() error {
 	return nil
 }
 
+// CRMNewEngine 这个是临时增加 的一个新系统的数据库连接
+func (e *Engine) CRMNewEngine() error {
+
+	e.Engine, e.Err = xorm.NewEngine(driverName, NewdBconnect)
+	if e.Err != nil {
+		return e.Err
+	}
+	//tbMappe := core.NewPrefixMapper(core.SnakeMapper{}, tbMapper)
+	e.Engine.ShowSQL(true)
+	e.Engine.SetTableMapper(tbMappers)
+	return nil
+}
+
 //数据库连接建立
 func (e *Engine) Close() {
 	e.Engine.Close()
 }
 
-//员工部门迭代查询
-func (e *Engine) Login_depart_id_permissions(login_name string) (string, error) {
+// LoginDepartIdPermissions 员工部门迭代查询
+func (e *Engine) LoginDepartIdPermissions(login_name string) (string, error) {
 	depart_id_str := make(map[int]string, 500) //定义一个用来存储每次查询结果的map
 	//查询当前员工的归属部门
 	resp, err := e.Engine.Query(fmt.Sprintf("SELECT depart_id FROM bl_users WHERE login_name = '%v'", login_name))
@@ -81,6 +96,50 @@ func (e *Engine) Login_depart_id_permissions(login_name string) (string, error) 
 			depart_id_str[i+1] = depart_id_str[i+1] + "," + string(v["id"])
 		}
 		depart_id_str[0] = depart_id_str[0] + "," + depart_id_str[i+1]
+		i++
+	}
+
+}
+
+// NewLoginDepartIdPermissions 员工部门迭代查询
+func NewLoginDepartIdPermissions(loginName string) (string, error) {
+	b := new(Engine)
+	defer b.Close()
+	err := b.CRMNewEngine()
+	if err != nil {
+		return "", err
+	}
+
+	departIdStr := make(map[int]string, 500) //定义一个用来存储每次查询结果的map
+	//查询当前员工的归属部门
+	resp, err := b.Engine.Query(fmt.Sprintf("SELECT organ_id FROM sys_user WHERE staff_no = '%v'", loginName))
+	if err != nil {
+		return "", fmt.Errorf("%v，请联系管理员！", err)
+	}
+	if len(resp) == 0 {
+		return "", fmt.Errorf("部门为空！请联系管理员")
+	}
+	departIdStr[0] = "'" + string(resp[0]["organ_id"]) + "'"
+
+	//开始查询员工当前部门以及以下所有部门，并进行字符串的拼接
+	i := 0
+	for {
+		resp, err = b.Engine.Query(fmt.Sprintf("SELECT id FROM sys_organ WHERE parent_id =  (%v)", departIdStr[i]))
+		if err != nil {
+			return "", fmt.Errorf("%v，请联系管理员！", err)
+		}
+		if len(resp) == 0 {
+			return departIdStr[0], nil
+		}
+
+		for k, v := range resp {
+			if k == 0 {
+				departIdStr[i+1] = "'" + string(v["id"]) + "'"
+				continue
+			}
+			departIdStr[i+1] = departIdStr[i+1] + "," + "'" + string(v["id"]) + "'"
+		}
+		departIdStr[0] = departIdStr[0] + "," + departIdStr[i+1]
 		i++
 	}
 
@@ -124,9 +183,15 @@ func Select(id, Start_Time, Stop_Time, login_name, client_Models string) ([]map[
 		resulist, err := e.Order_select(Start_Time, Stop_Time, login_name, client_Models)
 		return resulist, err
 	} else if id == "新媒体线上明细" {
-		e := new(Engine)
-		resulist, err := e.Order_xs_select(Start_Time, Stop_Time, login_name, client_Models)
-		return resulist, err
+		if client_Models == "" {
+			e := new(Engine)
+			resulist, err := e.NewOrderXsSelect(Start_Time, Stop_Time, login_name, client_Models)
+			return resulist, err
+		} else {
+			e := new(Engine)
+			resulist, err := e.Order_xs_select(Start_Time, Stop_Time, login_name, client_Models)
+			return resulist, err
+		}
 	} else if id == "新媒体线上统计" {
 		e := new(Engine)
 		resulist, err := e.Order_xsTJ_select(Start_Time, Stop_Time, login_name)
@@ -181,21 +246,21 @@ func (e *Engine) Order_select(Start_Time, Stop_Time, login_name, client_Models s
 		if position_level <= "1" { //员工
 			resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tmo.created_at AS 订单创建时间,\n\tumc.nickname AS 订单创建人,\n\tumc.login_name AS 订单创建人工号,\n\tdmc.`name` AS 订单创建人部门,\n\tcc.`name` AS 客户姓名,\n\tcc.customer_code AS 客户编码,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi4.`NAME` AS 订单渠道,\n\tdi.`name` AS 订单状态,\n\tmo.performance_at AS 回款日期,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tumm.nickname AS 线上下单核单人,\n\tumm.login_name AS 线上下单核单人工号,\n\tdmm.`name` AS 线上下单核单人部门,\n\tmo.`name` AS 订单备注,\n\tump.nickname AS 业绩归属人,\n\tump.login_name AS 业绩归属人工号,\n\tdi3.`NAME` AS 员工状态,\n\tdmp.`name` AS 业绩归属人部门,\n\tFORMAT( mo.total_amount / 100,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态  \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id\n\tLEFT JOIN bl_mall_order_media mom ON mo.id = mom.mall_order_id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 43 ) di ON mo.`status` = di.item_value\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 53 ) di2 ON mo.type = di2.item_value\n\tLEFT JOIN bl_crm_customer cc ON mo.customer_id = cc.id\n\tLEFT JOIN bl_users umc ON mo.create_user_id = umc.id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 14 ) di3 ON umc.`status` = di3.item_value\n\tLEFT JOIN ( SELECT id,NAME,item_value FROM bl_dict_item WHERE dict_id = 57 ) di4 ON mo.channel_id = di4.item_value\n\tLEFT JOIN bl_depart dmc ON mo.create_user_depart_id = dmc.id\n\tLEFT JOIN bl_users ump ON mo.performance_user_id = ump.id\n\tLEFT JOIN bl_depart dmp ON mo.performance_user_depart_id = dmp.id \n\tLEFT JOIN bl_users umm ON mom.assign_user_id = umm.id\n\tLEFT JOIN bl_depart dmm ON umm.depart_id = dmm.id  \nWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL  \n\tAND ((mo.created_at > '%v 00:00:00' AND mo.created_at <= '%v 23:59:59') OR (mo.created_at < '%v 00:00:00' AND mo.performance_at IS NULL AND mo.`status` <= 90) OR (mo.created_at < '%v 00:00:00' AND mo.performance_at >'%v 00:00:00' and mo.performance_at <= '%v 23:59:59' ))\n\tAND di2.item_value = 1\n\tAND ump.login_name = '%v' \nORDER BY\n\tmo.created_at DESC", Start_Time, Stop_Time, Start_Time, Start_Time, Start_Time, Stop_Time, login_name))
 		} else if position_level >= "2" { //管理
-			depart_id, err := e.Login_depart_id_permissions(login_name)
+			depart_id, err := e.LoginDepartIdPermissions(login_name)
 			if err != nil {
 				return nil, fmt.Errorf("%v，请联系管理员！", err)
 			}
 			resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tmo.created_at AS 订单创建时间,\n\tumc.nickname AS 订单创建人,\n\tumc.login_name AS 订单创建人工号,\n\tdmc.`name` AS 订单创建人部门,\n\tcc.`name` AS 客户姓名,\n\tcc.customer_code AS 客户编码,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi4.`NAME` AS 订单渠道,\n\tdi.`name` AS 订单状态,\n\tmo.performance_at AS 回款日期,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tumm.nickname AS 线上下单核单人,\n\tumm.login_name AS 线上下单核单人工号,\n\tdmm.`name` AS 线上下单核单人部门,\n\tmo.`name` AS 订单备注,\n\tump.nickname AS 业绩归属人,\n\tump.login_name AS 业绩归属人工号,\n\tdi3.`NAME` AS 员工状态,\n\tdmp.`name` AS 业绩归属人部门,\n\tFORMAT( mo.total_amount / 100,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态  \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id\n\tLEFT JOIN bl_mall_order_media mom ON mo.id = mom.mall_order_id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 43 ) di ON mo.`status` = di.item_value\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 53 ) di2 ON mo.type = di2.item_value\n\tLEFT JOIN bl_crm_customer cc ON mo.customer_id = cc.id\n\tLEFT JOIN bl_users umc ON mo.create_user_id = umc.id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 14 ) di3 ON umc.`status` = di3.item_value\n\tLEFT JOIN ( SELECT id,NAME,item_value FROM bl_dict_item WHERE dict_id = 57 ) di4 ON mo.channel_id = di4.item_value\n\tLEFT JOIN bl_depart dmc ON mo.create_user_depart_id = dmc.id\n\tLEFT JOIN bl_users ump ON mo.performance_user_id = ump.id\n\tLEFT JOIN bl_depart dmp ON mo.performance_user_depart_id = dmp.id \n\tLEFT JOIN bl_users umm ON mom.assign_user_id = umm.id\n\tLEFT JOIN bl_depart dmm ON umm.depart_id = dmm.id  \nWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL \n\tAND ((mo.created_at > '%v 00:00:00' AND mo.created_at <= '%v 23:59:59') OR (mo.created_at < '%v 00:00:00' AND mo.performance_at IS NULL AND mo.`status` <= 90) OR (mo.created_at < '%v 00:00:00' AND mo.performance_at >'%v 00:00:00' and mo.performance_at <= '%v 23:59:59' ))\n\tAND di2.item_value = 1\n\tAND dmp.id IN (%v)  \nORDER BY\n\tmo.created_at DESC", Start_Time, Stop_Time, Start_Time, Start_Time, Start_Time, Stop_Time, depart_id))
 		}
-	} else if client_Models == "TsaveDialog" || login_name == "15060001" { //无限制
+	} else if client_Models == "TsaveDialog" || client_Models == "Medium_TsaveDialog" { //无限制
 		resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tmo.created_at AS 订单创建时间,\n\tumc.nickname AS 订单创建人,\n\tumc.login_name AS 订单创建人工号,\n\tdmc.`name` AS 订单创建人部门,\n\tcc.`name` AS 客户姓名,\n\tcc.customer_code AS 客户编码,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi4.`NAME` AS 订单渠道,\n\tdi.`name` AS 订单状态,\n\tmo.performance_at AS 回款日期,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tumm.nickname AS 线上下单核单人,\n\tumm.login_name AS 线上下单核单人工号,\n\tdmm.`name` AS 线上下单核单人部门,\n\tmo.`name` AS 订单备注,\n\tump.nickname AS 业绩归属人,\n\tump.login_name AS 业绩归属人工号,\n\tdi3.`NAME` AS 员工状态,\n\tdmp.`name` AS 业绩归属人部门,\n\tFORMAT( mo.total_amount / 100,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态  \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id\n\tLEFT JOIN bl_mall_order_media mom ON mo.id = mom.mall_order_id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 43 ) di ON mo.`status` = di.item_value\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 53 ) di2 ON mo.type = di2.item_value\n\tLEFT JOIN bl_crm_customer cc ON mo.customer_id = cc.id\n\tLEFT JOIN bl_users umc ON mo.create_user_id = umc.id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 14 ) di3 ON umc.`status` = di3.item_value\n\tLEFT JOIN ( SELECT id,NAME,item_value FROM bl_dict_item WHERE dict_id = 57 ) di4 ON mo.channel_id = di4.item_value\n\tLEFT JOIN bl_depart dmc ON mo.create_user_depart_id = dmc.id\n\tLEFT JOIN bl_users ump ON mo.performance_user_id = ump.id\n\tLEFT JOIN bl_depart dmp ON mo.performance_user_depart_id = dmp.id \n\tLEFT JOIN bl_users umm ON mom.assign_user_id = umm.id\n\tLEFT JOIN bl_depart dmm ON umm.depart_id = dmm.id  \nWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL \n\tAND ((mo.created_at > '%v 00:00:00' AND mo.created_at <= '%v 23:59:59') OR (mo.created_at < '%v 00:00:00' AND mo.performance_at IS NULL AND mo.`status` <= 90) OR (mo.created_at < '%v 00:00:00' AND mo.performance_at >'%v 00:00:00' and mo.performance_at <= '%v 23:59:59' ))\n\tAND di2.item_value = 1 \nORDER BY\n\tmo.created_at DESC", Start_Time, Stop_Time, Start_Time, Start_Time, Start_Time, Stop_Time))
-	} else if client_Models == "Medium_TsaveDialog" { //新媒体
-		depart_id, err := e.Login_depart_id_permissions(login_name)
-		if err != nil {
-			return nil, fmt.Errorf("%v，请联系管理员！", err)
-		}
-		resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tmo.created_at AS 订单创建时间,\n\tumc.nickname AS 订单创建人,\n\tumc.login_name AS 订单创建人工号,\n\tdmc.`name` AS 订单创建人部门,\n\tcc.`name` AS 客户姓名,\n\tcc.customer_code AS 客户编码,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi4.`NAME` AS 订单渠道,\n\tdi.`name` AS 订单状态,\n\tmo.performance_at AS 回款日期,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tumm.nickname AS 线上下单核单人,\n\tumm.login_name AS 线上下单核单人工号,\n\tdmm.`name` AS 线上下单核单人部门,\n\tmo.`name` AS 订单备注,\n\tump.nickname AS 业绩归属人,\n\tump.login_name AS 业绩归属人工号,\n\tdi3.`NAME` AS 员工状态,\n\tdmp.`name` AS 业绩归属人部门,\n\tFORMAT( mo.total_amount / 100,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态  \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id\n\tLEFT JOIN bl_mall_order_media mom ON mo.id = mom.mall_order_id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 43 ) di ON mo.`status` = di.item_value\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 53 ) di2 ON mo.type = di2.item_value\n\tLEFT JOIN bl_crm_customer cc ON mo.customer_id = cc.id\n\tLEFT JOIN bl_users umc ON mo.create_user_id = umc.id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 14 ) di3 ON umc.`status` = di3.item_value\n\tLEFT JOIN ( SELECT id,NAME,item_value FROM bl_dict_item WHERE dict_id = 57 ) di4 ON mo.channel_id = di4.item_value\n\tLEFT JOIN bl_depart dmc ON mo.create_user_depart_id = dmc.id\n\tLEFT JOIN bl_users ump ON mo.performance_user_id = ump.id\n\tLEFT JOIN bl_depart dmp ON mo.performance_user_depart_id = dmp.id \n\tLEFT JOIN bl_users umm ON mom.assign_user_id = umm.id\n\tLEFT JOIN bl_depart dmm ON umm.depart_id = dmm.id  \nWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL \n\tAND ((mo.created_at > '%v 00:00:00' AND mo.created_at <= '%v 23:59:59') OR (mo.created_at < '%v 00:00:00' AND mo.performance_at IS NULL AND mo.`status` <= 90) OR (mo.created_at < '%v 00:00:00' AND mo.performance_at >'%v 00:00:00' and mo.performance_at <= '%v 23:59:59' ))\n\tAND di2.item_value = 1 \n\tAND dmp.id IN (%v)   \nORDER BY\n\tmo.created_at DESC", Start_Time, Stop_Time, Start_Time, Start_Time, Start_Time, Stop_Time, depart_id))
-	}
+	} //} else if client_Models == "Medium_TsaveDialog" { //新媒体
+	//	depart_id, err := e.Login_depart_id_permissions(login_name)
+	//	if err != nil {
+	//		return nil, fmt.Errorf("%v，请联系管理员！", err)
+	//	}
+	//	resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tmo.created_at AS 订单创建时间,\n\tumc.nickname AS 订单创建人,\n\tumc.login_name AS 订单创建人工号,\n\tdmc.`name` AS 订单创建人部门,\n\tcc.`name` AS 客户姓名,\n\tcc.customer_code AS 客户编码,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi4.`NAME` AS 订单渠道,\n\tdi.`name` AS 订单状态,\n\tmo.performance_at AS 回款日期,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tumm.nickname AS 线上下单核单人,\n\tumm.login_name AS 线上下单核单人工号,\n\tdmm.`name` AS 线上下单核单人部门,\n\tmo.`name` AS 订单备注,\n\tump.nickname AS 业绩归属人,\n\tump.login_name AS 业绩归属人工号,\n\tdi3.`NAME` AS 员工状态,\n\tdmp.`name` AS 业绩归属人部门,\n\tFORMAT( mo.total_amount / 100,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态  \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id\n\tLEFT JOIN bl_mall_order_media mom ON mo.id = mom.mall_order_id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 43 ) di ON mo.`status` = di.item_value\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 53 ) di2 ON mo.type = di2.item_value\n\tLEFT JOIN bl_crm_customer cc ON mo.customer_id = cc.id\n\tLEFT JOIN bl_users umc ON mo.create_user_id = umc.id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 14 ) di3 ON umc.`status` = di3.item_value\n\tLEFT JOIN ( SELECT id,NAME,item_value FROM bl_dict_item WHERE dict_id = 57 ) di4 ON mo.channel_id = di4.item_value\n\tLEFT JOIN bl_depart dmc ON mo.create_user_depart_id = dmc.id\n\tLEFT JOIN bl_users ump ON mo.performance_user_id = ump.id\n\tLEFT JOIN bl_depart dmp ON mo.performance_user_depart_id = dmp.id \n\tLEFT JOIN bl_users umm ON mom.assign_user_id = umm.id\n\tLEFT JOIN bl_depart dmm ON umm.depart_id = dmm.id  \nWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL \n\tAND ((mo.created_at > '%v 00:00:00' AND mo.created_at <= '%v 23:59:59') OR (mo.created_at < '%v 00:00:00' AND mo.performance_at IS NULL AND mo.`status` <= 90) OR (mo.created_at < '%v 00:00:00' AND mo.performance_at >'%v 00:00:00' and mo.performance_at <= '%v 23:59:59' ))\n\tAND di2.item_value = 1 \n\tAND dmp.id IN (%v)   \nORDER BY\n\tmo.created_at DESC", Start_Time, Stop_Time, Start_Time, Start_Time, Start_Time, Stop_Time, depart_id))
+	//}
 	return resulist, nil
 }
 
@@ -217,7 +282,7 @@ func (e *Engine) Order_gift_select(Start_Time, Stop_Time, login_name, client_Mod
 		if position_level <= "1" { //员工
 			resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tmo.created_at AS 订单创建时间,\n\tumc.nickname AS 订单创建人,\n\tumc.login_name AS 订单创建人工号,\n\tdmc.`name` AS 订单创建人部门,\n\tcc.`name` AS 客户姓名,\n\tcc.customer_code AS 客户编码,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi4.`NAME` AS 订单渠道,\n\tdi.`name` AS 订单状态,\n\tmo.performance_at AS 回款日期,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tumm.nickname AS 线上下单核单人,\n\tumm.login_name AS 线上下单核单人工号,\n\tdmm.`name` AS 线上下单核单人部门,\n\tmo.`name` AS 订单备注,\n\tump.nickname AS 业绩归属人,\n\tump.login_name AS 业绩归属人工号,\n\tdi3.`NAME` AS 员工状态,\n\tdmp.`name` AS 业绩归属人部门,\n\tFORMAT( mo.total_amount / 100,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态  \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id\n\tLEFT JOIN bl_mall_order_media mom ON mo.id = mom.mall_order_id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 43 ) di ON mo.`status` = di.item_value\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 53 ) di2 ON mo.type = di2.item_value\n\tLEFT JOIN bl_crm_customer cc ON mo.customer_id = cc.id\n\tLEFT JOIN bl_users umc ON mo.create_user_id = umc.id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 14 ) di3 ON umc.`status` = di3.item_value\n\tLEFT JOIN ( SELECT id,NAME,item_value FROM bl_dict_item WHERE dict_id = 57 ) di4 ON mo.channel_id = di4.item_value\n\tLEFT JOIN bl_depart dmc ON mo.create_user_depart_id = dmc.id\n\tLEFT JOIN bl_users ump ON mo.performance_user_id = ump.id\n\tLEFT JOIN bl_depart dmp ON mo.performance_user_depart_id = dmp.id \n\tLEFT JOIN bl_users umm ON mom.assign_user_id = umm.id\n\tLEFT JOIN bl_depart dmm ON umm.depart_id = dmm.id  \n\tWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL\n\tAND di2.item_value IN (2,3)\n\tAND (mo.created_at > '%v 00:00:00' AND mo.created_at <= '%v 23:59:59')\n\t AND umc.login_name = '%v' \nORDER BY\n\tmo.created_at DESC", Start_Time, Stop_Time, login_name))
 		} else if position_level >= "2" { //管理
-			depart_id, err := e.Login_depart_id_permissions(login_name)
+			depart_id, err := e.LoginDepartIdPermissions(login_name)
 			if err != nil {
 				return nil, fmt.Errorf("%v，请联系管理员！", err)
 			}
@@ -226,7 +291,7 @@ func (e *Engine) Order_gift_select(Start_Time, Stop_Time, login_name, client_Mod
 	} else if client_Models == "TsaveDialog" { //无限制
 		resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tmo.created_at AS 订单创建时间,\n\tumc.nickname AS 订单创建人,\n\tumc.login_name AS 订单创建人工号,\n\tdmc.`name` AS 订单创建人部门,\n\tcc.`name` AS 客户姓名,\n\tcc.customer_code AS 客户编码,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi4.`NAME` AS 订单渠道,\n\tdi.`name` AS 订单状态,\n\tmo.performance_at AS 回款日期,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tumm.nickname AS 线上下单核单人,\n\tumm.login_name AS 线上下单核单人工号,\n\tdmm.`name` AS 线上下单核单人部门,\n\tmo.`name` AS 订单备注,\n\tump.nickname AS 业绩归属人,\n\tump.login_name AS 业绩归属人工号,\n\tdi3.`NAME` AS 员工状态,\n\tdmp.`name` AS 业绩归属人部门,\n\tFORMAT( mo.total_amount / 100,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态  \nFROM\n\tbl_mall_order mo\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_express_invoice ei ON mo.id = ei.order_id\n\tLEFT JOIN bl_mall_order_media mom ON mo.id = mom.mall_order_id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 43 ) di ON mo.`status` = di.item_value\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 53 ) di2 ON mo.type = di2.item_value\n\tLEFT JOIN bl_crm_customer cc ON mo.customer_id = cc.id\n\tLEFT JOIN bl_users umc ON mo.create_user_id = umc.id\n\tLEFT JOIN ( SELECT id, NAME, item_value FROM bl_dict_item WHERE dict_id = 14 ) di3 ON umc.`status` = di3.item_value\n\tLEFT JOIN ( SELECT id,NAME,item_value FROM bl_dict_item WHERE dict_id = 57 ) di4 ON mo.channel_id = di4.item_value\n\tLEFT JOIN bl_depart dmc ON mo.create_user_depart_id = dmc.id\n\tLEFT JOIN bl_users ump ON mo.performance_user_id = ump.id\n\tLEFT JOIN bl_depart dmp ON mo.performance_user_depart_id = dmp.id \n\tLEFT JOIN bl_users umm ON mom.assign_user_id = umm.id\n\tLEFT JOIN bl_depart dmm ON umm.depart_id = dmm.id  \nWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL\n\tAND di2.item_value IN (2,3)\n\tAND (mo.created_at > '%v 00:00:00' AND mo.created_at <= '%v 23:59:59')\n\t ORDER BY\n\tmo.created_at DESC", Start_Time, Stop_Time))
 	} else if client_Models == "Medium_TsaveDialog" { //新媒体
-		depart_id, err := e.Login_depart_id_permissions(login_name)
+		depart_id, err := e.LoginDepartIdPermissions(login_name)
 		if err != nil {
 			return nil, fmt.Errorf("%v，请联系管理员！", err)
 		}
@@ -248,21 +313,20 @@ func (e *Engine) Call_log_statistics(Start_Time, Stop_Time, login_name, client_M
 		if position_level <= "1" { //员工
 			resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\td1.NAME AS 部门,\n\td.NAME AS 二级部门,\n\tu.nickname AS 员工姓名,\n\tu.login_name AS 员工工号,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration = 0, cqv.id, NULL )) AS 未接通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration = 0, cqv.call_duration, 0 )) AS 未接通时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.id, NULL )) AS 无效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.call_duration, 0 )) AS 无效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.id, NULL )) AS 有效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.call_duration, 0 )) AS 有效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 180, cqv.id, NULL )) AS 优质通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 180, cqv.call_duration, 0 )) AS 优质通话时长,\n\tCOUNT( cqv.id ) AS 总通话数,\n\tSUM( cqv.call_duration ) AS 通话总时长 \nFROM\n\tbl_crm_quality_voice cqv\n\tINNER JOIN bl_users u ON cqv.user_id = u.id\n\tINNER JOIN bl_depart d ON u.depart_id = d.id\n\tINNER JOIN bl_depart d1 ON d.parent_id = d1.id \nWHERE\n\tstart_at > '%v 00:00:00' \n\tAND start_at < '%v 23:59:59' \n\tAND call_type = 'extension_outbound'\t\n\tAND u.login_name = '%v'\nGROUP BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name \nORDER BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name", Start_Time, Stop_Time, login_name))
 		} else if position_level >= "2" { //管理
-			depart_id, err := e.Login_depart_id_permissions(login_name)
+			depart_id, err := e.LoginDepartIdPermissions(login_name)
 			if err != nil {
 				return nil, fmt.Errorf("%v，请联系管理员！", err)
 			}
-			resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\td1.NAME AS 部门,\n\td.NAME AS 二级部门,\n\tu.nickname AS 员工姓名,\n\tu.login_name AS 员工工号,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration = 0, cqv.id, NULL )) AS 未接通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration = 0, cqv.call_duration, 0 )) AS 未接通时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.id, NULL )) AS 无效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.call_duration, 0 )) AS 无效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.id, NULL )) AS 有效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.call_duration, 0 )) AS 有效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 180, cqv.id, NULL )) AS 优质通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 180, cqv.call_duration, 0 )) AS 优质通话时长,\n\tCOUNT( cqv.id ) AS 总通话数,\n\tSUM( cqv.call_duration ) AS 通话总时长 \nFROM\n\tbl_crm_quality_voice cqv\n\tINNER JOIN bl_users u ON cqv.user_id = u.id\n\tINNER JOIN bl_depart d ON u.depart_id = d.id\n\tINNER JOIN bl_depart d1 ON d.parent_id = d1.id \nWHERE\n\tstart_at > '%v 00:00:00' \n\tAND start_at < '%v 23:59:59' \n\tAND call_type = 'extension_outbound'\nAND d1.id in (%v)\t\nGROUP BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name \nORDER BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name", Start_Time, Stop_Time, depart_id))
+			resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\td1.NAME AS 部门,\n\td.NAME AS 二级部门,\n\tu.nickname AS 员工姓名,\n\tu.login_name AS 员工工号,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration = 0, cqv.id, NULL )) AS 未接通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration = 0, cqv.call_duration, 0 )) AS 未接通时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.id, NULL )) AS 无效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.call_duration, 0 )) AS 无效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.id, NULL )) AS 有效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.call_duration, 0 )) AS 有效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 180, cqv.id, NULL )) AS 优质通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 180, cqv.call_duration, 0 )) AS 优质通话时长,\n\tCOUNT( cqv.id ) AS 总通话数,\n\tSUM( cqv.call_duration ) AS 通话总时长 \nFROM\n\tbl_crm_quality_voice cqv\n\tINNER JOIN bl_users u ON cqv.user_id = u.id\n\tINNER JOIN bl_depart d ON u.depart_id = d.id\n\tINNER JOIN bl_depart d1 ON d.parent_id = d1.id \nWHERE\n\tstart_at > '%v 00:00:00' \n\tAND start_at < '%v 23:59:59' \n\tAND call_type = 'extension_outbound'\nAND d.id in (%v)\t\nGROUP BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name \nORDER BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name", Start_Time, Stop_Time, depart_id))
 		}
 	} else if client_Models == "TsaveDialog" { //无限制
 		resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\td1.NAME AS 部门,\n\td.NAME AS 二级部门,\n\tu.nickname AS 员工姓名,\n\tu.login_name AS 员工工号,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration = 0, cqv.id, NULL )) AS 未接通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration = 0, cqv.call_duration, 0 )) AS 未接通时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.id, NULL )) AS 无效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.call_duration, 0 )) AS 无效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.id, NULL )) AS 有效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.call_duration, 0 )) AS 有效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 180, cqv.id, NULL )) AS 优质通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 180, cqv.call_duration, 0 )) AS 优质通话时长,\n\tCOUNT( cqv.id ) AS 总通话数,\n\tSUM( cqv.call_duration ) AS 通话总时长 \nFROM\n\tbl_crm_quality_voice cqv\n\tINNER JOIN bl_users u ON cqv.user_id = u.id\n\tINNER JOIN bl_depart d ON u.depart_id = d.id\n\tINNER JOIN bl_depart d1 ON d.parent_id = d1.id \nWHERE\n\tstart_at > '%v 00:00:00' \n\tAND start_at < '%v 23:59:59' \n\tAND call_type = 'extension_outbound'\t\nGROUP BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name \nORDER BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name", Start_Time, Stop_Time))
 	} else if client_Models == "Medium_TsaveDialog" { //新媒体
-		depart_id, err := e.Login_depart_id_permissions(login_name)
-		depart_id += ",107,108,109,110"
+		depart_id, err := e.LoginDepartIdPermissions(login_name)
 		if err != nil {
 			return nil, fmt.Errorf("%v，请联系管理员！", err)
 		}
-		resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\td1.NAME AS 部门,\n\td.NAME AS 二级部门,\n\tu.nickname AS 员工姓名,\n\tu.login_name AS 员工工号,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration = 0, cqv.id, NULL )) AS 未接通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration = 0, cqv.call_duration, 0 )) AS 未接通时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.id, NULL )) AS 无效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.call_duration, 0 )) AS 无效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.id, NULL )) AS 有效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.call_duration, 0 )) AS 有效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 180, cqv.id, NULL )) AS 优质通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 180, cqv.call_duration, 0 )) AS 优质通话时长,\n\tCOUNT( cqv.id ) AS 总通话数,\n\tSUM( cqv.call_duration ) AS 通话总时长 \nFROM\n\tbl_crm_quality_voice cqv\n\tINNER JOIN bl_users u ON cqv.user_id = u.id\n\tINNER JOIN bl_depart d ON u.depart_id = d.id\n\tINNER JOIN bl_depart d1 ON d.parent_id = d1.id \nWHERE\n\tstart_at > '%v 00:00:00' \n\tAND start_at < '%v 23:59:59' \n\tAND call_type = 'extension_outbound'\nAND d1.id in (%v)\t\nGROUP BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name \nORDER BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name", Start_Time, Stop_Time, depart_id))
+		resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\td1.NAME AS 部门,\n\td.NAME AS 二级部门,\n\tu.nickname AS 员工姓名,\n\tu.login_name AS 员工工号,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration = 0, cqv.id, NULL )) AS 未接通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration = 0, cqv.call_duration, 0 )) AS 未接通时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.id, NULL )) AS 无效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration > 0 && cqv.call_duration < 60, cqv.call_duration, 0 )) AS 无效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.id, NULL )) AS 有效通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 60 && cqv.call_duration < 180, cqv.call_duration, 0 )) AS 有效通话时长,\n\tCOUNT(\n\tIF\n\t( cqv.call_duration >= 180, cqv.id, NULL )) AS 优质通话总数,\n\tSUM(\n\tIF\n\t( cqv.call_duration >= 180, cqv.call_duration, 0 )) AS 优质通话时长,\n\tCOUNT( cqv.id ) AS 总通话数,\n\tSUM( cqv.call_duration ) AS 通话总时长 \nFROM\n\tbl_crm_quality_voice cqv\n\tINNER JOIN bl_users u ON cqv.user_id = u.id\n\tINNER JOIN bl_depart d ON u.depart_id = d.id\n\tINNER JOIN bl_depart d1 ON d.parent_id = d1.id \nWHERE\n\tstart_at > '%v 00:00:00' \n\tAND start_at < '%v 23:59:59' \n\tAND call_type = 'extension_outbound'\nAND d.id in (%v)\t\nGROUP BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name \nORDER BY\n\td1.NAME,\n\td.NAME,\n\tu.nickname,\n\tu.login_name", Start_Time, Stop_Time, depart_id))
 	}
 
 	return resulist, nil
@@ -276,7 +340,7 @@ func (e *Engine) Order_xs_select(Start_Time, Stop_Time, login_name, client_Model
 		return nil, fmt.Errorf("%v，请联系管理员！", err)
 	}
 	var resulist []map[string][]byte
-	if client_Models == "TsaveDialog" || login_name == "15060001" { //无限制
+	if client_Models == "TsaveDialog" || login_name == "20030043" { //无限制
 		resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tcc.customer_code AS 客户编码,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"客户名称\"' ) AS 下单客户姓名,#JSON_UNQUOTE( mom.raw_json -> '$[0].\"客户电话\"' ) AS 下单客户电话,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"商品名称\"' ) AS 下单商品,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"渠道订单号\"' ) AS 渠道订单号,\n  IF(\tmom.`status` = 0,\"已取消\",IF(mom.`status` = 1,\"已创建\",IF(mom.`status` = 10,\"已分配\",IF(mom.`status` = 30,\"核单通过\",IF( mom.`status` = 40, \"核单失败\", \"0\" ))))) AS 核单状态,\n\tdi1.`name` AS 核单备注,\n\td.`name` AS 部门,\n\tu.nickname AS 员工姓名,\n\tu.login_name AS 员工工号,\n\tdi3.`name` AS 员工状态,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi.`name` AS 订单状态,\n\tFORMAT( mo.total_amount / 100 ,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态,\n\tmos.receiver_address AS 客户地址\nFROM\n\t`bl_mall_order_media` mom\n\tLEFT JOIN bl_crm_customer cc on cc.id = mom.customer_id\n\tLEFT JOIN bl_express_invoice ei ON mom.mall_order_id = ei.order_id\t\n\tLEFT JOIN (SELECT id,name,item_value FROM bl_dict_item where dict_id = 74) di1 ON mom.verify_order_comment = di1.item_value\n\tLEFT JOIN bl_users u ON mom.assign_user_id = u.id\n\tLEFT JOIN (SELECT id,name,item_value FROM bl_dict_item where dict_id = 14) di3 on u.`status` = di3.item_value\n\tLEFT JOIN bl_mall_order mo ON mom.mall_order_id = mo.id\n\tLEFT JOIN bl_depart d ON u.depart_id = d.id\t\n\tLEFT JOIN (SELECT id,name,item_value FROM bl_dict_item where dict_id = 43) di on mo.`status` = di.item_value\n\tLEFT JOIN (SELECT id,name,item_value FROM bl_dict_item where dict_id = 53) di2 on mo.type = di2.item_value\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_mall_order_shipinfo mos on mo.id = mos.order_id\n\tWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL \n\tAND  ((JSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) >= '%v 00:00:00' \tAND JSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) <= '%v 23:59:59' )\n\tOR (JSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) < '%v 00:00:00' AND mom.mall_order_id IS NOT NULL AND mo.`status` <= 90 AND mo.performance_at IS NULL) OR (JSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) < '%v 00:00:00' AND mom.mall_order_id IS  NULL AND mom.`status` > 30 ))\n\tORDER BY\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' )\n\t", Start_Time, Stop_Time, Start_Time, Start_Time))
 	} else {
 
@@ -287,7 +351,7 @@ func (e *Engine) Order_xs_select(Start_Time, Stop_Time, login_name, client_Model
 		if position_level <= "1" {
 			resulist, _ = e.Engine.Query(fmt.Sprintf("SELECT\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) AS 线上下单时间,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"来源渠道\"' ) AS 线上下单渠道,\n\tcc.customer_code AS 客户编码,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"客户名称\"' ) AS 下单客户姓名,#JSON_UNQUOTE( mom.raw_json -> '$[0].\"客户电话\"' ) AS 下单客户电话,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"商品名称\"' ) AS 下单商品,\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"渠道订单号\"' ) AS 渠道订单号,\n  IF(\tmom.`status` = 0,\"已取消\",IF(mom.`status` = 1,\"已创建\",IF(mom.`status` = 10,\"已分配\",IF(mom.`status` = 30,\"核单通过\",IF( mom.`status` = 40, \"核单失败\", \"0\" ))))) AS 核单状态,\n\tdi1.`name` AS 核单备注,\n\td.`name` AS 部门,\n\tu.nickname AS 员工姓名,\n\tu.login_name AS 员工工号,\n\tdi3.`name` AS 员工状态,\n\tmo.order_no AS 系统订单号,\n\tdi2.`name` AS 订单类型,\n\tdi.`name` AS 订单状态,\n\tFORMAT( mo.total_amount / 100 ,2) AS 订单总金额,\n\tFORMAT( mo.discount_amount / 100 ,2) AS 订单折扣总额,\n\tFORMAT(( mo.total_amount - mo.discount_amount )/ 100 ,2) AS 订单售价总额,\n\tmc.`name` AS 订单商品,\n\tmc.goods_count AS 商品数量,\n\tFORMAT( mc.goods_price / 100 ,2) AS 商品原价,\n\tFORMAT( mc.price_sale / 100 ,2) AS 商品售价,\n\tFORMAT( mc.total_price / 100 ,2) AS 商品总价,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_name AS 配送方式,\n\tei.ship_channel_no AS 快递单号,\n\tei.last_trace AS 快递状态,\n\tmos.receiver_address AS 客户地址\nFROM\n\t`bl_mall_order_media` mom\n\tLEFT JOIN bl_crm_customer cc on cc.id = mom.customer_id\n\tLEFT JOIN bl_express_invoice ei ON mom.mall_order_id = ei.order_id\t\n\tLEFT JOIN (SELECT id,name,item_value FROM bl_dict_item where dict_id = 74) di1 ON mom.verify_order_comment = di1.item_value\n\tLEFT JOIN bl_users u ON mom.assign_user_id = u.id\n\tLEFT JOIN (SELECT id,name,item_value FROM bl_dict_item where dict_id = 14) di3 on u.`status` = di3.item_value\n\tLEFT JOIN bl_mall_order mo ON mom.mall_order_id = mo.id\n\tLEFT JOIN bl_depart d ON u.depart_id = d.id\t\n\tLEFT JOIN (SELECT id,name,item_value FROM bl_dict_item where dict_id = 43) di on mo.`status` = di.item_value\n\tLEFT JOIN (SELECT id,name,item_value FROM bl_dict_item where dict_id = 53) di2 on mo.type = di2.item_value\n\tLEFT JOIN bl_mall_cart mc ON mo.id = mc.order_id\n\tLEFT JOIN bl_mall_order_shipinfo mos on mo.id = mos.order_id\n\tWHERE\n\tmo.deleted_at IS NULL \n\tAND mo.delete_user_id IS NULL \n\tAND mom.deleted_at IS NULL\n\tAND mom.delete_user_id IS NULL\n\tAND mc.deleted_at IS NULL\n\tAND mc.delete_user_id IS NULL\n\tAND ei.deleted_at IS NULL\n\tAND ei.delete_user_id IS NULL \n\tAND  ((JSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) >= '%v 00:00:00' \tAND JSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) <= '%v 23:59:59' )\n\tOR (JSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) < '%v 00:00:00' AND mom.mall_order_id IS NOT NULL AND mo.`status` <= 90 AND mo.performance_at IS NULL) OR (JSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' ) < '%v 00:00:00' AND mom.mall_order_id IS  NULL AND mom.`status` > 30 ))\n\tAND u.login_name = '%v' \n\tORDER BY\n\tJSON_UNQUOTE( mom.raw_json -> '$[0].\"创建时间\"' )\n\t", Start_Time, Stop_Time, Start_Time, Start_Time, login_name))
 		} else if position_level >= "2" {
-			depart_id, err := e.Login_depart_id_permissions(login_name)
+			depart_id, err := e.LoginDepartIdPermissions(login_name)
 			if err != nil {
 				return nil, fmt.Errorf("%v，请联系管理员！", err)
 			}
@@ -295,6 +359,22 @@ func (e *Engine) Order_xs_select(Start_Time, Stop_Time, login_name, client_Model
 		}
 	}
 
+	return resulist, nil
+}
+
+// NewOrderXsSelect 新媒体线上明细
+func (e *Engine) NewOrderXsSelect(Start_Time, Stop_Time, login_name, client_Models string) ([]map[string][]byte, error) {
+
+	err := e.CRMNewEngine()
+	if err != nil {
+		return nil, fmt.Errorf("%v，请联系管理员！", err)
+	}
+	var resulist []map[string][]byte
+
+	resulist, _ = e.Engine.Query(fmt.Sprintf(" SELECT\n\tmmo.buy_at AS 线上下单时间,\n\tmmo.source AS 线上下单渠道,\n\tcc.`code` AS 客户编码,\n\tmmo.customer_name AS 下单客户姓名,\n\tmmo.origin_text  as 下单商品,\n\tCASE\t\t\n\t\tWHEN mmo.`status` = 3 THEN\t\t'核单成功' \n\t\tWHEN mmo.`status` = 4 THEN\t\t'核单失败' \n\t\tWHEN mmo.`status` = 2 THEN\t\t'已分配' \n\t\tELSE '待分配' \n\tEND  AS 核单状态,\n\tbdi.`name` AS 核单备注,\n\tso.`name` AS 部门,\n\tsu.real_name AS 员工姓名,\n\tsu.staff_no AS 员工工号,\n\tmo.order_no AS 系统订单号,\n\tCASE\t\t\n\t\tWHEN mo.`status` = 1  THEN\t\t'新建' \n\t\tWHEN mo.`status` = 2  THEN\t\t'待审核' \n\t\tWHEN mo.`status` = 3  THEN\t\t'代付款' \n\t\tWHEN mo.`status` = 4  THEN\t\t'审核被驳回' \n\t\tWHEN mo.`status` = 5  THEN\t\t'订单部分付款' \n\t\tWHEN mo.`status` = 6  THEN\t\t'待确认发货' \n\t\tWHEN mo.`status` = 7  THEN\t\t'等待备货' \n\t\tWHEN mo.`status` = 8  THEN\t\t'备货中' \n\t\tWHEN mo.`status` = 9  THEN\t\t'订单代发货' \n\t\tWHEN mo.`status` = 10 THEN\t\t'订单已发货' \n\t\tWHEN mo.`status` = 11 THEN\t\t'订单配送中' \n\t\tWHEN mo.`status` = 12 THEN\t\t'订单已签收' \n\t\tWHEN mo.`status` = 13 THEN\t\t'订单未妥投' \n\t\tWHEN mo.`status` = 14 THEN\t\t'商品已退回' \n\t\tWHEN mo.`status` = 15 THEN\t\t'订单售后中' \n\t\tWHEN mo.`status` = 16 THEN\t\t'订单已取消' \n\t\tWHEN mo.`status` = 17 THEN\t\t'订单已完成' \t\n\t\tWHEN mo.`status` = 18 THEN\t\t'售后已完成' \t\n\t\t#ELSE '' \n\tEND  AS 订单状态,\n\tmo.amount / 100 AS 订单应收金额,\n\tmo.discount_amount / 100 AS 订单优惠总额,\n\tmo.actual_amount / 100 AS 订单实收金额,\n\tmo.performance_at as 业绩时间,\n\tmog.sku_name AS 订单商品,\n\tmog.num AS 商品数量,\n\tmog.sale_price / 100 AS 商品原价,\n\tmog.actual_price / 100 AS 商品售价,\n\tmog.total_amount / 100 AS 商品总价,\n\tmo.express AS 配送方式,\n\tmo.logistic_no 快递单号,\n\tmo.logistic_state_desc 快递状态 \nFROM\n\tmall_media_order mmo\n\tLEFT JOIN mall_order mo ON mmo.order_id = mo.id\n\tLEFT JOIN mall_order_goods mog ON mo.id = mog.order_id\n\tLEFT JOIN sys_organ so ON mmo.handler_organ_id = so.id\n\tLEFT JOIN sys_user su ON mmo.handler_id = su.id \n\tLEFT JOIN bas_dictionary_item bdi on bdi.`value` = mmo.note\n\tLEFT JOIN cus_customer cc on cc.id = mmo.customer_id\n\tWHERE\n\t \tmog.`status` != 0 \n\tAND mmo.`status` != 0 and mmo.created_at BETWEEN '%v 00:00:00' AND '%v 23:59:59'\n\nORDER BY\n\tso.`name`,\n\tsu.id,\n\tmo.order_no,\n\tmmo.buy_at,\n\tmmo.source,\n\tmmo.`status`", Start_Time, Stop_Time))
+
+	e.Close()
+	//fmt.Println(resulist)
 	return resulist, nil
 }
 
@@ -337,7 +417,7 @@ func (e *Engine) Order_xxTJ_select(Start_Time, Stop_Time, login_name string) ([]
 		return nil, fmt.Errorf("权限不足！")
 	}
 
-	depart_id, err := e.Login_depart_id_permissions(login_name)
+	depart_id, err := e.LoginDepartIdPermissions(login_name)
 	if err != nil {
 		return nil, fmt.Errorf("%v，请联系管理员！", err)
 	}

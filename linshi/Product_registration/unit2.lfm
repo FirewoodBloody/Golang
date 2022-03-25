@@ -1,0 +1,228 @@
+object Form2: TForm2
+  Left = 624
+  Height = 117
+  Top = 345
+  Width = 408
+  Caption = '数据导出'
+  ClientHeight = 117
+  ClientWidth = 408
+  Color = clSkyBlue
+  OnShow = FormShow
+  LCLVersion = '2.0.12.0'
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Panel2
+    Left = 2
+    Height = 38
+    Top = 2
+    Width = 404
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 2
+    ClientHeight = 38
+    ClientWidth = 404
+    TabOrder = 0
+    object DateTimePicker1: TDateTimePicker
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 90
+      Height = 35
+      Top = 0
+      Width = 91
+      CenturyFrom = 1941
+      MaxDate = 2958465
+      MinDate = -53780
+      TabOrder = 0
+      BorderSpacing.Around = 2
+      TrailingSeparator = False
+      TextForNullDate = 'NULL'
+      LeadingZeros = True
+      Anchors = [akTop, akLeft, akBottom]
+      Kind = dtkDate
+      TimeFormat = tf24
+      TimeDisplay = tdHMS
+      DateMode = dmComboBox
+      Date = 44368
+      Time = 0.517401087963663
+      UseDefaultSeparators = True
+      HideDateTimeParts = []
+      MonthNames = 'Long'
+    end
+    object DateTimePicker2: TDateTimePicker
+      AnchorSideLeft.Control = Label2
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 300
+      Height = 32
+      Top = 3
+      Width = 91
+      CenturyFrom = 1941
+      MaxDate = 2958465
+      MinDate = -53780
+      TabOrder = 1
+      BorderSpacing.Right = 10
+      BorderSpacing.Around = 2
+      TrailingSeparator = False
+      TextForNullDate = 'NULL'
+      LeadingZeros = True
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Kind = dtkDate
+      TimeFormat = tf24
+      TimeDisplay = tdHMS
+      DateMode = dmComboBox
+      Date = 44538
+      UseDefaultSeparators = True
+      HideDateTimeParts = []
+      MonthNames = 'Long'
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 13
+      Height = 32
+      Top = 3
+      Width = 75
+      Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.Left = 10
+      BorderSpacing.Around = 2
+      Caption = '开始日期：'
+      Font.CharSet = GB2312_CHARSET
+      Font.Color = clBlack
+      Font.Height = -14
+      Font.Name = '楷体'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      Layout = tlCenter
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = DateTimePicker1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 223
+      Height = 32
+      Top = 3
+      Width = 75
+      Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.Left = 40
+      BorderSpacing.Around = 2
+      Caption = '结束日期：'
+      Font.CharSet = GB2312_CHARSET
+      Font.Color = clBlack
+      Font.Height = -14
+      Font.Name = '楷体'
+      Font.Pitch = fpFixed
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      Layout = tlCenter
+      ParentColor = False
+      ParentFont = False
+      WordWrap = True
+    end
+  end
+  object Panel2: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Panel3
+    Left = 2
+    Height = 49
+    Top = 42
+    Width = 404
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 2
+    ClientHeight = 49
+    ClientWidth = 404
+    TabOrder = 1
+    object Button1: TButton
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = Panel2
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel2
+      AnchorSideBottom.Side = asrBottom
+      Left = 318
+      Height = 37
+      Top = 6
+      Width = 75
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 5
+      BorderSpacing.Around = 5
+      Caption = '确定'
+      OnClick = Button1Click
+      TabOrder = 0
+    end
+    object Button2: TButton
+      AnchorSideTop.Control = Panel2
+      AnchorSideRight.Control = Button1
+      AnchorSideBottom.Control = Panel2
+      AnchorSideBottom.Side = asrBottom
+      Left = 236
+      Height = 37
+      Top = 6
+      Width = 72
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 5
+      BorderSpacing.Around = 5
+      Caption = '取消'
+      OnClick = Button2Click
+      TabOrder = 1
+    end
+  end
+  object Panel3: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 2
+    Height = 22
+    Top = 93
+    Width = 404
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Around = 2
+    Caption = 'Panel3'
+    ClientHeight = 22
+    ClientWidth = 404
+    TabOrder = 2
+    object ProgressBar1: TProgressBar
+      AnchorSideLeft.Control = Panel3
+      AnchorSideTop.Control = Panel3
+      AnchorSideRight.Control = Panel3
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel3
+      AnchorSideBottom.Side = asrBottom
+      Left = 2
+      Height = 18
+      Top = 2
+      Width = 400
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 1
+      TabOrder = 0
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    Filter = 'Excel工作表|.xlsx'
+    Left = 24
+    Top = 56
+  end
+end
